@@ -1,6 +1,7 @@
 package info.getbus.servebus.web.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,10 @@ public class MainController {
         model.addAttribute("title", "mget");
         model.addAttribute("free", "mbus");
         return "fget";
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String start(Model model){
+        return "index";
     }
 }
