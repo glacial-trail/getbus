@@ -8,19 +8,27 @@
     <mvc:annotation-driven/>
     <context:component-scan base-package="info.getbus.servebus.web"/>
 
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/img/**" location="/img/" />
 
-    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="/WEB-INF/views/ftl/"/>
-    </bean>
+    <mvc:freemarker-configurer>
+        <mvc:template-loader-path location="/WEB-INF/views/ftl/"/>
+    </mvc:freemarker-configurer>
 
     <!--
     View resolvers can also be configured with ResourceBundles or XML files. If you need
     different view resolving based on Locale, you have to use the resource bundle resolver.
     -->
+<!--
+    <mvc:view-resolvers>
+        <mvc:freemarker cache-views="true" suffix=".ftl"/>
+    </mvc:view-resolvers>
+-->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         <property name="cache" value="true"/>
-        <property name="prefix" value=""/>
         <property name="suffix" value=".ftl"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
     </bean>
 
 </beans>
