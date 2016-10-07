@@ -30,7 +30,7 @@ public class MainController {
         return "fget";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(path = {"/","/index"})
     public String start(Model model){
         return "index";
     }
