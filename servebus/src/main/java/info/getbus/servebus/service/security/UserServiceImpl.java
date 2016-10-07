@@ -1,10 +1,6 @@
-package info.getbus.servebus.web.service;
+package info.getbus.servebus.service.security;
 
-/**
- * Created by art on 23.09.16.
- */
-
-import info.getbus.servebus.web.entity.User;
+import info.getbus.servebus.model.security.User;
 import org.springframework.stereotype.Service;
 
 @Service

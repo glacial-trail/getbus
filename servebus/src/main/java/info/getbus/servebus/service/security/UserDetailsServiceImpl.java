@@ -1,10 +1,7 @@
-package info.getbus.servebus.web.service;
+package info.getbus.servebus.service.security;
 
-/**
- * Created by art on 23.09.16.
- */
-import info.getbus.servebus.web.entity.User;
-import info.getbus.servebus.web.entity.enums.UserRoleEnum;
+import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.model.security.UserRole;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userService.getUser("admin");
         Set<GrantedAuthority> roles = new HashSet();
-        roles.add(new SimpleGrantedAuthority(UserRoleEnum.ADMIN.name()));
+        roles.add(new SimpleGrantedAuthority(UserRole.ADMIN.name()));
 
         UserDetails userDetails =
                 new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);

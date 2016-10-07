@@ -1,11 +1,6 @@
-package info.getbus.servebus.web.config;
+package info.getbus.servebus.cfg.security;
 
-/**
- * Created by art on 23.09.16.
- */
-
-
-import info.getbus.servebus.web.service.UserDetailsServiceImpl;
+import info.getbus.servebus.service.security.UserDetailsServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

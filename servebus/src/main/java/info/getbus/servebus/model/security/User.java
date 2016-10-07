@@ -1,4 +1,4 @@
-package info.getbus.servebus.web.entity;
+package info.getbus.servebus.model.security;
 
 /**
  * Created by art on 23.09.16.
