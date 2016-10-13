@@ -39,7 +39,7 @@ body {
     width: 100%;
     height: 100%;
     background: url("../img/background-cabinet.jpg");
-    background-size: 60%;
+    background-size: 100%;
 }
 
 .footer {
@@ -252,6 +252,17 @@ body {
     .exit{
         margin-left: 0px;
     }
+
+    #backgroung-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("../img/background-cabinet.jpg");
+        background-size: 60%;
+    }
+
 
 }
 
