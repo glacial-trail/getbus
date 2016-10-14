@@ -1,57 +1,92 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Barvinok Garage ink. Home page</title>
-	<link rel="stylesheet" href="bootstrap.min.css">
-	<link rel="stylesheet" href="style.css">
-	<link href="https://fonts.googleapis.com/css?family=News+Cycle" rel="stylesheet">
+	<title>GetBus home page</title>
 
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-	<![endif]-->
-
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Tenor+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<div class="wrap">
-		<!--Шапка-->
-		<div class="header">
+<div class="background-img"></div>
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+					aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<div class="logo">
+				<img src="img/logo.jpg" height="60" alt="logo">
+			</div>
 		</div>
-		<!--Контент-->
-		<div class="content">
-			<section class="container">
-				<div class="login">
-					<h1>Войти в личный кабинет</h1>
-					<form>
-						<p><input type="text" name="login" value="" placeholder="Логин"></p>
-						<p><input type="password" name="password" value="" placeholder="Пароль"></p>
-						<p class="remember-me">
-							<label>
-								<input type="checkbox" name="remember-me" id="remember-me">
-								Запомнить меня
-							</label>
-						</p>
-						<p class="submit"><input type="submit" name="commit" value="Войти"></p>
-						<div class="login-help">
-							<a href="">Забыли пароль?</a> | <a href="index registration.html">Регистрация</a>
-						</div>
-					</form>
+		<div id="navbar" class="collapse navbar-collapse">
+			<div class="right-menu">
+				<ul>
+					<li><a href="">ukr</a> | <a href="">ru</a>| <a href="">en</a></li>
+					<li>
+						<button type="button" class="btn btn-warning partners"><span class="glyphicon glyphicon-user"></span>
+							Для партнёров
+						</button>
+					</li>
+				</ul>
+			</div>
+			<!--<ul class="nav navbar-nav">-->
+			<!--<li class="active"><a href="#">Home</a></li>-->
+			<!--<li><a href="#about">About</a></li>-->
+			<!--<li><a href="#contact">Contact</a></li>-->
+			<!--<li class="dropdown">-->
+			<!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>-->
+			<!--<ul class="dropdown-menu">-->
+			<!--<li><a href="#">Action</a></li>-->
+			<!--<li><a href="#">Another action</a></li>-->
+			<!--<li><a href="#">Something else here</a></li>-->
+			<!--<li role="separator" class="divider"></li>-->
+			<!--<li class="dropdown-header">Nav header</li>-->
+			<!--<li><a href="#">Separated link</a></li>-->
+			<!--<li><a href="#">One more separated link</a></li>-->
+			<!--</ul>-->
+			<!--</li>-->
+			<!--</ul>-->
+		</div>
+		<!--/.nav-collapse -->
+	</div>
+</nav>
+
+<div class="login-container">
+	<div class="row">
+		<div class="login">
+			<h1>Войти в личный кабинет</h1>
+			<form>
+				<p><input class="input-log" type="text" name="login" value="" placeholder="Логин"></p>
+				<p><input class="input-log" type="password" name="password" value="" placeholder="Пароль"></p>
+				<p class="remember-me">
+					<label>
+						<input class="input-log" type="checkbox" name="remember-me" id="remember-me">
+						Запомнить меня
+					</label>
+				</p>
+				<p class="submit"><input class="input-log" type="submit" name="commit" value="Войти"></p>
+				<div class="login-help">
+					<a href="">Забыли пароль?</a> | <a href="">Регистрация</a>
 				</div>
-			</section>
-		</div>
-		<!--Подвал-->
-		<div class="footer">
-			<p class="copyright">Copyright © 2016. All Rights Reserved</p>
+			</form>
 		</div>
 	</div>
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="bootstrap.min.js"></script>
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<p class="copyright">Copyright © 2016. All Rights Reserved</p>
+	</div>
+</footer>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>

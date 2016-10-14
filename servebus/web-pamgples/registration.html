@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GetBus Cabinet</title>
+    <title>GetBus Registration</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Tenor+Sans" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div id="backgroung-image"></div>
+<div class="background"></div>
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -58,31 +58,24 @@
         <!--/.nav-collapse -->
     </div>
 </nav>
-<div class="sidebar">
-    <ul class="sidebar-nav">
-        <li class="sidebar-brand">
-            <a href="#">Меню</a>
-        </li>
-        <li><a href="#">Dashboard</a>
-        </li>
-        <li>
-            <a href="#">Shortcuts</a>
-        </li>
-        <li>
-            <a href="#">Overview</a>
-        </li>
-        <li>
-            <a href="#">Events</a>
-        </li>
-        <li>
-            <a href="#">About</a>
-        </li>
-        <li>
-            <a href="#">Выход</a>
-        </li>
-    </ul>
-</div>
-<div class="content"></div>
+    <div class="register-container container">
+        <div class="row">
+            <div class="register">
+                <form action="" method="post">
+                    <h2>Регистрация</h2>
+                    <label for="firstname">Имя</label>
+                    <input type="text" id="firstname" name="firstname" placeholder="Введите Ваше имя...">
+                    <label for="lastname">Фамилия</label>
+                    <input type="text" id="lastname" name="lastname" placeholder="Введите Вашу фамилию...">
+                    <label for="e-mail">E-mail</label>
+                    <input type="text" id="e-mail" name="e-mail" placeholder="Введите Ваш e-mail...">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" placeholder="Введите пароль...">
+                    <button type="submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                </form>
+            </div>
+        </div>
+    </div>
 <footer class="footer">
     <div class="container">
         <p class="copyright">Copyright © 2016. All Rights Reserved</p>
