@@ -28,10 +28,7 @@
             </div>
         </section>
     </div>
-    <!--Подвал-->
-    <div class="footer">
-        <p class="copyright">Copyright © 2016. All Rights Reserved</p>
-    </div>
+    <#include "footer.ftl">
 </div>
 
 <#include "_html_bottom.ftl">
