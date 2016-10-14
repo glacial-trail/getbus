@@ -6,14 +6,14 @@ body {
     background-color: white;
 }
 
-.languages ul {
+.right-menu ul {
     float: right;
     display: inline-flex;
     list-style-type: none;
     margin: 10px;
 }
 
-.languages a{
+.right-menu a{
     color: black;
     font-size: 16px;
     text-transform:uppercase;
@@ -29,7 +29,17 @@ body {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+}
 
+.background-img {
+    background: url("../img/backgroung-logon.jpg");
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: 100%;
 }
 
 #backgroung-image {
@@ -39,6 +49,17 @@ body {
     width: 100%;
     height: 100%;
     background: url("../img/background-cabinet.jpg");
+    background-size: 100%;
+}
+
+.background {
+    background: url("../img/background-transporter-reg.jpg") no-repeat;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
     background-size: 100%;
 }
 
@@ -52,14 +73,11 @@ body {
     z-index: 2;
 }
 
-.sidebar-nav {
-}
 .no-pad {
     padding: 0;
 }
 
 /* sidebar-nav */
-
 .sidebar-nav {
     position: fixed;
     top: 0;
@@ -116,44 +134,47 @@ body {
 /* sidebar-nav end */
 
 
-.exit{
+.exit.btn {
     margin-left: 40px;
     background-color: #eb4141;
     color: white;
 }
 
-.copyright{
+.partners.btn {
+    margin-left: 40px;
+    background-color: #eb4141;
+    color: white;
+}
+
+.copyright {
     font-size: 20px;
     text-align: center;
     color: #66afe9;
     margin-top: 10px;
 }
 
-
 .logo{
     margin-left: 20px;
 }
 
-.background {
-    background: url("../img/background-transporter-reg.jpg") no-repeat center;
-    height: 810px;
-    width: 1800px ;
-    position:relative;
+.register-container{
+    margin-top:90px;
 }
 
-
 .register form {
-    padding: 20px 20px 20px 20px;
-    background: #f8f8f8 url(../img/backgroung-reg-form.jpg);
+    padding: 10px 20px 20px 20px;
+    background: #f8f8f8 url(../img/backgroung-reg-form.jpg)center;
     -moz-box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
     -webkit-box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
     box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
     text-align: center;
+    margin: 0 auto;
+    opacity: 0.97;
 }
 
 .register form h2 {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 2px dotted #bbb;
     font-size: 30px;
     font-weight: 400;
@@ -161,7 +182,7 @@ body {
 }
 
 .register form input {
-    width:900px;
+    width:95%;
     height: 30px;
     background: #fcfcfc;
     border: 1px solid #ddd;
@@ -183,9 +204,10 @@ body {
 }
 
 .register form label {
-    margin: 7px 0 10px 5px;
+    margin: 15px 0 10px 10px;
     font-size: 16px;
-
+    display: block;
+    text-align: center;
 }
 
 .register form label span {
@@ -238,11 +260,9 @@ body {
             0 -15px 30px 0 rgba(255,255,255,.05) inset,
             0 5px 8px 0 rgba(0,0,0,.1) inset;
 }
-
-
 @media (max-width: 767px) {
 
-    .languages ul {
+    .right-menu ul {
         list-style-type: none;
         display: block;
         line-height: 40px;
@@ -262,7 +282,18 @@ body {
         background: url("../img/background-cabinet.jpg");
         background-size: 60%;
     }
-
+    .register-container {
+        padding-left: 20px; padding-right: 20px;
+    }
 
 }
+
+@media (max-width: 480px) {
+
+    .register form button {
+        width: 97%;
+    }
+
+}
+
 
