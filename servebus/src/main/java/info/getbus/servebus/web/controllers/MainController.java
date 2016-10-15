@@ -11,7 +11,7 @@ import java.security.Principal;
 @Controller
 public class MainController {
 
-    @GetMapping("/logon/")
+    @GetMapping("/logon")
     public String logon() {
         return "logon";
     }
@@ -19,7 +19,7 @@ public class MainController {
     @GetMapping("/")
     public String start(Principal principal){
         if (principal == null) {
-            return "forward:/login";
+            return "forward:/logon";
         } else {
             return "forward:/index";
         }
@@ -33,7 +33,7 @@ public class MainController {
             model.addAttribute("roles", user.getAuthorities());
             return "index";
         } else {
-            return "redirect:/login";
+            return "redirect:/logon";
         }
     }
 }

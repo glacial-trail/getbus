@@ -37,17 +37,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
 
         http.formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/j_spring_security_check")
-                .failureUrl("/login?error")
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
+                .loginPage("/logon")
+                .loginProcessingUrl("/security_check")
+                .failureUrl("/logon?fail")
+                .usernameParameter("logonid")
+                .passwordParameter("password")
                 .permitAll();
 
         http.logout()
                 .permitAll()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/logon?logout")
                 .invalidateHttpSession(true);
 
     }
