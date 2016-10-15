@@ -1,5 +1,3 @@
-<#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,13 +21,18 @@
 
         <h1>GetBus.info</h1>
         <p class="lead">GetBus - билетики онлайн.</p>
-        <@security.authorize access="!isAuthenticated()">
-            <p><a href="/login">>login</a></p>
-        </@security.authorize>
-        <@security.authorize access="isAuthenticated()">
-            <p>Your name: <sec:authentication property="principal.username" /></p>
-            <p><a href="/logout">>logout</a></p>
-        </@security.authorize>
+        <p>Your name: ${name}</p>
+
+        <p>
+            roles:
+            <#list roles as role>
+            ${role}<#sep>,
+            </#list>
+        </p>
+
+        <br/>
+
+        <p><a href="/logout">>logout</a></p>
 
     <div>
         <p>&copy; GetBus 2016</p>

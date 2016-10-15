@@ -22,10 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
 
 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.getUser("admin");
-        Set<GrantedAuthority> roles = new HashSet();
+    public UserDetails loadUserByUsername(String logonid) throws UsernameNotFoundException {
+        User user = userService.getUser(logonid);
+        Set<GrantedAuthority> roles = new HashSet<>();
         roles.add(new SimpleGrantedAuthority(UserRole.ADMIN.name()));
+        roles.add(new SimpleGrantedAuthority(UserRole.USER_BUS.name()));
 
         UserDetails userDetails =
                 new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
