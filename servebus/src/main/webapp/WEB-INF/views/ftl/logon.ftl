@@ -8,7 +8,8 @@
                 <h1><@spring.message "logon.login_to_acc"/></h1>
 
                 <form action="/security_check" method="POST">
-                    <p><input type="text" name="logonid" value="" placeholder="<@spring.message "login"/>"></p>
+                    <#--<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>-->
+                    <p><input type="text" name="logonid" value="" placeholder="<@spring.message "login"/>" autofocus></p>
 
                     <p><input type="password" name="password" value="" placeholder="<@spring.message "password"/>"></p>
 

@@ -7,4 +7,6 @@
     <context:annotation-config/>
     <context:component-scan base-package="info.getbus.servebus"/>
 
+    <import resource="security-config.xml"/>
+
 </beans>

@@ -1,0 +1,24 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <beans:bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <http>
+        <form-login login-page="/logon" login-processing-url="/security_check" username-parameter="logonid" authentication-failure-url="/logon?fail" />
+        <logout logout-url="/logout" logout-success-url="/" invalidate-session="true" delete-cookies="JSESSIONID"/>
+
+        <!--TODO enable-->
+        <csrf disabled="true" />
+    </http>
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="dummyUserDetailsService">
+            <password-encoder ref="bcryptEncoder" />
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>
