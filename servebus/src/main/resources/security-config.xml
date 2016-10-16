@@ -12,6 +12,21 @@
         <form-login login-page="/logon" login-processing-url="/security_check" username-parameter="logonid" authentication-failure-url="/logon?fail" />
         <logout logout-url="/logout" logout-success-url="/" invalidate-session="true" delete-cookies="JSESSIONID"/>
 
+        <intercept-url pattern="/css/**" access="permitAll()"/>
+        <intercept-url pattern="/js/**" access="permitAll()"/>
+        <intercept-url pattern="/img/**" access="permitAll()"/>
+        <intercept-url pattern="/logon" access="isAnonymous()"/>
+        <intercept-url pattern="/logout" access="isAuthenticated()"/>
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+
+
+        <session-management invalid-session-url="/logon?invalid_session">
+            <!--<concurrency-control max-sessions="1" error-if-maximum-exceeded="true"/>-->
+        </session-management>
+
+        <!--TODO switch to persistent token -->
+        <remember-me remember-me-parameter="remember_me" key="getBusKey" />
+
         <!--TODO enable-->
         <csrf disabled="true" />
     </http>

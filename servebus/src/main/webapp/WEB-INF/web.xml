@@ -43,4 +43,12 @@
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 
+    <!--
+        <listener>
+            <listener-class>
+                org.springframework.security.web.session.HttpSessionEventPublisher
+            </listener-class>
+        </listener>
+    -->
+
 </web-app>
