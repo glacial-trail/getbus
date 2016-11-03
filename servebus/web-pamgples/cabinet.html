@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div id="backgroung-image"></div>
+<div id="backgroung-img-cabinet"></div>
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -31,9 +31,11 @@
                 <ul>
                     <li><a href="">ukr</a> | <a href="">ru</a>| <a href="">en</a></li>
                     <li>
-                        <button type="button" class="btn btn-warning exit"><span class="glyphicon glyphicon-log-out"></span>
-                            Выход
-                        </button>
+                        <form method="get">
+                            <button type="submit" formaction="/logout" class="btn btn-warning exit"><span class="glyphicon glyphicon-log-out"></span>
+                                Выход
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </div>

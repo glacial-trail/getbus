@@ -31,7 +31,7 @@ body {
     transition: all 0.5s ease;
 }
 
-.background-img {
+.background-img-logon {
     background: url("../img/backgroung-logon.jpg");
     position: fixed;
     top: 0;
@@ -42,7 +42,7 @@ body {
     background-size: 100%;
 }
 
-#backgroung-image {
+#backgroung-img-cabinet {
     position: fixed;
     top: 0;
     left: 0;
@@ -52,7 +52,7 @@ body {
     background-size: 100%;
 }
 
-.background {
+.background-img-transporter-reg {
     background: url("../img/background-transporter-reg.jpg");
     position: fixed;
     top: 0;
