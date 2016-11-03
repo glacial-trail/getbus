@@ -1,7 +1,6 @@
-<#include "_html_top.ftl">
+<#assign pageTitle><@spring.message "logon.page_title"/></#assign>
 
-<div class="wrap">
-    <#include "header.ftl">
+<@gbc.common_page pageTitle >
     <div class="content">
         <section class="container">
             <div class="login">
@@ -28,7 +27,4 @@
             </div>
         </section>
     </div>
-    <#include "footer.ftl">
-</div>
-
-<#include "_html_bottom.ftl">
+</@gbc.common_page>
