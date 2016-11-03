@@ -10,4 +10,9 @@ public class MainController {
     public String logon() {
         return "logon";
     }
+
+    @GetMapping("/register-partner")
+    public String registerPartner() {
+        return "register-partner";
+    }
 }
