@@ -1,14 +1,16 @@
 package info.getbus.servebus.web.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-//@Controller("/")
+
+@Controller
+@RequestMapping("/tr/")
 public class TransporterMainController {
 
-    @RequestMapping(path = {"/", "/logon/"}, method = RequestMethod.GET)
-    public String logon() {
-        return "logon";
+    @GetMapping("/")
+    public String cab() {
+        return "tr/cab";
     }
 }
