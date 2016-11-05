@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="logo">
-                    <img src="img/logo.jpg" height="60" alt="logo">
+                    <img src="/img/logo.jpg" height="60" alt="logo">
                 </div>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
