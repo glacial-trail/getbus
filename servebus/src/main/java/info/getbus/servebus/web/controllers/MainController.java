@@ -36,4 +36,9 @@ public class MainController {
             return "redirect:/logon";
         }
     }
+
+    @GetMapping("/register-partner")
+    public String registerPartner() {
+        return "register-partner";
+    }
 }
