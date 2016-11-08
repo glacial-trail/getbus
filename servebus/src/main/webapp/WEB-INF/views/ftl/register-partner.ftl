@@ -1,7 +1,7 @@
 <#assign pageTitle><@spring.message "register.partner.page_title"/></#assign>
 
 <@gbc.common_page pageTitle >
-    <div class="background-img-transporter-reg"></div>
+    <div class="background-img background-img-transporter-reg"></div>
     <@gbc.nav_bar/>
     <div class="register-container container">
         <div class="row">

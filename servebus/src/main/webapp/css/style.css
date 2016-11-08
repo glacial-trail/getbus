@@ -31,36 +31,25 @@ body {
     transition: all 0.5s ease;
 }
 
-.background-img-logon {
-    background: url("../img/backgroung-logon.jpg");
+.background-img {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: -100;
     background-size: 100%;
 }
+.background-img-logon {
+    background: url("/img/backgroung-logon.jpg");
+}
 
-#backgroung-img-cabinet {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("../img/background-cabinet.jpg");
-    background-size: 100%;
+.backgroung-img-cabinet {
+    background: url("/img/background-cabinet.jpg");
 }
 
 .background-img-transporter-reg {
-    background: url("../img/background-transporter-reg.jpg");
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-size: 100%;
+    background: url("/img/background-transporter-reg.jpg");
 }
 
 .footer {
@@ -153,17 +142,17 @@ body {
     margin-top: 10px;
 }
 
-.logo{
+.logo {
     margin-left: 20px;
 }
 
-.register-container{
+.register-container {
     margin-top:90px;
 }
 
 .register form {
     padding: 10px 20px 20px 20px;
-    background: #f8f8f8 url(../img/backgroung-reg-form.jpg)center;
+    background: #f8f8f8 url(/img/backgroung-reg-form.jpg)center;
     -moz-box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
     -webkit-box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
     box-shadow: 0 1px 5px 0 rgba(0,0,0,.3);
@@ -262,7 +251,7 @@ body {
 }
 
 
-.login-container{
+.login-container {
     margin: 0 auto;
     width: 300px;
     margin-top: 150px;
@@ -443,28 +432,9 @@ body {
         margin-left: 0px;
     }
 
-    #backgroung-image {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("../img/background-cabinet.jpg");
-        background-size: 60%;
-    }
     .register-container {
         padding-left: 20px; padding-right: 20px;
     }
-
-    .background-img {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("../img/backgroung-logon.jpg");
-    }
-
 }
 
 @media (max-width: 480px) {

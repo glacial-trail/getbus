@@ -1,7 +1,7 @@
 <#assign pageTitle><@spring.message "logon.page_title"/></#assign>
 
 <@gbc.common_page pageTitle >
-    <div class="background-img-logon"></div>
+    <div class="background-img background-img-logon"></div>
     <#include "nav_logon.ftl" />
     <div class="login-container">
         <div class="row">

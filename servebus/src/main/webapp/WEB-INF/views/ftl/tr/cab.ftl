@@ -1,7 +1,7 @@
 <#assign pageTitle><@spring.message "transporter.cabinet.page_title"/></#assign>
 
 <@gbc.common_page pageTitle >
-    <div id="backgroung-img-cabinet"></div>
+    <div class="background-img backgroung-img-cabinet"></div>
     <#include "/nav_logged.ftl" />
     <div class="sidebar">
         <ul class="sidebar-nav">
