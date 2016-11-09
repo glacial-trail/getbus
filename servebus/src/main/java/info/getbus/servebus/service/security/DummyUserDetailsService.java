@@ -1,7 +1,6 @@
 package info.getbus.servebus.service.security;
 
 import info.getbus.servebus.model.security.User;
-import info.getbus.servebus.model.security.UserRole;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,15 @@ public class DummyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String logonid) throws UsernameNotFoundException {
         User user = userService.getUser(logonid);
         Set<GrantedAuthority> roles = new HashSet<>();
-        roles.add(new SimpleGrantedAuthority(UserRole.ADMIN.name()));
-        roles.add(new SimpleGrantedAuthority(UserRole.USER_BUS.name()));
-
-        UserDetails userDetails =
-                new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
-
-        return userDetails;
+        if (logonid.contains("found")) {
+            throw new UsernameNotFoundException("user not found");
+        } else if (logonid.contains("user")) {
+            roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            roles.add(new SimpleGrantedAuthority("ROLE_USER_PASSENGER"));
+        } else {
+            roles.add(new SimpleGrantedAuthority("ROLE_USER_BUS"));
+        }
+        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
     }
 
 }

@@ -16,7 +16,9 @@
         <intercept-url pattern="/js/**" access="permitAll()"/>
         <intercept-url pattern="/img/**" access="permitAll()"/>
         <intercept-url pattern="/logon" access="isAnonymous()"/>
+        <intercept-url pattern="/register-partner" access="isAnonymous()"/>
         <intercept-url pattern="/logout" access="isAuthenticated()"/>
+        <intercept-url pattern="/tr/**" access="hasRole('ROLE_USER_BUS')"/>
         <intercept-url pattern="/**" access="isAuthenticated()" />
 
 
