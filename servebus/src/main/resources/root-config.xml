@@ -8,5 +8,6 @@
     <context:component-scan base-package="info.getbus.servebus"/>
 
     <import resource="security-config.xml"/>
+    <import resource="persistence-config.xml" />
 
 </beans>

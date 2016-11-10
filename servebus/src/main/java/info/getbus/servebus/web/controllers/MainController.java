@@ -1,5 +1,7 @@
 package info.getbus.servebus.web.controllers;
 
+import info.getbus.servebus.repository.BRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,8 @@ import java.util.Collection;
 
 @Controller
 public class MainController {
+    @Autowired
+    private BRepo bRepo;
 
     @GetMapping("/logon")
     public String logon() {
@@ -34,6 +38,7 @@ public class MainController {
     public String start(@AuthenticationPrincipal UserDetails user, ModelMap model,  HttpServletRequest request) {
         model.addAttribute("name", user.getUsername());
         model.addAttribute("roles", user.getAuthorities());
+        model.addAttribute("bl", bRepo.getAll());
         return "index";
     }
 

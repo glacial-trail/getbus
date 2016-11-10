@@ -8,36 +8,36 @@
     <meta name="author" content="">
 
     <title>GetBus</title>
-
-
-
-
 </head>
-
 <body>
 
 <div>
-
-
-        <h1>GetBus.info</h1>
-        <p class="lead">GetBus - билетики онлайн.</p>
-        <p>Your name: ${name}</p>
-
-        <p>
-            roles:
+    <h1>GetBus.info</h1>
+    <p class="lead">GetBus - билетики онлайн.</p>
+    <p>Your name: ${name}</p>
+    <p>
+        roles:
             <#list roles as role>
             ${role}<#sep>,
             </#list>
-        </p>
+    </p>
 
-        <br/>
+    <br/>
 
-        <p><a href="/logout">>logout</a></p>
+    <table>
+        <tr><th> a </th> <th> b </th></tr>
+        <#list bl as b>
+            <tr>
+                <td>${b.a}</td>
+                <td>${b.b}</td>
+            </tr>
+        </#list>
+    </table>
 
+    <p><a href="/logout">>logout</a></p>
     <div>
         <p>&copy; GetBus 2016</p>
     </div>
-
 </div>
 </body>
 </html>
