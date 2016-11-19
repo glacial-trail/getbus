@@ -8,4 +8,13 @@
 	<select id="selectAll" resultType="info.getbus.servebus.model.tmp.B">
         SELECT * FROM b
     </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <!--<insert id="insert" useGeneratedKeys="true" keyColumn="id">-->
+      <!--<selectKey order="AFTER" keyProperty="id" resultType="long">-->
+        <!--SELECT currval('b_id_seq')-->
+      <!--</selectKey>-->
+        INSERT INTO b (a,b) VALUES (#{a},#{b})
+    </insert>
+
 </mapper>

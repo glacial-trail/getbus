@@ -8,24 +8,19 @@
 
     <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
 
-
-
-
     <bean id="dataSource" class="org.postgresql.ds.PGPoolingDataSource">
-        <property name="serverName" value="${jdbc.host}" />
-        <property name="databaseName" value="${jdbc.dbname}" />
-        <property name="user" value="${jdbc.user}" />
-        <property name="password" value="${jdbc.password}" />
-        <property name="maxConnections" value="${jdbc.maxcon}" />
+        <property name="serverName" value="${jdbc.host}"/>
+        <property name="databaseName" value="${jdbc.dbname}"/>
+        <property name="user" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxConnections" value="${jdbc.maxcon}"/>
     </bean>
 
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"/>
+    </bean>
 
-
-     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-  <property name="dataSource" ref="dataSource" />
-
-                 <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml" />
-</bean>
-    <mybatis:scan base-package="info.getbus.servebus.dao" />
+    <mybatis:scan base-package="info.getbus.servebus.dao"/>
 
 </beans>
