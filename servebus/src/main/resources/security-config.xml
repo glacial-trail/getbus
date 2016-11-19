@@ -27,7 +27,7 @@
         </session-management>
 
         <!--TODO switch to persistent token -->
-        <remember-me remember-me-parameter="remember_me" key="getBusKey" />
+        <remember-me remember-me-parameter="remember_me" key="getBusKey" user-service-ref="dummyUserDetailsService"/>
 
         <!--TODO enable-->
         <csrf disabled="true" />

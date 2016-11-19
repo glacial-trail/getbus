@@ -9,20 +9,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 @Service
 public class DummyUserDetailsService implements UserDetailsService {
-
     @Autowired
-    private UserService userService;
+    private BCryptPasswordEncoder encoder;
 
 
     public UserDetails loadUserByUsername(String logonid) throws UsernameNotFoundException {
-        User user = userService.getUser(logonid);
         Set<GrantedAuthority> roles = new HashSet<>();
         if (logonid.contains("found")) {
             throw new UsernameNotFoundException("user not found");
@@ -32,7 +32,7 @@ public class DummyUserDetailsService implements UserDetailsService {
         } else {
             roles.add(new SimpleGrantedAuthority("ROLE_USER_BUS"));
         }
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
+        return new User(logonid, encoder.encode("123"), roles);
     }
 
 }
