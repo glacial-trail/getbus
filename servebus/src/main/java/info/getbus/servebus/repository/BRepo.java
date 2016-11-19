@@ -4,6 +4,6 @@ import info.getbus.servebus.model.tmp.B;
 
 import java.util.Collection;
 
-public interface BRepo {
+public interface BRepo extends Repository<Long, B> {
     Collection<B> getAll();
 }

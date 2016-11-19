@@ -8,11 +8,16 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public class DumBRepo implements BRepo {
+public class DumBRepo extends AbstractRepository<Long, B> implements BRepo {
     @Autowired
-    BMapper bMapper;
+    private BMapper mapper;
 
     public Collection<B> getAll() {
-        return bMapper.selectAll();
+        return mapper.selectAll();
+    }
+
+    @Override
+    protected BMapper mapper() {
+        return null;
     }
 }
