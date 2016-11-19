@@ -1,35 +1,43 @@
 package info.getbus.servebus.model.security;
 
-/**
- * Created by art on 23.09.16.
- */
-public class User {
+import info.getbus.servebus.model.Entity;
+import org.springframework.security.core.GrantedAuthority;
 
-    private String login;
-    private String password;
+import java.util.Collection;
 
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
+public class User extends org.springframework.security.core.userdetails.User implements Entity<String> {
+    private String firstname;
+    private String lastname;
+
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
     }
 
-    public User() {
-
+    public User(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 
-    public String getLogin() {
-        return login;
+    public User(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, String firstname, String lastname) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public String getPassword() {
-        return password;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public String getId() {
+        return getUsername();
+    }
+
+    @Override
+    public void setId(String id) {
+        throw new UnsupportedOperationException();
     }
 }
