@@ -1,8 +1,8 @@
 package info.getbus.servebus.service.security;
 
-import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.model.security.RegisterUserDTO;
 
 public interface RegistrationService {
-    void registerUser(User user);
-    void registerTransporter(User user);
+    void registerUser(RegisterUserDTO user);
+    void registerTransporter(RegisterUserDTO user);
 }

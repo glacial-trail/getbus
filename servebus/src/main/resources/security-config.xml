@@ -28,14 +28,14 @@
         </session-management>
 
         <!--TODO switch to persistent token -->
-        <remember-me remember-me-parameter="remember_me" key="getBusKey" user-service-ref="dummyUserDetailsService"/>
+        <remember-me remember-me-parameter="remember_me" key="getBusKey" user-service-ref="userRepositoryImpl"/>
 
         <!--TODO enable-->
         <csrf disabled="true" />
     </http>
 
     <authentication-manager>
-        <authentication-provider user-service-ref="dummyUserDetailsService">
+        <authentication-provider user-service-ref="userRepositoryImpl">
             <password-encoder ref="bcryptEncoder" />
         </authentication-provider>
     </authentication-manager>

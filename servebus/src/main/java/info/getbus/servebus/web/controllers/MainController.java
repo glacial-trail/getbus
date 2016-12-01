@@ -1,6 +1,8 @@
 package info.getbus.servebus.web.controllers;
 
 import info.getbus.servebus.repository.BRepo;
+import info.getbus.servebus.service.security.RegistrationService;
+import info.getbus.servebus.model.security.RegisterUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -17,6 +20,8 @@ import java.util.Collection;
 public class MainController {
     @Autowired
     private BRepo bRepo;
+    @Autowired
+    private RegistrationService registrationService;
 
     @GetMapping("/logon")
     public String logon() {
@@ -56,5 +61,12 @@ public class MainController {
     @GetMapping("/register-partner")
     public String registerPartner() {
         return "register-partner";
+    }
+
+    @PostMapping("/register-partner")
+    public String registerTransporter(RegisterUserDTO user) {
+        //TODO validation
+        registrationService.registerTransporter(user);
+        return "redirect:/";
     }
 }
