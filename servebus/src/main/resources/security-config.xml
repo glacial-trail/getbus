@@ -8,13 +8,14 @@
 
     <beans:bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
+    <http pattern="/css/**" security="none"/>
+    <http pattern="/js/**" security="none"/>
+    <http pattern="/img/**" security="none"/>
+
     <http>
         <form-login login-page="/logon" login-processing-url="/security_check" username-parameter="logonid" authentication-failure-url="/logon?fail" />
         <logout logout-url="/logout" logout-success-url="/" invalidate-session="true" delete-cookies="JSESSIONID"/>
 
-        <intercept-url pattern="/css/**" access="permitAll()"/>
-        <intercept-url pattern="/js/**" access="permitAll()"/>
-        <intercept-url pattern="/img/**" access="permitAll()"/>
         <intercept-url pattern="/logon" access="isAnonymous()"/>
         <intercept-url pattern="/register-partner" access="isAnonymous()"/>
         <intercept-url pattern="/logout" access="isAuthenticated()"/>
