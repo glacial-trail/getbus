@@ -15,6 +15,6 @@ public abstract class AbstractEntity<T> implements Entity<T> {
 
     @Override
     public void setId(T id) {
-
+        this.id = id;
     }
 }
