@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 @org.springframework.stereotype.Repository
 public class UserRepositoryImpl extends AbstractRepository<String, User> implements UserRepository {
     @Autowired
@@ -30,5 +32,10 @@ public class UserRepositoryImpl extends AbstractRepository<String, User> impleme
         mapper().insert(user);
         mapper().insertRoles(user.getUsername(), user.getAuthorities());
         return user;
+    }
+
+    @Override
+    public Collection<User> getByUsernameOrPhone(User user) {
+        return mapper().selectByUsernameOrPhone(user.getEmail(), user.getPhone());
     }
 }

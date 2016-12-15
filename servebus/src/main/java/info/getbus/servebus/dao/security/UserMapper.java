@@ -10,4 +10,5 @@ import java.util.Collection;
 
 public interface UserMapper extends Mapper<String,User> {
     void insertRoles(@Param("username")String username, @Param("roles")Collection<? extends GrantedAuthority> roles);
+    Collection<User> selectByUsernameOrPhone(@Param("username")String username, @Param("phone")String phone);
 }

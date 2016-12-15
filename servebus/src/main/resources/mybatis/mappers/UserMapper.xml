@@ -22,12 +22,16 @@
     </resultMap>
 
 
-    <select id="selectById" resultMap="userMap">
+    <sql id="simpleSelect">
         SELECT
         u.*,
         a.authority
         FROM users u
         LEFT JOIN authorities a ON u.username = a.username
+    </sql>
+
+    <select id="selectById" resultMap="userMap">
+        <include refid="simpleSelect"/>
         WHERE u.username = #{id}
     </select>
 
@@ -42,5 +46,10 @@
             ( #{username} , #{role.authority} )
         </foreach>
     </insert>
+
+    <select id="selectByUsernameOrPhone" resultMap="userMap">
+        <include refid="simpleSelect"/>
+        WHERE u.username = #{username} OR u.phone = #{phone}
+    </select>
 
 </mapper>

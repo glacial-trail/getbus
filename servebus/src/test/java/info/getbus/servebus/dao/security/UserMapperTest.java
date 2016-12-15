@@ -31,14 +31,14 @@ public class UserMapperTest {
 
     private GrantedAuthority authority1 = new SimpleGrantedAuthority("BUSSY");
     private GrantedAuthority authority2 = new SimpleGrantedAuthority("USEROK");
-    private String tel = "+123456789012";
+    private String phone = "+123456784444";
 
     @Before
     public void setUp() throws Exception {
         Set<GrantedAuthority> roles = new HashSet<>();
         roles.add(authority1);
         roles.add(authority2);
-        user = new User(username,"***",true, "khun", "czen", tel);
+        user = new User(username,"***",true, "khun", "czen", phone);
         user.setAuthorities(roles);
 
         mapper.insert(user);
@@ -59,7 +59,7 @@ public class UserMapperTest {
         assertTrue(user.isEnabled());
         assertEquals("khun", user.getFirstname());
         assertEquals("czen", user.getLastname());
-        assertEquals(tel, user.getPhone());
+        assertEquals(phone, user.getPhone());
         assertCollectionNotEmpty(user.getAuthorities());
         Collection<? extends GrantedAuthority> a = user.getAuthorities();
         assertCollectionSize(2, a);
@@ -81,6 +81,14 @@ public class UserMapperTest {
         User selected = mapper.selectById("###");
         assertNotNull(selected);
         assertCollectionNotEmpty(selected.getAuthorities());
+    }
+
+    //TODO create more users for test
+    @Test
+    public void testSelectByUsernameOrPhone() throws Exception {
+        assertCollectionSize(1, mapper.selectByUsernameOrPhone(username, phone));
+        assertCollectionSize(1, mapper.selectByUsernameOrPhone(username, "dhgfw"));
+        assertCollectionSize(1, mapper.selectByUsernameOrPhone("cktfw", phone));
     }
 
     private void assertCollectionSize(int size, Collection<?> c) {
