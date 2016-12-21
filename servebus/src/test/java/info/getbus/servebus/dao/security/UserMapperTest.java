@@ -91,6 +91,14 @@ public class UserMapperTest {
         assertCollectionSize(1, mapper.selectByUsernameOrPhone("cktfw", phone));
     }
 
+    @Test
+    public void testSelectByUsernameOrPhoneEmptyResult() throws Exception {
+        Collection<User> users = mapper.selectByUsernameOrPhone("lziusdfhzgljh", "lkjfbjxkh");
+        assertNotNull(users);
+        assertTrue(users.isEmpty());
+
+    }
+
     private void assertCollectionSize(int size, Collection<?> c) {
         assertEquals(size, c.size());
     }
