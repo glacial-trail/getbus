@@ -7,20 +7,20 @@
         <div class="row">
             <div class="register">
                 <form method="post">
-                    <h2>Регистрация</h2>
-                    <label for="firstname">Имя</label>
-                    <input type="text" id="firstname" name="firstname" placeholder="Введите Ваше имя...">
-                    <label for="lastname">Фамилия</label>
-                    <input type="text" id="lastname" name="lastname" placeholder="Введите Вашу фамилию...">
+                    <h2><@spring.message "register.partner.registration_title"/></h2>
+                    <label for="firstname"><@spring.message "register.partner.label.name"/></label>
+                    <input type="text" id="firstname" name="firstname" placeholder="<@spring.message "register.partner.enter_name"/>">
+                    <label for="lastname"><@spring.message "register.partner.label.Lastname"/></label>
+                    <input type="text" id="lastname" name="lastname" placeholder="<@spring.message "register.partner.enter_lastname"/>">
                     <label for="e-mail">E-mail</label>
-                    <input type="text" id="e-mail" name="email" placeholder="Введите Ваш e-mail...">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone" placeholder="Введите phone...">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" placeholder="Введите пароль...">
-                    <label for="re-password">Пароль</label>
-                    <input type="password" id="re-password" name="repassword" placeholder="Подтвердите пароль...">
-                    <button type="submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                    <input type="text" id="e-mail" name="email" placeholder="<@spring.message "register.partner.enter_email"/>">
+                    <label for="phone"><@spring.message "register.partner.label.Phone"/></label>
+                    <input type="tel" id="phone" name="phone" placeholder="<@spring.message "register.partner.enter_phone"/>">
+                    <label for="password"><@spring.message "register.partner.label.Password"/></label>
+                    <input type="password" id="password" name="password" placeholder="<@spring.message "register.partner.Password"/>">
+                    <label for="re-password"><@spring.message "register.partner.label.confirm_password"/></label>
+                    <input type="password" id="re-password" name="repassword" placeholder="<@spring.message "register.partner.confirm_password"/>">
+                    <button type="submit"><@spring.message "register.partner.submit_registration"/></button>
                 </form>
             </div>
         </div>

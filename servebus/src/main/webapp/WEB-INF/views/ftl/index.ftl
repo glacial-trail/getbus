@@ -13,7 +13,7 @@
 
 <div>
     <h1>GetBus.info</h1>
-    <p class="lead">GetBus - билетики онлайн.</p>
+    <p class="lead"><@spring.message "index.lead"/></p>
     <p>Your name: ${name}</p>
     <p>
         roles:
