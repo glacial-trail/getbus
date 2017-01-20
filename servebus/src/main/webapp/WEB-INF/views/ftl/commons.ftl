@@ -23,7 +23,7 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <div class="right-menu">
                     <ul>
-                        <li><a href="?lang=uk_UA">uk</a> | <a href="?lang=ru_RU">ru</a>| <a href="?lang=en_US">en</a></li>
+                        <li><a href="?lang=uk_UA">ua</a> | <a href="?lang=ru_RU">ru</a>| <a href="?lang=en_US">en</a></li>
                         <#nested/>
                     </ul>
                 </div>
