@@ -9,10 +9,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Collection;
 
@@ -59,13 +62,16 @@ public class MainController {
 
 
     @GetMapping("/register-partner")
-    public String registerPartner() {
+    public String registerPartner(@ModelAttribute("user") RegisterUserDTO user) {
         return "register-partner";
     }
 
     @PostMapping("/register-partner")
-    public String registerTransporter(RegisterUserDTO user) {
-        //TODO validation
+    public String registerTransporter(@ModelAttribute("user") @Valid RegisterUserDTO user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return "register-partner";
+        }
+        //TODO put uniqueness validation result to BindingResult
         registrationService.registerTransporter(user);
         return "redirect:/";
     }
