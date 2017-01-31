@@ -11,6 +11,7 @@
     <http pattern="/css/**" security="none"/>
     <http pattern="/js/**" security="none"/>
     <http pattern="/img/**" security="none"/>
+    <http pattern="/fonts/**" security="none"/>
 
     <http>
         <form-login login-page="/logon" login-processing-url="/security_check" username-parameter="logonid" authentication-failure-url="/logon?fail" />
