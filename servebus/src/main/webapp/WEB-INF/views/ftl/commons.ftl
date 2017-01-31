@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="logo">
-                    <a href="/  ">
+                    <a href="/">
                         <img src="/img/logo.jpg" height="60" alt="logo">
                     </a>
                 </div>
