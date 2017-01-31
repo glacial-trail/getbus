@@ -20,6 +20,7 @@
         <junit.version>4.12</junit.version>
         <jsr305.version>3.0.1</jsr305.version>
         <hibernate-validator.version>5.3.4.Final</hibernate-validator.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
     </properties>
 
 
@@ -139,6 +140,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency><!--TODO guava-->
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
         </dependency>
     </dependencies>
 

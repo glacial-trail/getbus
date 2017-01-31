@@ -32,8 +32,14 @@
                     </#if>
                     <label for="password"><@spring.message "register.partner.label.Password"/></label>
                     <input type="password" id="password" name="password" placeholder="<@spring.message "register.partner.Password"/>">
+                    <#if spring.status.errors.hasFieldErrors('password')>
+                        <span>Please provide valid input</span>
+                    </#if>
                     <label for="re-password"><@spring.message "register.partner.label.confirm_password"/></label>
                     <input type="password" id="re-password" name="repassword" placeholder="<@spring.message "register.partner.confirm_password"/>">
+                    <#if spring.status.errors.hasFieldErrors('repassword')>
+                        <span>Please provide valid input</span>
+                    </#if>
                     <button type="submit"><@spring.message "register.partner.submit_registration"/></button>
                 </form>
             </div>
