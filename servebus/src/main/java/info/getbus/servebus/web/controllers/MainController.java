@@ -9,8 +9,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import info.getbus.servebus.model.security.RegisterUserDTO.ValidateAnyway;
+import info.getbus.servebus.model.security.RegisterUserDTO.Sequence;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -59,13 +66,19 @@ public class MainController {
 
 
     @GetMapping("/register-partner")
-    public String registerPartner() {
+    public String registerPartner(@ModelAttribute("user") RegisterUserDTO user) {
         return "register-partner";
     }
 
     @PostMapping("/register-partner")
-    public String registerTransporter(RegisterUserDTO user) {
-        //TODO validation
+    public String registerTransporter(
+            @ModelAttribute("user")
+            @Validated({ValidateAnyway.class, Sequence.class})
+                    RegisterUserDTO user,
+            BindingResult errors) {
+        if (errors.hasErrors()) {
+            return "register-partner";
+        }
         registrationService.registerTransporter(user);
         return "redirect:/";
     }

@@ -1,11 +1,32 @@
 package info.getbus.servebus.model.security;
 
+import info.getbus.servebus.validation.constraints.UniqueUser;
+import info.getbus.validation.constraints.FieldsEquals;
+import org.hibernate.validator.constraints.NotEmpty;
+import info.getbus.servebus.model.security.RegisterUserDTO.SecondStep;
+import info.getbus.servebus.model.security.RegisterUserDTO.FourthStep;
+
+
+import javax.validation.GroupSequence;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+@UniqueUser(groups = SecondStep.class)
+@FieldsEquals(value = {"repassword", "password"},
+        groups = FourthStep.class)
 public class RegisterUserDTO {
+@NotEmpty(groups = ValidateAnyway.class)
 private String firstname;
+@NotEmpty(groups = ValidateAnyway.class)
 private String lastname;
+@Pattern(regexp = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])",
+        groups = FirstStep.class)
 private String email;
+@Pattern(regexp = "^\\+(?:[0-9] ?){6,14}[0-9]$",
+        groups = FirstStep.class)
 private String phone;
-private String password;
+@Size(min = 8, groups = ThirdStep.class)
+private String   password;
 private String repassword;
 
     public String getFirstname() {
@@ -55,4 +76,12 @@ private String repassword;
     public void setRepassword(String repassword) {
         this.repassword = repassword;
     }
+
+    public interface ValidateAnyway {}
+    public interface FirstStep {}
+    public interface SecondStep {}
+    public interface ThirdStep {}
+    public interface FourthStep {}
+    @GroupSequence({FirstStep.class, SecondStep.class, ThirdStep.class, FourthStep.class})
+    public interface Sequence {}
 }
