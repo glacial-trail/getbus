@@ -4,23 +4,9 @@
     <div class="background-img backgroung-img-cabinet"></div>
     <#include "/nav_logged.ftl" />
     <div class="sidebar">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="#">Menu</a>
-            </li>
-            <li>
-                <a href="#">Routes</a>
-            </li>
-            <li>
-                <a href="#">Voyages</a>
-            </li>
-            <li>
-                <a href="#">About</a>
-            </li>
-            <li>
-                <a href="/logout">Logout</a>
-            </li>
-        </ul>
+        <#include "left_menu.ftl" />
     </div>
-    <div class="content"></div>
+    <div class="content">
+        <#include cabPageName />
+    </div>
 </@gbc.common_page>
