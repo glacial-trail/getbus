@@ -19,7 +19,7 @@
                 </button>
                 <div class="logo">
                     <a href="/">
-                        <img src="/img/logo.jpg" height="60" alt="logo">
+                        <img src="/img/getBusLogo2.svg" height="50" alt="logo">
                     </a>
                 </div>
             </div>
