@@ -37,8 +37,8 @@
             <input name="routePoints[-1].tripTime"/>
             <input name="routePoints[-1].distance"/>
         </fieldset>
-        <a href="#" onclick="addRoutePoint(this)">add</a>
-        <a href="#" onclick="removeRoutePoint(this)">remove</a>
+        <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
+        <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
     </div>
 </div>
 
@@ -59,8 +59,8 @@
             <input name="routePoints[0].tripTime"/>
             <input name="routePoints[0].distance"/>
         </fieldset>
-        <a href="#" onclick="addRoutePoint(this)">add</a>
-        <a href="#" onclick="removeRoutePoint(this)">remove</a>
+        <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
+        <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
     </div>
 
     <div>
@@ -73,8 +73,8 @@
             <input name="routePoints[1].tripTime"/>
             <input name="routePoints[1].distance"/>
         </fieldset>
-        <a href="#" onclick="addRoutePoint(this)">add</a>
-        <a href="#" onclick="removeRoutePoint(this)">remove</a>
+        <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
+        <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
     </div>
 
     <input type="submit"/>

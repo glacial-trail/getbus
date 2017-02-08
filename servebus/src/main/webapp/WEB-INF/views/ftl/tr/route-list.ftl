@@ -1,3 +1,3 @@
-<h2>route list</h2>
+<h2><@spring.message "cabinet.partner.route.routeList"/></h2>
 
-<a href="create-route">add route</a>
+<a href="create-route"><@spring.message "cabinet.partner.route.addRoute"/></a>
