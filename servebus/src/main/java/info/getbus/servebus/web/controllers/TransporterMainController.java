@@ -28,6 +28,6 @@ public class TransporterMainController {
 
     @GetMapping("/about")
     public ModelAndView about() {
-        return new TransporterCabView("voyage-list");
+        return new TransporterCabView("about");
     }
 }
