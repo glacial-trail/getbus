@@ -8,10 +8,10 @@
             <div class="login">
                 <h1><@spring.message "logon.login_to_acc"/></h1>
                 <#if RequestParameters.fail??>
-                    <h1 style="color:#f44242"><@spring.message "logon.wrongPassOrLogin"/></h1>
+                    <span class="error-message"><@spring.message "logon.wrongPassOrLogin"/></span>
                 </#if>
                 <#if RequestParameters.invalid_session??>
-                    <h1 style="color:#f44242"><@spring.message "logon.invalidSession"/></h1>
+                    <span class="error-message"><@spring.message "logon.invalidSession"/></span>
                 </#if>
                 <form action="/security_check" method="POST">
                     <#--<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>-->
