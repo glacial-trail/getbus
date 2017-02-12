@@ -430,6 +430,15 @@ body {
 }
 
 /*==Error message==*/
+
+.error{
+    display: inline-block;
+    width: 95%;
+    text-align: left;
+    padding-top: 5px;
+    color: #f44242;
+}
+
 .error-message{
     color: #f44242;
     display: inline-block;
