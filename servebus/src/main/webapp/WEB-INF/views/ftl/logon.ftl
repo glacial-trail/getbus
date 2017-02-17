@@ -7,6 +7,12 @@
         <div class="row">
             <div class="login">
                 <h1><@spring.message "logon.login_to_acc"/></h1>
+                <#if RequestParameters.fail??>
+                    <span class="error-message"><@spring.message "logon.wrongPassOrLogin"/></span>
+                </#if>
+                <#if RequestParameters.invalid_session??>
+                    <span class="error-message"><@spring.message "logon.invalidSession"/></span>
+                </#if>
                 <form action="/security_check" method="POST">
                     <#--<input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>-->
                     <p><input class="input-log" type="text" name="logonid" value="" placeholder="<@spring.message "login"/>"autofocus></p>

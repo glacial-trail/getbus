@@ -22,7 +22,11 @@ public class UserRepositoryImpl extends AbstractRepository<String, User> impleme
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return get(username);
+        User user = get(username);
+        if (null == user) {
+            throw new UsernameNotFoundException("No such user");
+        }
+        return user;
     }
 
     @Override

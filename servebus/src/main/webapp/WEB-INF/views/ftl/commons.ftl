@@ -11,14 +11,15 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                         aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <#--<span class="sr-only">Toggle navigation</span>-->
+                    <#--<span class="icon-bar"></span>-->
+                    <#--<span class="icon-bar"></span>-->
+                    <#--<span class="icon-bar"></span>-->
+                    <span class="name-button">Меню</span>
                 </button>
                 <div class="logo">
                     <a href="/">
-                        <img src="/img/logo.jpg" height="60" alt="logo">
+                        <img src="/img/getBusLogo2.svg" height="50" alt="logo">
                     </a>
                 </div>
             </div>
