@@ -1,13 +1,14 @@
 package info.getbus.servebus.model.web.dto.transporter.route;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class RouteDTO {
     private Long id;
     private String name;
-    private String direction;
+    private Direction direction = Direction.F;
 
-    private List<RoutePointDTO> routePoints;
+    private List<RoutePointDTO> routePoints = new LinkedList<>();
 
     public Long getId() {
         return id;
@@ -25,11 +26,11 @@ public class RouteDTO {
         this.name = name;
     }
 
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
