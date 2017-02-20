@@ -35,7 +35,8 @@
 <form name="route" action="create-route" method="post">
     <input name="id" type="hidden" value="${route.id!''}"/>
     <input name="direction" value="${route.direction}" type="hidden"/>
-    <input name="name" value="${route.name!''}"/>
+    <label for="name">Please, enter route name</label>
+    <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
     <br/>
     <br/>
     <#list route.routePoints as routePoint>
@@ -62,12 +63,12 @@
     <div>
         <fieldset class="route-point" data-rp-idx="${idx}">
             <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
-            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')}/>
-            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')}/>
+            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Start station name"/>
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
             <input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>
             <input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>
-            <input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}"/>
-            <input name="routePoints[${idx}].distance" value="${rp.distance!''}"/>
+            <input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/>
+            <input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/>
         </fieldset>
         <#if add>
             <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
