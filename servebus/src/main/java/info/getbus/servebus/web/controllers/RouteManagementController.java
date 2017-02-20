@@ -1,27 +1,53 @@
 package info.getbus.servebus.web.controllers;
 
+import info.getbus.servebus.model.web.dto.transporter.route.Direction;
 import info.getbus.servebus.model.web.dto.transporter.route.RouteDTO;
-import info.getbus.servebus.web.views.TransporterCabView;
+import info.getbus.servebus.web.mav.RouteView;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-
+// TODO post-redirect-get
 @Controller
-@RequestMapping("/tr/")
+@RequestMapping("/tr/routes/")
 public class RouteManagementController {
 
-    @GetMapping("/create-route")
-    public ModelAndView getCreate() {
-        return new TransporterCabView("edit-route");
+    @GetMapping("/list")
+    public ModelAndView listRoutes() {
+        return new RouteView().list();
     }
 
-    @PostMapping("/create-route")
-    public String createRoute(@ModelAttribute("route") RouteDTO route) {
-        return "redirect:/tr/routes";
+    @GetMapping("/create")
+    public ModelAndView getCreate() {
+        return new RouteView(new RouteDTO()).edit();
+    }
+
+    @PostMapping("/cancel")
+    public ModelAndView cancel(@RequestParam("id") Long id) {
+//      if (null != id && ...
+//        TODO remove route by route.id if route partially saved.
+        return new RouteView().redirect().list();
+    }
+
+    @PostMapping("/save")
+    public ModelAndView save(@ModelAttribute("route") RouteDTO route) {
+        if (Direction.F == route.getDirection()) {
+//          TODO save route
+//          TODO reverse route
+            route.setDirection(Direction.R);
+            route.setId(99L);
+            return new RouteView().edit();
+        } else {
+//          TODO save route
+            return new RouteView().redirect().list();
+        }
+    }
+
+    @PostMapping("/back")
+    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") RouteDTO route) {
+//        TODO for future: save partially filled route as tmp (dto not validated)
+//        TODO load forward part by id and return
+        route.setDirection(Direction.F);
+        return new RouteView().edit();
     }
 }

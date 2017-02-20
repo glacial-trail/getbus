@@ -2,15 +2,34 @@ package info.getbus.servebus.web.views;
 
 import org.springframework.web.servlet.ModelAndView;
 
-public class TransporterCabView extends ModelAndView {
+public /*abstract*/ class TransporterCabView {
     public static final String DEFAULT_VIEW_SUFFIX = ".ftl";
     public static final String TRANSPORTER_CAB_PAGE_NAME = "cabPageName";
+    public static final String TRANSPORTER_CAB_VIEW = "tr/cab";
 
     private String viewSuffix = DEFAULT_VIEW_SUFFIX;
+    private String cabPage;
+
+    public TransporterCabView() {
+    }
 
     public TransporterCabView(String cabPage) {
-        super("tr/cab");
-        addObject(TRANSPORTER_CAB_PAGE_NAME, cabPage + viewSuffix);
+        this.cabPage = cabPage;
+    }
+
+    protected TransporterCabView page(String cabPage) {
+        this.cabPage = cabPage;
+        return this;
+    }
+
+    public ModelAndView build() {
+        ModelAndView mav = new ModelAndView(TRANSPORTER_CAB_VIEW);
+        mav.addObject(TRANSPORTER_CAB_PAGE_NAME, getCabPage() + viewSuffix);
+        return mav;
+    }
+
+    protected String getCabPage() {
+        return cabPage;
     }
 
     public String getViewSuffix() {

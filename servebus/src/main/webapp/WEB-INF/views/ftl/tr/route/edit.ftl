@@ -26,8 +26,10 @@
     }
 </script>
 
+<#assign isReverseRoute = 'R' == route.direction />
+
 <div style="display: none;" id="route-point-template">
-    <@routepoint idx=-1 />
+    <@routepoint idx=-1 restrictedit=isReverseRoute />
 </div>
 
 <form name="route" action="create-route" method="post">
@@ -38,24 +40,30 @@
     <br/>
     <#list route.routePoints as routePoint>
         <@routepoint idx=routePoint?index rp=routePoint
-            add='F' == route.direction && !routePoint?is_first
-            remove='F' == route.direction && !(routePoint?is_first||routePoint?is_last)
+            restrictedit=isReverseRoute
+            add=!isReverseRoute && !routePoint?is_last
+            remove=!isReverseRoute && !(routePoint?is_first||routePoint?is_last)
         />
     <#else>
-        <@routepoint idx="0" remove=false />
-        <@routepoint idx="1" add=false remove=false />
+        <@routepoint idx="0" restrictedit=isReverseRoute remove=false />
+        <@routepoint idx="1" restrictedit=isReverseRoute add=false remove=false />
     </#list>
 
     <br/>
-    <input type="submit"/>
+    <button type="reset">reset</button>
+    <button formaction="cancel">cancel</button>
+    <#if isReverseRoute>
+        <button type="submit" formaction="back">back</button>
+    </#if>
+    <button type="submit" formaction="save">${isReverseRoute?then('finish','next')}</button>
 </form>
 
-<#macro routepoint idx rp={} add=true remove=true >
+<#macro routepoint idx rp={} restrictedit=true add=true remove=true >
     <div>
         <fieldset class="route-point" data-rp-idx="${idx}">
             <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
-            <input name="routePoints[${idx}].name" value="${rp.name!''}"/>
-            <input name="routePoints[${idx}].address" value="${rp.address!''}"/>
+            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')}/>
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')}/>
             <input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>
             <input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>
             <input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}"/>

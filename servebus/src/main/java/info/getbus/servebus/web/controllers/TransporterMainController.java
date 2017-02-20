@@ -13,21 +13,21 @@ public class TransporterMainController {
 
     @GetMapping("/")
     public ModelAndView welcome() {
-        return new TransporterCabView("welcome");
+        return new TransporterCabView("welcome").build();
     }
 
-    @GetMapping("/routes")
-    public ModelAndView listRoutes() {
-        return new TransporterCabView("route-list");
-    }
+//    @GetMapping("/routes")
+//    public ModelAndView listRoutes() {
+//        return new RouteView().list();
+//    }
 
     @GetMapping("/voyages")
     public ModelAndView listVoyages() {
-        return new TransporterCabView("voyage-list");
+        return new TransporterCabView("voyage-list").build();
     }
 
     @GetMapping("/about")
     public ModelAndView about() {
-        return new TransporterCabView("about");
+        return new TransporterCabView("about").build();
     }
 }
