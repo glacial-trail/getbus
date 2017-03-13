@@ -37,7 +37,7 @@
     <input name="direction" value="${route.direction}" type="hidden"/>
     <label for="name">Please, enter route name</label>
     <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
-    <input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">
+    <#--<input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">-->
     <br/>
     <br/>
     <table class="table table-bordered">
@@ -49,7 +49,7 @@
             <th>Время в пути</th>
             <th>Дистанция</th>
         </tr>
-    </table>
+
     <#list route.routePoints as routePoint>
         <@routepoint idx=routePoint?index rp=routePoint
             restrictedit=isReverseRoute
@@ -68,22 +68,27 @@
         <button type="submit" formaction="back">back</button>
     </#if>
     <button type="submit" formaction="save">${isReverseRoute?then('finish','next')}</button>
+    </table>
 </form>
 
 <#macro routepoint idx rp={} restrictedit=true add=true remove=true >
+<tr>
     <div>
         <fieldset class="route-point" data-rp-idx="${idx}">
             <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
 
                 <#--<label for="station">Добавить станцию</label>-->
-                <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
-
+            <td><input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
+            </td>
+            <td>
             <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
-            <input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>
-            <input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>
-            <#--<input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">-->
-            <input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/>
-            <input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/>
+            </td>
+            <#--<input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>-->
+            <#--<input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>-->
+            <td><input type="text" class="time" data-format="HH:mm" data-template="HH : mm" name="datetime"></td>
+            <td><input type="text" class="time" data-format="HH:mm" data-template="HH : mm" name="datetime"></td>
+            <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>
+            <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/></td>
         </fieldset>
         <#if add>
             <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
@@ -92,4 +97,5 @@
             <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
         </#if>
     </div>
+</tr>
 </#macro>
