@@ -4,6 +4,8 @@ import info.getbus.servebus.model.web.dto.transporter.route.Direction;
 import info.getbus.servebus.model.web.dto.transporter.route.RouteDTO;
 import info.getbus.servebus.web.mav.RouteView;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,7 +32,13 @@ public class RouteManagementController {
     }
 
     @PostMapping("/save")
-    public ModelAndView save(@ModelAttribute("route") RouteDTO route) {
+    public ModelAndView save(@ModelAttribute("route")
+                             @Validated
+                             RouteDTO route,
+                             BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new RouteView(route).edit();
+        }
         if (Direction.F == route.getDirection()) {
 //          TODO save route
 //          TODO reverse route

@@ -1,3 +1,7 @@
+<#import "../../macro/forms.ftl" as form>
+
+<@spring.bind "route" />
+
 <script type="text/javascript">
     function addRoutePoint(button) {
         var rowWithButton = $(button).parent().parent();
@@ -40,7 +44,8 @@
     <input name="direction" value="${route.direction}" type="hidden"/>
     <label for="name">Please, enter route name</label>
     <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
-    <#--<input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">-->
+    <@form.showFieldErrors 'name' 'error' />
+<#--<input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">-->
     <br/>
     <br/>
     <table class="table table-bordered">
@@ -82,7 +87,10 @@
         <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
 
             <#--<label for="station">Добавить станцию</label>-->
-        <td><input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/></td>
+        <td>
+            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
+            <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
+        </td>
         <td><input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/></td>
         <#--<input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>-->
         <#--<input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>-->
