@@ -9,6 +9,7 @@ public class RoutePointDTO {
     private Long id;
     @NotEmpty(message = "route.create.empty.error")
     private String name;
+    private String countryCode;
     private String address;
 //    @DateTimeFormat(iso = ISO.TIME)
     @DateTimeFormat(pattern = "HH:mm")
@@ -33,6 +34,14 @@ public class RoutePointDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public String getAddress() {

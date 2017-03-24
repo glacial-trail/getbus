@@ -45,12 +45,12 @@
     <label for="name">Please, enter route name</label>
     <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
     <@form.showFieldErrors 'name' 'error' />
-<#--<input type="text" id="time" data-format="HH:mm" data-template="HH : mm" name="datetime">-->
     <br/>
     <br/>
     <table class="table table-bordered">
         <tr>
             <th>Добавить станцию</th>
+            <th>Country</th>
             <th>Адресс</th>
             <th>Время отправления</th>
             <th>Время прибытия</th>
@@ -91,17 +91,16 @@
             <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
         </td>
+        <td><input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/></td>
         <td><input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/></td>
-        <#--<input name="routePoints[${idx}].arrival" value="${rp.arrival!''}"/>-->
-        <#--<input name="routePoints[${idx}].departure" value="${rp.departure!''}"/>-->
-        <td><input type="text" class="time" data-format="HH:mm" data-template="HH : mm" name="datetime"></td>
-        <td><input type="text" class="time" data-format="HH:mm" data-template="HH : mm" name="datetime"></td>
+        <td><input name="routePoints[${idx}].arrival" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td><input name="routePoints[${idx}].departure" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>
         <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/></td>
     </tr>
     <tr>
         <#if add || remove>
-            <td colspan="6">
+            <td colspan="7">
         </#if>
         <#if add>
                 <a id="qwer" href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
