@@ -10,14 +10,14 @@ import java.util.List;
 public class RouteDTO {
     private Long id;
 
-    @NotEmpty(message = "route.create.empty.error")
+    @NotEmpty(message = "common.notempty.error")
     private String name;
 
-    @NotNull(message = "route.create.empty.error")
+    @NotNull(message = "common.notempty.error")
     private Direction direction = Direction.F;
 
     @Valid
-    @NotEmpty(message = "route.create.empty.error")
+    @NotEmpty(message = "common.notempty.error")
     private List<RoutePointDTO> routePoints = new LinkedList<>();
 
     public Long getId() {

@@ -91,8 +91,14 @@
             <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
         </td>
-        <td><input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/></td>
-        <td><input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/></td>
+        <td>
+            <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/>
+            <@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>
+        </td>
+        <td>
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
+            <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
+        </td>
         <td><input name="routePoints[${idx}].arrival" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].departure" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>

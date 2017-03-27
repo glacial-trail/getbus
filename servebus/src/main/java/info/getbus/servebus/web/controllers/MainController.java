@@ -74,11 +74,11 @@ public class MainController {
     public String registerTransporter(
             @ModelAttribute("user")
             @Validated({ValidateAnyway.class, Sequence.class})
-                    RegisterUserDTO user,
-            BindingResult errors) {
-        if (errors.hasErrors()) {
-            return "register-partner";
-        }
+        RegisterUserDTO user,
+        BindingResult errors) {
+            if (errors.hasErrors()) {
+                return "register-partner";
+            }
         registrationService.registerTransporter(user);
         return "redirect:/";
     }
