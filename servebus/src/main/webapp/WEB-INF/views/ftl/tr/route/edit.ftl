@@ -49,13 +49,13 @@
     <br/>
     <table class="table table-bordered">
         <tr>
-            <th>Добавить станцию</th>
-            <th>Country</th>
-            <th>Адресс</th>
-            <th>Время отправления</th>
-            <th>Время прибытия</th>
-            <th>Время в пути</th>
-            <th>Дистанция</th>
+            <th><@spring.message "route.create.addstation"/></th>
+            <th><@spring.message "route.create.Country"/></th>
+            <th><@spring.message "route.create.address"/></th>
+            <th><@spring.message "route.create.depttime"/></th>
+            <th><@spring.message "route.create.arrtime"/></th>
+            <th><@spring.message "route.create.triptime"/></th>
+            <th><@spring.message "route.create.distance"/></th>
         </tr>
 
     <#list route.routePoints as routePoint>
