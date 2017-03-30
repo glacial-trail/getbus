@@ -2,7 +2,7 @@
 
 <@gbc.common_page pageTitle >
     <div class="background-img background-img-logon"></div>
-    <#include "nav_logon.ftl" />
+    <@gbc.nav_logon />
     <div class="login-container">
         <div class="row">
             <div class="login">

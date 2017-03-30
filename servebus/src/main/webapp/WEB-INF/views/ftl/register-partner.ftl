@@ -6,7 +6,7 @@
 
 <@gbc.common_page pageTitle >
     <div class="background-img background-img-transporter-reg"></div>
-    <@gbc.nav_bar/>
+    <@gbc.nav_logon/>
     <div class="register-container container">
         <div class="row">
             <div class="register">
