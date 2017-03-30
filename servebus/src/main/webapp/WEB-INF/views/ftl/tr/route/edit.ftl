@@ -49,13 +49,13 @@
     <br/>
     <table class="table table-bordered">
         <tr>
-            <th>Добавить станцию</th>
-            <th>Country</th>
-            <th>Адресс</th>
-            <th>Время отправления</th>
-            <th>Время прибытия</th>
-            <th>Время в пути</th>
-            <th>Дистанция</th>
+            <th><@spring.message "route.create.addstation"/></th>
+            <th><@spring.message "route.create.Country"/></th>
+            <th><@spring.message "route.create.address"/></th>
+            <th><@spring.message "route.create.depttime"/></th>
+            <th><@spring.message "route.create.arrtime"/></th>
+            <th><@spring.message "route.create.triptime"/></th>
+            <th><@spring.message "route.create.distance"/></th>
         </tr>
 
     <#list route.routePoints as routePoint>
@@ -91,8 +91,14 @@
             <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
         </td>
-        <td><input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/></td>
-        <td><input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/></td>
+        <td>
+            <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/>
+            <@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>
+        </td>
+        <td>
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
+            <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
+        </td>
         <td><input name="routePoints[${idx}].arrival" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].departure" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>

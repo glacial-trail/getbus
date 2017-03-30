@@ -7,9 +7,11 @@ import java.time.LocalTime;
 
 public class RoutePointDTO {
     private Long id;
-    @NotEmpty(message = "route.create.empty.error")
+    @NotEmpty(message = "common.notempty.error")
     private String name;
+    @NotEmpty(message = "common.notempty.error")
     private String countryCode;
+    @NotEmpty(message = "common.notempty.error")
     private String address;
 //    @DateTimeFormat(iso = ISO.TIME)
     @DateTimeFormat(pattern = "HH:mm")

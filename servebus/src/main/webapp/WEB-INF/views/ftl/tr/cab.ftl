@@ -2,10 +2,9 @@
 
 <@gbc.common_page pageTitle >
     <div class="background-img backgroung-img-cabinet"></div>
-    <#include "/nav_logged.ftl" />
-    <div class="sidebar">
+    <@gbc.nav_logged>
         <#include "left_menu.ftl" />
-    </div>
+    </@gbc.nav_logged>
     <div class="content">
         <#include cabPageName />
     </div>
