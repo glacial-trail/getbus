@@ -43,14 +43,14 @@
     <input name="id" type="hidden" value="${route.id!''}"/>
     <input name="direction" value="${route.direction}" type="hidden"/>
     <label for="name">Please, enter route name</label>
-    <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
+    <input name="name" value="${route.name!''}" id="name" class="route_name"/>
     <@form.showFieldErrors 'name' 'error' />
     <br/>
     <br/>
     <table class="table table-bordered">
         <tr>
-            <th><@spring.message "route.create.addstation"/></th>
             <th><@spring.message "route.create.Country"/></th>
+            <th><@spring.message "route.create.addstation"/></th>
             <th><@spring.message "route.create.address"/></th>
             <th><@spring.message "route.create.depttime"/></th>
             <th><@spring.message "route.create.arrtime"/></th>
@@ -88,21 +88,21 @@
 
             <#--<label for="station">Добавить станцию</label>-->
         <td>
-            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
-            <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
-        </td>
-        <td>
             <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/>
             <@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>
         </td>
         <td>
-            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
+            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station"/>
+            <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
+        </td>
+        <td>
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text"/>
             <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
         </td>
         <td><input name="routePoints[${idx}].arrival" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].departure" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
-        <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>
-        <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/></td>
+        <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" /></td>
+        <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" /></td>
     </tr>
     <tr>
         <#if add || remove>
