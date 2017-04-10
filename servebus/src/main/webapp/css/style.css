@@ -1,7 +1,9 @@
 body {
     font-family: "Tenor Sans", sans-serif;
 }
-
+tr input{
+    width: 100%;
+}
 .navbar-default {
     background-color: rgba(240, 240, 240, 0.9);
     /*height: 60px;*/
@@ -11,7 +13,7 @@ body {
     float: right;
     display: inline-flex;
     list-style-type: none;
-    margin: 10px;
+    margin: 10px 0;
     padding: 0;
 }
 .item-menu{
@@ -37,7 +39,7 @@ body {
     transition: all 0.5s ease;
 }
 .inner-wrap{
-    padding: 0 15px;
+    padding: 30px 15px 0;
 }
 .inner-wrap h1,
 .inner-wrap h2,
@@ -442,6 +444,67 @@ body {
 .name-button{
     color: #5C5670;
 }
+/*table*/
+.table-fixed {
+    width: 100%;
+    background-color: #f3f3f3;
+}
+.table-fixed tbody {
+    height: 415px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+    display: block;
+}
+.table-fixed tbody td {
+    float: left;
+}
+.table-fixed thead tr th {
+    float: left;
+    font-size: 12px;
+    background-color: #f39c12;
+    border-color: #e67e22;
+}
+/*table*/
+
+
+/*WELCOME.FTL*/
+.sc-title{
+    font-size: 28px;
+    font-family: sans-serif;
+}
+.sc-block{
+    max-width: 980px;
+    margin: 40px auto 0;
+    font-size: 0;
+    background-color: rgba(214, 214, 214, 0.37);
+}
+.sc-block-title{
+    display: block;
+    line-height: 34px;
+    font-size: 18px;
+    padding-left: 20px;
+    border-bottom: 1px solid black;
+    margin-bottom: 30px;
+}
+.sc-block-des{
+    display: inline-block;
+    font-size: 14px;
+    width: 33.33%;
+    margin: -1px;
+    padding-left: 20px;
+    vertical-align: top;
+}
+.sc-block-des p{
+    margin-bottom: 30px;
+}
+/*END WELCOME.FTL*/
+
 
 /*==Error message==*/
 
