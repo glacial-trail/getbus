@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RouteMapper">
+
+  <select id="selectCompactRoutesByUsername" resultType="CompactRoute">
+    SELECT
+      r.id,
+      r.name,
+      start.name AS start_point,
+      finish.name AS end_point,
+      CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username} THEN TRUE ELSE FALSE END
+        AS editable
+        /*TODO AS in_edit_mode*/
+    FROM route r
+    INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
+    INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
+    INNER JOIN route_point start ON r.id = start.route_id AND start.sequence = 1
+    INNER JOIN route_point finish ON r.id = finish.route_id
+    INNER JOIN (SELECT
+                  max(sequence) AS last,
+                  route_id
+                FROM route_point
+                GROUP BY route_id) AS last_points
+      ON finish.route_id = last_points.route_id AND finish.sequence = last_points.last
+  </select>
+
+</mapper>
