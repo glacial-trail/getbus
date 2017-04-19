@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.util.Assert;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
@@ -12,6 +13,12 @@ public class User extends org.springframework.security.core.userdetails.User imp
     private String firstname;
     private String lastname;
     private String phone;
+
+    /* TODO make more complex
+    * optional connection with transporter
+    * */
+    @Nullable
+    private Long transporterAreaId;
 
     private Set<GrantedAuthority> authorities;
 
@@ -96,5 +103,14 @@ public class User extends org.springframework.security.core.userdetails.User imp
             }
             return g1.getAuthority().compareTo(g2.getAuthority());
         }
+    }
+
+    @Nullable
+    public Long getTransporterAreaId() {
+        return transporterAreaId;
+    }
+
+    public void setTransporterAreaId(@Nullable Long transporterAreaId) {
+        this.transporterAreaId = transporterAreaId;
     }
 }
