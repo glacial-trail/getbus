@@ -33,7 +33,7 @@
     }
 </script>
 
-<#assign isReverseRoute = 'R' == route.direction />
+<#assign isReverseRoute = !route.forward />
 
 <table style="display: none;" id="route-point-template">
     <@routepoint idx=-1 restrictedit=isReverseRoute />

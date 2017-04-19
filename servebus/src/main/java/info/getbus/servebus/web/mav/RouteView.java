@@ -1,7 +1,7 @@
 package info.getbus.servebus.web.mav;
 
 import info.getbus.servebus.model.route.CompactRoute;
-import info.getbus.servebus.model.web.dto.transporter.route.RouteDTO;
+import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.web.views.TransporterCabView;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,13 +13,13 @@ public class RouteView extends TransporterCabView {
     public static final String ROUTE_NAME = "route";
     public static final String ROUTES_NAME = "routes";
 
-    private RouteDTO route;
+    private Route route;
     private List<CompactRoute> routes;
 
     public RouteView() {
     }
 
-    public RouteView(RouteDTO route) {
+    public RouteView(Route route) {
         this.route = route;
     }
 

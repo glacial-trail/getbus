@@ -1,11 +1,11 @@
-package info.getbus.servebus.model.web.dto.transporter.route;
+package info.getbus.servebus.model.route;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
 
-public class RoutePointDTO {
+public class RoutePoint {
     private Long id;
     @NotEmpty(message = "common.notempty.error")
     private String name;

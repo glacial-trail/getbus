@@ -1,4 +1,4 @@
-package info.getbus.servebus.model.web.dto.transporter.route;
+package info.getbus.servebus.model.route;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -7,18 +7,25 @@ import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RouteDTO {
+import static info.getbus.servebus.model.route.Direction.F;
+
+public class Route {
     private Long id;
 
     @NotEmpty(message = "common.notempty.error")
     private String name;
 
     @NotNull(message = "common.notempty.error")
-    private Direction direction = Direction.F;
+    private Direction direction = F;
 
     @Valid
     @NotEmpty(message = "common.notempty.error")
-    private List<RoutePointDTO> routePoints = new LinkedList<>();
+    private List<RoutePoint> routePoints = new LinkedList<>();
+
+    public boolean isForward() {
+        return F == direction;
+    }
+
 
     public Long getId() {
         return id;
@@ -44,11 +51,11 @@ public class RouteDTO {
         this.direction = direction;
     }
 
-    public List<RoutePointDTO> getRoutePoints() {
+    public List<RoutePoint> getRoutePoints() {
         return routePoints;
     }
 
-    public void setRoutePoints(List<RoutePointDTO> routePoints) {
+    public void setRoutePoints(List<RoutePoint> routePoints) {
         this.routePoints = routePoints;
     }
 }

@@ -1,8 +1,8 @@
 package info.getbus.servebus.web.controllers;
 
 import info.getbus.servebus.model.route.CompactRoute;
-import info.getbus.servebus.model.web.dto.transporter.route.Direction;
-import info.getbus.servebus.model.web.dto.transporter.route.RouteDTO;
+import info.getbus.servebus.model.route.Route;
+import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.mav.RouteView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class RouteManagementController {
 
     @GetMapping("/create")
     public ModelAndView getCreate() {
-        return new RouteView(new RouteDTO()).edit();
+        return new RouteView(new Route()).edit();
     }
 
     @PostMapping("/cancel")
@@ -42,7 +42,7 @@ public class RouteManagementController {
     @PostMapping("/save")
     public ModelAndView save(@ModelAttribute("route")
                              @Validated
-                             RouteDTO route,
+                             Route route,
                              BindingResult errors) {
         if (errors.hasErrors()) {
             return new RouteView(route).edit();
@@ -60,7 +60,7 @@ public class RouteManagementController {
     }
 
     @PostMapping("/back")
-    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") RouteDTO route) {
+    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") Route route) {
 //        TODO for future: save partially filled route as tmp (dto not validated)
 //        TODO load forward part by id and return
         route.setDirection(Direction.F);
