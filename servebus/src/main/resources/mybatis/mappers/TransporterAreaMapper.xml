@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper">
+
+    <insert id="insertEmpty" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO transporter_area DEFAULT VALUES
+    </insert>
+
+    <insert id="insertUser2Transporter" useGeneratedKeys="false">
+        INSERT INTO user2transporter (transporter_id, username, authority)
+        VALUES ( #{transporterId}, #{username} , #{authority} )
+    </insert>
+
+</mapper>
