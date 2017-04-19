@@ -1,22 +1,30 @@
 package info.getbus.servebus.web.controllers;
 
+import info.getbus.servebus.model.route.CompactRoute;
 import info.getbus.servebus.model.web.dto.transporter.route.Direction;
 import info.getbus.servebus.model.web.dto.transporter.route.RouteDTO;
+import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.mav.RouteView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 // TODO post-redirect-get
 @Controller
 @RequestMapping("/tr/routes/")
 public class RouteManagementController {
+    @Autowired
+    private RouteService routeService;
 
     @GetMapping("/list")
     public ModelAndView listRoutes() {
-        return new RouteView().list();
+        List<CompactRoute> routes = routeService.listRoutes();
+        return new RouteView(routes).list();
     }
 
     @GetMapping("/create")
