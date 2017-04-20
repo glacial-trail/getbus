@@ -69,7 +69,7 @@
         <@routepoint idx="1" restrictedit=isReverseRoute add=false remove=false />
     </#list>
     <tr>
-        <td colspan="6">
+        <td colspan="7">
         <br/>
         <button type="reset">reset</button>
         <button formaction="cancel">cancel</button>
@@ -85,8 +85,6 @@
 <#macro routepoint idx rp={} restrictedit=true add=true remove=true >
     <tr class="route-point" data-rp-idx="${idx}">
         <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
-
-            <#--<label for="station">Добавить станцию</label>-->
         <td>
             <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
@@ -99,8 +97,8 @@
             <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
             <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
         </td>
-        <td><input name="routePoints[${idx}].arrival" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
-        <td><input name="routePoints[${idx}].departure" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td><input name="routePoints[${idx}].arrival" value="${rp.departure!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td><input name="routePoints[${idx}].departure" value="${rp.arrival!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
         <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>
         <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/></td>
     </tr>
