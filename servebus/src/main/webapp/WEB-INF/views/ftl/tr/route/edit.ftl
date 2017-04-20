@@ -39,25 +39,26 @@
     <@routepoint idx=-1 restrictedit=isReverseRoute />
 </table>
 
-<form name="route" action="create-route" method="post">
+<form name="route" action="create-route" method="post" id="data">
     <input name="id" type="hidden" value="${route.id!''}"/>
     <input name="direction" value="${route.direction}" type="hidden"/>
     <label for="name">Please, enter route name</label>
-    <input name="name" value="${route.name!''}" id="name" class="route_name" placeholder="enter route name field"/>
+    <input name="name" value="${route.name!''}" id="name" class="route_name"/>
     <@form.showFieldErrors 'name' 'error' />
     <br/>
     <br/>
-    <table class="table table-bordered">
-        <tr>
-            <th><@spring.message "route.create.addstation"/></th>
-            <th><@spring.message "route.create.Country"/></th>
-            <th><@spring.message "route.create.address"/></th>
-            <th><@spring.message "route.create.depttime"/></th>
-            <th><@spring.message "route.create.arrtime"/></th>
-            <th><@spring.message "route.create.triptime"/></th>
-            <th><@spring.message "route.create.distance"/></th>
-        </tr>
-
+    <table class="table table-bordered table-fixed">
+        <thead>
+            <tr>
+                <th class="col-xs-2"><@spring.message "route.create.Country"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.addstation"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.address"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.depttime"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.arrtime"/></th>
+                <th class="col-xs-1"><@spring.message "route.create.triptime"/></th>
+                <th class="col-xs-1"><@spring.message "route.create.distance"/></th>
+            </tr>
+        </thead>
     <#list route.routePoints as routePoint>
         <@routepoint idx=routePoint?index rp=routePoint
             restrictedit=isReverseRoute
@@ -69,7 +70,7 @@
         <@routepoint idx="1" restrictedit=isReverseRoute add=false remove=false />
     </#list>
     <tr>
-        <td colspan="7">
+        <td colspan="7" class="col-xs-12">
         <br/>
         <button type="reset">reset</button>
         <button formaction="cancel">cancel</button>
@@ -85,26 +86,47 @@
 <#macro routepoint idx rp={} restrictedit=true add=true remove=true >
     <tr class="route-point" data-rp-idx="${idx}">
         <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden"/>
-        <td>
-            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station" placeholder="Start station name"/>
+
+        <td class="col-xs-2">
+            <#--<input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/>-->
+            <#--TODO fix country selector-->
+            <select id="country" form="data" required>
+                <option value="ukraine">Украина</option>
+                <option value="russia">Россия</option>
+                <option value="moldova">Молдова</option>
+                <option value="belarus">Белорусь</option>
+                <option value="poland">Польша</option>
+                <option value="estonia">Эстония</option>
+                <option value="latvia">Латвия</option>
+                <option value="lithuania">Литва</option>
+                <option value="romania">Румыния</option>
+                <option value="bulgaria">Болгария</option>
+                <option value="czech republic">Чехия</option>
+                <option value="slovakia">Словакия</option>
+                <option value="austria">Австрия</option>
+                <option value="germany">Германия</option>
+                <option value="france">Франция</option>
+                <option value="italy">Италия</option>
+                <option value="portugal">Португалия</option>
+            </select>
+        <#--<@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>-->
+        </td>
+        <td class="col-xs-2">
+            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" id="station"/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
         </td>
-        <td>
-            <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" ${restrictedit?then('readonly','')} type="text"/>
-            <@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>
-        </td>
-        <td>
-            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" placeholder="Address"/>
+        <td class="col-xs-2">
+            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text"/>
             <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
         </td>
-        <td><input name="routePoints[${idx}].arrival" value="${rp.departure!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
-        <td><input name="routePoints[${idx}].departure" value="${rp.arrival!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
-        <td><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" placeholder="Trip time"/></td>
-        <td><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" placeholder="Distance"/></td>
+        <td class="col-xs-2"><input name="routePoints[${idx}].arrival" value="${rp.arrival!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td class="col-xs-2"><input name="routePoints[${idx}].departure" value="${rp.departure!''}" type="text" class="time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td class="col-xs-1"><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" /></td>
+        <td class="col-xs-1"><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" /></td>
     </tr>
     <tr>
         <#if add || remove>
-            <td colspan="7">
+            <td colspan="7" class="col-xs-12">
         </#if>
         <#if add>
                 <a id="qwer" href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>

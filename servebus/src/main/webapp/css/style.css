@@ -1,9 +1,11 @@
 body {
     font-family: "Tenor Sans", sans-serif;
 }
-
+tr input{
+    width: 100%;
+}
 .navbar-default {
-    background-color: white;
+    background-color: rgba(240, 240, 240, 0.9);
     /*height: 60px;*/
 }
 
@@ -11,36 +13,48 @@ body {
     float: right;
     display: inline-flex;
     list-style-type: none;
-    margin: 10px;
+    margin: 10px 0;
+    padding: 0;
 }
-
+.item-menu{
+    margin-right: 15px;
+}
 .right-menu a{
     color: black;
-    font-size: 16px;
+    font-size: 12px;
     text-transform:uppercase;
     margin-right: 5px;
     font-weight: bold;
     display: inline-block;
-    padding-top: 5px;
+    line-height: 34px;
+    /*padding-top: 5px;*/
 }
 
 .content {
-    padding: 70px 2% 70px 280px;
+    padding: 55px 0 0;
+    height: 100vh;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
-
-.background-img {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -100;
-    background-size: 100%;
+.inner-wrap{
+    padding: 30px 15px 0;
 }
+.inner-wrap h1,
+.inner-wrap h2,
+.inner-wrap h3{
+    margin: 0;
+}
+/*.background-img {*/
+    /*position: fixed;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*z-index: -100;*/
+    /*background-size: 100%;*/
+/*}*/
 /*.background-img-logon {*/
     /*background: url("/img/backgroung-logon.jpg");*/
 /*}*/
@@ -58,7 +72,7 @@ body {
     bottom: 0;
     width: 100%;
     height: 40px;
-    background-color: #fff;
+    background-color: rgba(240, 240, 240, 0.9);
     border-top: 1px solid #e7e7e7;
     z-index: 2;
 }
@@ -141,11 +155,13 @@ body {
     text-align: center;
     color: #66afe9;
     margin: 0px;
-    padding: 10px 0 0;
+    line-height: 40px;
 }
 
 .logo {
-    margin-left: 20px;
+    /*margin-left: 20px;*/
+    width: 140px;
+    padding-top: 13px;
 }
 
 .register-container {
@@ -428,6 +444,67 @@ body {
 .name-button{
     color: #5C5670;
 }
+/*table*/
+.table-fixed {
+    width: 100%;
+    background-color: #f3f3f3;
+}
+.table-fixed tbody {
+    height: 415px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+    display: block;
+}
+.table-fixed tbody td {
+    float: left;
+}
+.table-fixed thead tr th {
+    float: left;
+    font-size: 12px;
+    background-color: #f39c12;
+    border-color: #e67e22;
+}
+/*table*/
+
+
+/*WELCOME.FTL*/
+.sc-title{
+    font-size: 28px;
+    font-family: sans-serif;
+}
+.sc-block{
+    max-width: 980px;
+    margin: 40px auto 0;
+    font-size: 0;
+    background-color: rgba(214, 214, 214, 0.37);
+}
+.sc-block-title{
+    display: block;
+    line-height: 34px;
+    font-size: 18px;
+    padding-left: 20px;
+    border-bottom: 1px solid black;
+    margin-bottom: 30px;
+}
+.sc-block-des{
+    display: inline-block;
+    font-size: 14px;
+    width: 33.33%;
+    margin: -1px;
+    padding-left: 20px;
+    vertical-align: top;
+}
+.sc-block-des p{
+    margin-bottom: 30px;
+}
+/*END WELCOME.FTL*/
+
 
 /*==Error message==*/
 
