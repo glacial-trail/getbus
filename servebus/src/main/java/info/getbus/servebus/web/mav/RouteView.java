@@ -12,9 +12,11 @@ public class RouteView extends TransporterCabView {
     public static final String ROUTE_PREFIX = "route/";
     public static final String ROUTE_NAME = "route";
     public static final String ROUTES_NAME = "routes";
+    public static final String COUNTRIES_NAME = "countries";
 
     private Route route;
     private List<CompactRoute> routes;
+    private List<String> countries;
 
     public RouteView() {
     }
@@ -27,6 +29,10 @@ public class RouteView extends TransporterCabView {
         this.routes = routes;
     }
 
+    public RouteView withCountries(List<String> countries) {
+        this.countries = countries;
+        return this;
+    }
 
     @Override
     public ModelAndView build() {
@@ -36,6 +42,9 @@ public class RouteView extends TransporterCabView {
         }
         if (null != routes) {
             mav.addObject(ROUTES_NAME, routes);
+        }
+        if (null != countries) {
+            mav.addObject(COUNTRIES_NAME, countries);
         }
         return mav;
     }

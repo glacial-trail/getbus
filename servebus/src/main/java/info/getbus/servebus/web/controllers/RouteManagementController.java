@@ -3,6 +3,7 @@ package info.getbus.servebus.web.controllers;
 import info.getbus.servebus.model.route.CompactRoute;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.Direction;
+import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.mav.RouteView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import java.util.List;
 @RequestMapping("/tr/routes/")
 public class RouteManagementController {
     @Autowired
+    private CountriesRepository countriesRepository;
+    @Autowired
     private RouteService routeService;
 
     @GetMapping("/list")
@@ -29,7 +32,8 @@ public class RouteManagementController {
 
     @GetMapping("/create")
     public ModelAndView getCreate() {
-        return new RouteView(new Route()).edit();
+        //TODO refactor view instantiation with country-list (maybe prototype & lookup method)
+        return new RouteView(new Route()).withCountries(countriesRepository.getAll()).edit();
     }
 
     @PostMapping("/cancel")
@@ -44,15 +48,16 @@ public class RouteManagementController {
                              @Validated
                              Route route,
                              BindingResult errors) {
+        List<String> cc = countriesRepository.getAll();
         if (errors.hasErrors()) {
-            return new RouteView(route).edit();
+            return new RouteView(route).withCountries(cc).edit();
         }
         if (Direction.F == route.getDirection()) {
 //          TODO save route
 //          TODO reverse route
             route.setDirection(Direction.R);
             route.setId(99L);
-            return new RouteView().edit();
+            return new RouteView().withCountries(cc).edit();
         } else {
 //          TODO save route
             return new RouteView().redirect().list();
