@@ -14,11 +14,12 @@ CREATE UNIQUE INDEX transporter_area_uniq_a ON transporter_area (admin_name);
 CREATE UNIQUE INDEX transporter_area_uniq_d ON transporter_area (domain_name);
 
 CREATE TABLE transporter (
-  id BIGSERIAL NOT NULL REFERENCES transporter (id)
+  id BIGSERIAL NOT NULL REFERENCES transporter_area (id)
 );
 
 CREATE TABLE country (
   code CHAR(2) PRIMARY KEY,
+  sequence INTEGER,
   name VARCHAR (100) NOT NULL
 );
 

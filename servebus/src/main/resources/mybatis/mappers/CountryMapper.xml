@@ -6,7 +6,7 @@
 <mapper namespace="info.getbus.servebus.persistence.datamappers.common.CountryMapper">
 
 	<select id="selectAllCodes" resultType="string">
-        SELECT code FROM country ORDER BY ordersq ASC NULLS LAST
+        SELECT code FROM country ORDER BY sequence ASC NULLS LAST
     </select>
 
 </mapper>
