@@ -26,7 +26,7 @@ public class RouteManagementController {
 
     @GetMapping("/list")
     public ModelAndView listRoutes() {
-        List<CompactRoute> routes = routeService.listRoutes();
+        List<CompactRoute> routes = routeService.list();
         return new RouteView(routes).list();
     }
 
@@ -43,7 +43,15 @@ public class RouteManagementController {
         return new RouteView().redirect().list();
     }
 
-    @PostMapping("/save")
+    @GetMapping("/edit/{id}")
+    public ModelAndView edit(@PathVariable("id") long id) {
+        //TODO handle lock exception
+        return new RouteView(routeService.acquireForEdit(id))
+                .withCountries(countriesRepository.getAll())
+                .edit();
+    }
+
+    @PostMapping( {"/save", "/edit/save"})
     public ModelAndView save(@ModelAttribute("route")
                              @Validated
                              Route route,
@@ -52,15 +60,12 @@ public class RouteManagementController {
         if (errors.hasErrors()) {
             return new RouteView(route).withCountries(cc).edit();
         }
-        if (Direction.F == route.getDirection()) {
-//          TODO save route
-//          TODO reverse route
-            route.setDirection(Direction.R);
-            route.setId(99L);
-            return new RouteView().withCountries(cc).edit();
-        } else {
-//          TODO save route
+
+        Route opposite = routeService.saveAndProceed(route);
+        if (null == opposite) {
             return new RouteView().redirect().list();
+        } else {
+            return new RouteView(opposite).withCountries(cc).edit();
         }
     }
 

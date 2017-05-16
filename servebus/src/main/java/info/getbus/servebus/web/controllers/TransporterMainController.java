@@ -16,11 +16,6 @@ public class TransporterMainController {
         return new TransporterCabView("welcome").build();
     }
 
-//    @GetMapping("/routes")
-//    public ModelAndView listRoutes() {
-//        return new RouteView().list();
-//    }
-
     @GetMapping("/voyages")
     public ModelAndView listVoyages() {
         return new TransporterCabView("voyage-list").build();
