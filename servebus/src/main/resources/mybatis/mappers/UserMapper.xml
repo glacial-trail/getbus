@@ -5,7 +5,7 @@
 
 <mapper namespace="info.getbus.servebus.dao.security.UserMapper">
 
-    <resultMap id="userMap" type="User">
+    <resultMap id="user" type="User">
         <constructor>
             <idArg column="username" javaType="string"/>
             <arg column="password" javaType="string"/>
@@ -33,7 +33,7 @@
       LEFT JOIN user2transporter u2t ON u.username = u2t.username
     </sql>
 
-    <select id="selectById" resultMap="userMap">
+    <select id="selectById" resultMap="user">
         <include refid="simpleSelect"/>
         WHERE u.username = #{id}
     </select>
@@ -50,7 +50,7 @@
         </foreach>
     </insert>
 
-    <select id="selectByUsernameOrPhone" resultMap="userMap">
+    <select id="selectByUsernameOrPhone" resultMap="user">
         <include refid="simpleSelect"/>
         WHERE u.username = #{username} OR u.phone = #{phone}
     </select>

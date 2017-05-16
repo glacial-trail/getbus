@@ -12,4 +12,10 @@
         <typeAlias type="info.getbus.servebus.model.route.CompactRoute" alias="CompactRoute"/>
     </typeAliases>
 
+    <typeHandlers>
+        <typeHandler handler="org.apache.ibatis.type.LocalTimeTypeHandler" />
+    </typeHandlers>
+
+    <objectFactory type="info.getbus.mybatis.reflection.factory.MapBasedObjectFactory" />
+
 </configuration>

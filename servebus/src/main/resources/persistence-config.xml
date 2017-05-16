@@ -28,6 +28,6 @@
     </bean>
 
     <mybatis:scan base-package="info.getbus.servebus.dao"/>
-    <mybatis:scan base-package="info.getbus.servebus.persistence"/>
+    <mybatis:scan base-package="info.getbus.servebus.persistence.datamappers"/>
 
 </beans>
