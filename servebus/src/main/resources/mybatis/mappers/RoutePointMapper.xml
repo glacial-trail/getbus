@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RoutePointMapper">
+
+  <resultMap id="routePoint" type="RoutePoint">
+       <id column="id" property="id" />
+       <result column="name" property="name" />
+       <result column="country_code" property="countryCode" />
+       <result column="address" property="address" />
+       <result column="departure" property="departure" />
+       <result column="arrival" property="arrival" />
+       <result column="trip_time" property="tripTime" />
+       <result column="distance" property="distance" />
+  </resultMap>
+
+  <select id="selectRoutePoints" resultMap="routePoint">
+    SELECT
+      rp.id           as id,
+      rp.sequence     as sequence,
+      rp.name         as name,
+      rp.country_code as country_code,
+      rp.address      as address,
+      rpd.departure   as departure,
+      rpd.arrival     as arrival,
+      rpd.trip_time   as trip_time,
+      rpd.distance    as distance
+    FROM route_point rp
+    LEFT JOIN route_point_data rpd ON rpd.route_point_id = rp.id AND rpd.direction = #{direction}
+    WHERE rp.route_id = #{routeId}
+    ORDER BY sequence
+    <choose>
+      <when test='direction.name == "F"'>
+          ASC
+      </when>
+      <otherwise>
+        DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="point.id" keyColumn="id">
+    INSERT INTO route_point (
+      route_id,
+      name,
+      country_code,
+      address,
+      sequence
+    ) VALUES (
+      #{routeId},
+      #{point.name},
+      #{point.countryCode},
+      #{point.address},
+      #{sequence}
+    )
+  </insert>
+
+  <update id="update">
+    UPDATE route_point SET
+    name = #{point.name},
+    country_code = #{point.countryCode},
+    address = #{point.address}
+    WHERE id = #{point.id}
+  </update>
+
+  <insert id="insertData" useGeneratedKeys="false">
+    INSERT INTO route_point_data (
+      route_point_id,
+      direction,
+      departure,
+      arrival,
+      trip_time,
+      distance
+    ) VALUES (
+      #{point.id},
+      #{direction},
+      #{point.departure},
+      #{point.arrival},
+      #{point.tripTime},
+      #{point.distance}
+    )
+  </insert>
+
+  <insert id="insertDataIfNonExist" useGeneratedKeys="false">
+    INSERT INTO route_point_data (
+      route_point_id,
+      direction,
+      departure,
+      arrival,
+      trip_time,
+      distance
+    ) SELECT
+        #{point.id},
+        #{direction},
+        #{point.departure},
+        #{point.arrival},
+        #{point.tripTime},
+        #{point.distance}
+    WHERE NOT EXISTS (
+      SELECT rpd.route_point_id FROM route_point_data rpd WHERE rpd.route_point_id = #{point.id} AND rpd.direction = #{direction}
+    )
+  </insert>
+
+  <update id="updateData">
+    UPDATE route_point_data SET
+    departure = #{point.departure},
+    arrival = #{point.arrival},
+    trip_time = #{point.tripTime},
+    distance = #{point.distance}
+    WHERE route_point_id = #{point.id} AND direction = #{direction}
+  </update>
+
+  <update id="updateSequence">
+    UPDATE route_point SET
+      sequence = #{sequence}
+    WHERE id = #{id}
+  </update>
+
+  <select id="existInconsistentRoutePoints" resultType="_boolean">
+    SELECT exists (
+      SELECT rp.id, rpdf.route_point_id, rpdr.route_point_id, rpdf.direction, rpdr.direction
+      FROM route_point rp
+      LEFT JOIN route_point_data rpdf
+        ON rp.id = rpdf.route_point_id and rpdf.direction = 'F'
+      LEFT JOIN route_point_data rpdr
+        ON rp.id = rpdr.route_point_id and rpdr.direction = 'R'
+      --        and rpd.route_point_id is NULL
+      WHERE rp.route_id = #{routeId} AND (rpdf.route_point_id is NULL or rpdr.route_point_id is NULL)
+    )
+  </select>
+
+</mapper>

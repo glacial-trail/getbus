@@ -4,8 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 import static info.getbus.servebus.model.route.Direction.F;
 
@@ -20,7 +20,7 @@ public class Route {
 
     @Valid
     @NotEmpty(message = "common.notempty.error")
-    private List<RoutePoint> routePoints = new LinkedList<>();
+    private Deque<RoutePoint> routePoints = new LinkedList<>();
 
     public boolean isForward() {
         return F == direction;
@@ -51,11 +51,11 @@ public class Route {
         this.direction = direction;
     }
 
-    public List<RoutePoint> getRoutePoints() {
+    public Deque<RoutePoint> getRoutePoints() {
         return routePoints;
     }
 
-    public void setRoutePoints(List<RoutePoint> routePoints) {
+    public void setRoutePoints(Deque<RoutePoint> routePoints) {
         this.routePoints = routePoints;
     }
 }

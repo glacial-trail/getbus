@@ -5,6 +5,22 @@
 
 <mapper namespace="info.getbus.servebus.persistence.datamappers.route.RouteMapper">
 
+  <resultMap id="route" type="Route">
+      <id column="id" property="id" />
+      <result column="direction" property="direction" />
+      <result column="name" property="name" />
+      <collection property="routePoints" ofType="info.getbus.servebus.model.route.RoutePoint">
+          <id column="rp_id" property="id" />
+          <result column="rp_name" property="name" />
+          <result column="rp_country_code" property="countryCode" />
+          <result column="rp_address" property="address" />
+          <result column="rp_departure" property="departure" />
+          <result column="rp_arrival" property="arrival" />
+          <result column="rp_trip_time" property="tripTime" />
+          <result column="rp_distance" property="distance" />
+      </collection>
+  </resultMap>
+
   <select id="selectCompactRoutesByUsername" resultType="CompactRoute">
     SELECT
       r.id,
@@ -27,4 +43,57 @@
       ON finish.route_id = last_points.route_id AND finish.sequence = last_points.last
   </select>
 
+  <select id="selectById" resultMap="route">
+    SELECT
+      r.id,
+      r.name,
+      rpd.direction,
+      rp.id           as rp_id,
+      rp.sequence     as rp_sequence,
+      rp.name         as rp_name,
+      rp.country_code as rp_country_code,
+      rp.address      as rp_address,
+      rpd.departure   as rp_departure,
+      rpd.arrival     as rp_arrival,
+      rpd.trip_time   as rp_trip_time,
+      rpd.distance    as rp_distance
+    FROM route r
+      LEFT JOIN route_point rp ON r.id = rp.route_id
+      LEFT JOIN route_point_data rpd ON rpd.route_point_id = rp.id
+        AND rpd.direction = 'F'
+    WHERE r.id = #{id}
+    ORDER BY sequence ASC
+  </select>
+
+  <select id="selectLockOwnerForUpdate" resultType="string">
+    SELECT
+      lock_owner
+    FROM route
+    WHERE id = #{id}
+    FOR UPDATE
+  </select>
+
+  <insert id="insertLocked" useGeneratedKeys="true" keyProperty="route.id" keyColumn="id">
+    INSERT INTO route (
+      transporter_area_id,
+      name,
+      lock_owner
+    ) VALUES (
+      #{transporterAreaId},
+      #{route.name},
+      #{lockOwner}
+    )
+  </insert>
+
+  <update id="updateLockOwner">
+    UPDATE route
+    SET lock_owner = #{lockOwner}
+    WHERE id = #{id}
+  </update>
+
+  <update id="unlockRoute">
+    UPDATE route
+    SET lock_owner = NULL
+    WHERE id = #{id}
+  </update>
 </mapper>
