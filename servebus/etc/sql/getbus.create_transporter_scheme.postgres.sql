@@ -53,3 +53,20 @@ CREATE TABLE route_point_data (
   distance INT NOT NULL
 );
 CREATE UNIQUE INDEX route_point_data_uniq_rd ON route_point_data (route_point_id, direction);
+
+CREATE TABLE TZ (
+  zone VARCHAR(16) PRIMARY KEY
+);
+
+CREATE TABLE periodicity (
+  id BIGSERIAL PRIMARY KEY,
+  route_id BIGINT NOT NULL REFERENCES route(id),
+  route_direction CHAR(1) NOT NULL,
+--   start DATE NOT NULL,
+  start TIMESTAMPTZ NOT NULL,
+  --tz VARCHAR(16) NOT NULL,-- REFERENCES TZ(zone),
+  strategy VARCHAR(16) NOT NULL,
+  param INT NOT NULL
+);
+
+CREATE UNIQUE INDEX route_point_data_uniq_p ON periodicity (route_id, route_direction);
