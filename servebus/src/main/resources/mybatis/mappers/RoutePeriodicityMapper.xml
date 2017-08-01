@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.persistence.datamappers.route.PeriodicityMapper">
+
+    <resultMap id="routePeriodicity" type="RoutePeriodicity">
+        <association property="routePartId" javaType="RoutePartId">
+            <result column="route_id" property="id"/>
+            <result column="route_direction" property="direction"/>
+        </association>
+        <association property="periodicity" javaType="Periodicity">
+            <id column="id" property="id"/>
+            <result column="start" property="start"/>
+            <result column="strategy" property="strategy"/>
+            <result column="param" property="param"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByRouteId" resultMap="routePeriodicity">
+        SELECT * FROM periodicity
+        WHERE route_id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO periodicity (
+            route_id,
+            route_direction,
+            start,
+            strategy,
+            param
+        ) VALUES (
+            #{routeId.id},
+            #{routeId.direction},
+            #{periodicity.start},
+            #{periodicity.strategy},
+            #{periodicity.param}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE periodicity SET
+            start = #{periodicity.start},
+            strategy = #{periodicity.strategy},
+            param = #{periodicity.param},
+        WHERE id = #{periodicity.id}
+    </update>
+
+</mapper>

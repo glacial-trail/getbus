@@ -12,10 +12,17 @@
         <typeAlias type="info.getbus.servebus.model.route.CompactRoute" alias="CompactRoute"/>
         <typeAlias type="info.getbus.servebus.model.route.Route" alias="Route"/>
         <typeAlias type="info.getbus.servebus.model.route.RoutePoint" alias="RoutePoint"/>
+
+        <typeAlias type="info.getbus.servebus.model.periodicity.Periodicity" alias="Periodicity"/>
+        <typeAlias type="info.getbus.servebus.model.route.RoutePartId" alias="RoutePartId"/>
+        <typeAlias type="info.getbus.servebus.model.route.RoutePeriodicity" alias="RoutePeriodicity"/>
+        <typeAlias type="info.getbus.servebus.model.route.PeriodicityPair" alias="PeriodicityPair"/>
     </typeAliases>
 
     <typeHandlers>
         <typeHandler handler="org.apache.ibatis.type.LocalTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.ZonedDateTimeTypeHandler" />
+        <!-- ^^^^^^^^^^^^^^^^^^^ TODO check-->
     </typeHandlers>
 
     <objectFactory type="info.getbus.mybatis.reflection.factory.MapBasedObjectFactory" />
