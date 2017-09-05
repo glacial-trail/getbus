@@ -1,11 +1,11 @@
 package info.getbus.servebus.service.transporter;
 
-import info.getbus.servebus.model.route.Route;
-import info.getbus.servebus.persistence.RoutePersistenceManager;
+import info.getbus.servebus.model.route.*;
+import info.getbus.servebus.persistence.managers.RoutePeriodicityPersistenceManager;
+import info.getbus.servebus.persistence.managers.RoutePersistenceManager;
 import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
 import info.getbus.servebus.model.security.User;
-import info.getbus.servebus.model.route.CompactRoute;
 import info.getbus.servebus.service.MalformedArgumentException;
 import info.getbus.servebus.service.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,8 @@ public class RouteServiceImpl implements RouteService {
     private SecurityHelper securityHelper;
     @Autowired
     private RoutePersistenceManager persistenceManager;
+    @Autowired
+    private RoutePeriodicityPersistenceManager routePeriodicityPersistenceManager;
 
     private String resolveCurrentUserName() {
         return securityHelper.getCurrentUsername();
@@ -111,8 +113,23 @@ public class RouteServiceImpl implements RouteService {
         return persistenceManager.prepareReversed(route);
     }
 
+    @Nullable
+    @Override
+    public PeriodicityPair getPeriodicityPair(long routeId) {
+        return routePeriodicityPersistenceManager.getPair(routeId);
+    }
+
     private void createLocked(Route route) {
         persistenceManager.createRoute(route, resolveCurrentUser(), true);
     }
 
+    @Override
+    public void savePeriodicity(PeriodicityPair pair) {
+        savePeriodicity(pair.getForward());
+        savePeriodicity(pair.getReverse());
+    }
+
+    private void savePeriodicity(RoutePeriodicity periodicity) {
+        routePeriodicityPersistenceManager.save(periodicity.getRoutePartId(), periodicity.getPeriodicity());
+    }
 }
