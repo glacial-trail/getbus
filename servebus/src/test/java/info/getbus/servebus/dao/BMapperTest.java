@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 		"classpath:persistence-config.xml" })
 //@ActiveProfiles("test")
 //@Transactional
-//@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class BMapperTest {
 

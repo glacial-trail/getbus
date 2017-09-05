@@ -10,5 +10,6 @@
     <import resource="security-config.xml"/>
     <import resource="persistence-config.xml"/>
     <import resource="cache-config.xml"/>
+    <import resource="conversion-config.xml" />
 
 </beans>
