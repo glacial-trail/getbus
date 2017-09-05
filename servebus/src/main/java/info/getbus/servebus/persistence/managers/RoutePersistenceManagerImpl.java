@@ -1,9 +1,10 @@
-package info.getbus.servebus.persistence;
+package info.getbus.servebus.persistence.managers;
 
 import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.RoutePoint;
 import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.persistence.LockedEntityException;
 import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
 import org.springframework.beans.factory.annotation.Autowired;

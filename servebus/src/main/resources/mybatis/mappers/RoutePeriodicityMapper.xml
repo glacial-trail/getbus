@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.persistence.datamappers.route.PeriodicityMapper">
+<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RoutePeriodicityMapper">
 
     <resultMap id="routePeriodicity" type="RoutePeriodicity">
         <association property="routePartId" javaType="RoutePartId">
@@ -43,8 +43,8 @@
         UPDATE periodicity SET
             start = #{periodicity.start},
             strategy = #{periodicity.strategy},
-            param = #{periodicity.param},
-        WHERE id = #{periodicity.id}
+            param = #{periodicity.param}
+        WHERE id = #{periodicity.id} AND route_id = #{routeId}
     </update>
 
 </mapper>

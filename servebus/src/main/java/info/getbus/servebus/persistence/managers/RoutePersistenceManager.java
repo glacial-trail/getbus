@@ -1,4 +1,4 @@
-package info.getbus.servebus.persistence;
+package info.getbus.servebus.persistence.managers;
 
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.security.User;

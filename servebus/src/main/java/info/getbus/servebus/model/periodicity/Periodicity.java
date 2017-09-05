@@ -10,6 +10,10 @@ public class Periodicity {
 
     public Periodicity() { }
 
+    public Periodicity(Long id, ZonedDateTime start, PeriodicityStrategy strategy, int param) {
+        this(start, strategy, param);
+        this.id = id;
+    }
     public Periodicity(ZonedDateTime start, PeriodicityStrategy strategy, int param) {
         this.start = start;
         this.strategy = strategy;

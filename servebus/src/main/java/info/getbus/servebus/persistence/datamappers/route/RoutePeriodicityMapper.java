@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface PeriodicityMapper {
+public interface RoutePeriodicityMapper {
     List<RoutePeriodicity> selectByRouteId(@Param("id") Long id);
     void insert(@Param("routeId") RoutePartId routeId, @Param("periodicity") Periodicity periodicity);
-    void update(@Param("periodicity") Periodicity periodicity);
+    void update(@Param("routeId") Long routeId, @Param("periodicity") Periodicity periodicity);
 }
