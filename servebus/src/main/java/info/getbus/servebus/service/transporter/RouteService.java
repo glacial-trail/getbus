@@ -10,7 +10,9 @@ import java.util.List;
 public interface RouteService {
     List<CompactRoute> list();
     Route acquireForEdit(long routeId);
+    void acquireLock(long routeId);
     void cancelEdit(long routeId);
+    void releaseConsistent(long routeId);
     @Nullable
     Route saveAndProceed(Route route);
     @Nullable

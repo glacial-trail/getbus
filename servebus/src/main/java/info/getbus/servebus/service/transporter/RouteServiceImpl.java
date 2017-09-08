@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @Service
+@Transactional
 public class RouteServiceImpl implements RouteService {
     @Autowired
     private RouteMapper routeMapper;
@@ -43,15 +44,23 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    @Transactional
     public Route acquireForEdit(long routeId) {
         tryToLock(routeId);
         return routeMapper.selectById(routeId);
     }
 
     @Override
-    @Transactional
+    public void acquireLock(long routeId) {
+        tryToLock(routeId);
+    }
+
+    @Override
     public void cancelEdit(long routeId) {
+        releaseConsistent(routeId);
+    }
+
+    @Override
+    public void releaseConsistent(long routeId) {
         tryToLock(routeId);
         if (isConsistent(routeId)) {
             routeMapper.unlockRoute(routeId);
@@ -60,7 +69,6 @@ public class RouteServiceImpl implements RouteService {
 
     @Nullable
     @Override
-    @Transactional
     public Route saveAndProceed(Route route) {
         if (null == route.getId()) {
             if (route.isForward()) {
@@ -123,10 +131,13 @@ public class RouteServiceImpl implements RouteService {
         persistenceManager.createRoute(route, resolveCurrentUser(), true);
     }
 
+    //TODO create RouteServiceFacade for methods like this
     @Override
     public void savePeriodicity(PeriodicityPair pair) {
+        tryToLock(pair.getRouteId());
         savePeriodicity(pair.getForward());
         savePeriodicity(pair.getReverse());
+        releaseConsistent(pair.getRouteId());
     }
 
     private void savePeriodicity(RoutePeriodicity periodicity) {
