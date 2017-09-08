@@ -97,7 +97,7 @@ public class RouteManagementController {
         return new RouteView(routeId).withTZlist(ZoneId.getAvailableZoneIds()).periodicity(dto);
     }
 
-    @PostMapping("/periodicity/")
+    @PostMapping("{id}/periodicity")
     public ModelAndView savePeriodicity(@ModelAttribute("periodicity")
                                         @Validated
                                         PeriodicityPairDTO periodicity,
@@ -108,6 +108,12 @@ public class RouteManagementController {
 //        }
         PeriodicityPair pair = conversionService.convert(periodicity, PeriodicityPair.class);
         routeService.savePeriodicity(pair);
+        return new RouteView().redirect().list();
+    }
+
+    @PostMapping("{id}/periodicity/cancel")
+    public ModelAndView cancelEditPeriodicity(@PathVariable("id") long routeId) {
+        routeService.releaseConsistent(routeId);
         return new RouteView().redirect().list();
     }
 

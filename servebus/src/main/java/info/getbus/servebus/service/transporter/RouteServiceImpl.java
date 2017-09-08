@@ -62,6 +62,10 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public void releaseConsistent(long routeId) {
         tryToLock(routeId);
+        unlockConsistent(routeId);
+    }
+
+    private void unlockConsistent(long routeId) {
         if (isConsistent(routeId)) {
             routeMapper.unlockRoute(routeId);
         }
@@ -137,7 +141,7 @@ public class RouteServiceImpl implements RouteService {
         tryToLock(pair.getRouteId());
         savePeriodicity(pair.getForward());
         savePeriodicity(pair.getReverse());
-        releaseConsistent(pair.getRouteId());
+        unlockConsistent(pair.getRouteId());
     }
 
     private void savePeriodicity(RoutePeriodicity periodicity) {

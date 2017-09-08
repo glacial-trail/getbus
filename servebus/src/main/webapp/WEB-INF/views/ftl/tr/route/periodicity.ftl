@@ -26,7 +26,7 @@
 <#--TODO move to DB-->
 <#assign days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] >
 
-<form name="periodicity" method="post" action="http://localhost:8080/tr/routes/periodicity/">
+<form name="periodicity" method="post">
     <fieldset>
         <input name="strategy" type="radio" value="DAILY" ${('DAILY' == strategy)?then('checked','')} onchange="toggleStrategy()">
         daily interval
@@ -68,7 +68,6 @@
     <div>
         <input name="reverse.id" value="${reverse.id!''}" type="hidden"/>
         <input class="js-week-days-strategy js-toggle-strategy" name="reverse.start" value="${reverse.start!''}" type="date"
-        <@disableIfNot 'DAILY' />
             <#if 'WEEK_DAYS' = strategy>
                    disabled style="display: none"
             </#if>
@@ -95,6 +94,7 @@
     </div>
 
     <br/>
+    <button formaction="periodicity/cancel">cancel</button>
     <input type="submit" value="save"/>
 </form>
 
