@@ -1,17 +1,21 @@
 package info.getbus.servebus.web.controllers;
 
 import info.getbus.servebus.model.route.CompactRoute;
+import info.getbus.servebus.model.route.PeriodicityPair;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.service.transporter.RouteService;
+import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.mav.RouteView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.ZoneId;
 import java.util.List;
 
 // TODO post-redirect-get
@@ -22,6 +26,8 @@ public class RouteManagementController {
     private CountriesRepository countriesRepository;
     @Autowired
     private RouteService routeService;
+    @Autowired
+    private ConversionService conversionService;
 
     @GetMapping("/list")
     public ModelAndView listRoutes() {
@@ -70,11 +76,39 @@ public class RouteManagementController {
     public ModelAndView backToCreateRouteForward(@ModelAttribute("route") @Validated Route route, BindingResult errors) {
 //        TODO for future: save partially filled route as tmp (dto not validated)
 //        TODO load forward part by id and return
-        if (errors.hasErrors()) {
+        if (!errors.hasErrors()) {
             routeService.saveAndProceed(route); //TODO save later? no forget
         }
         //TODO do both actions in the same transaction?
         route = routeService.acquireForEdit(route.getId());
         return new RouteView(route).edit();
     }
+
+    @GetMapping("/{id}/periodicity")
+    public ModelAndView getEditPeriodicity(@PathVariable("id") long routeId) {
+        routeService.acquireLock(routeId);
+        PeriodicityPair pair = routeService.getPeriodicityPair(routeId);
+        PeriodicityPairDTO dto;
+        if (null == pair) {
+            dto = PeriodicityPairDTO.empty();
+        } else {
+            dto = conversionService.convert(pair, PeriodicityPairDTO.class);
+        }
+        return new RouteView(routeId).withTZlist(ZoneId.getAvailableZoneIds()).periodicity(dto);
+    }
+
+    @PostMapping("/periodicity/")
+    public ModelAndView savePeriodicity(@ModelAttribute("periodicity")
+                                        @Validated
+                                        PeriodicityPairDTO periodicity,
+                                        BindingResult errors) {
+//        TODO validation
+//        if (errors.hasErrors()) {
+//            return new RouteView().redirect().list();
+//        }
+        PeriodicityPair pair = conversionService.convert(periodicity, PeriodicityPair.class);
+        routeService.savePeriodicity(pair);
+        return new RouteView().redirect().list();
+    }
+
 }

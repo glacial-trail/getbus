@@ -3,6 +3,7 @@ package info.getbus.servebus.web.views;
 import org.springframework.web.servlet.ModelAndView;
 
 public /*abstract*/ class TransporterCabView {
+    public static final String CAB_URL = "/tr";
     public static final String DEFAULT_VIEW_SUFFIX = ".ftl";
     public static final String TRANSPORTER_CAB_PAGE_NAME = "cabPageName";
     public static final String TRANSPORTER_CAB_VIEW = "tr/cab";

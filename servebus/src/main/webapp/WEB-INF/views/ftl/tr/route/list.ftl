@@ -22,7 +22,8 @@
                 <td rowspan="2">
                     <a href="view/${route.id}">view</a> <br/>
                     <#if route.editable>
-                        <a href="edit/${route.id}">edit</a>
+                        <a href="edit/${route.id}">edit</a> <br/>
+                        <a href="${route.id}/periodicity">periodicity</a><#--TODO make 'create periodicity/edit periodicity'-->
                     </#if>
                 </td>
             </tr>
