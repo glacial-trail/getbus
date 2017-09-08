@@ -2,7 +2,6 @@ package info.getbus.servebus.web.controllers;
 
 import info.getbus.servebus.model.route.CompactRoute;
 import info.getbus.servebus.model.route.Route;
-import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.mav.RouteView;
@@ -39,7 +38,8 @@ public class RouteManagementController {
     @PostMapping("/cancel")
     public ModelAndView cancel(@RequestParam("id") Long id) {
 //      if (null != id && ...
-//        TODO remove route by route.id if route partially saved.
+//        TODO remove route by route.id if route partially saved? leave as is, indicate as uncomplete, now delete
+        routeService.cancelEdit(id);
         return new RouteView().redirect().list();
     }
 
@@ -52,10 +52,7 @@ public class RouteManagementController {
     }
 
     @PostMapping( {"/save", "/edit/save"})
-    public ModelAndView save(@ModelAttribute("route")
-                             @Validated
-                             Route route,
-                             BindingResult errors) {
+    public ModelAndView save(@ModelAttribute("route") @Validated Route route, BindingResult errors) {
         List<String> cc = countriesRepository.getAll();
         if (errors.hasErrors()) {
             return new RouteView(route).withCountries(cc).edit();
@@ -70,10 +67,14 @@ public class RouteManagementController {
     }
 
     @PostMapping("/back")
-    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") Route route) {
+    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") @Validated Route route, BindingResult errors) {
 //        TODO for future: save partially filled route as tmp (dto not validated)
 //        TODO load forward part by id and return
-        route.setDirection(Direction.F);
-        return new RouteView().edit();
+        if (errors.hasErrors()) {
+            routeService.saveAndProceed(route); //TODO save later? no forget
+        }
+        //TODO do both actions in the same transaction?
+        route = routeService.acquireForEdit(route.getId());
+        return new RouteView(route).edit();
     }
 }
