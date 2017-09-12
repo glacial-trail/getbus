@@ -50,9 +50,11 @@
 
 <#assign isReverseRoute = !route.forward />
 
-<table style="display: none;" id="route-point-template">
-    <@routepoint idx=-1 restrictedit=isReverseRoute />
-</table>
+<#if !isReverseRoute>
+    <table style="display: none;" id="route-point-template">
+        <@routepoint idx=-1 restrictedit=isReverseRoute />
+    </table>
+</#if>
 
 <form name="route" action="create-route" method="post" id="data">
     <input name="id" type="hidden" value="${route.id!''}" class="route-data"/>
@@ -104,31 +106,13 @@
 
         <td class="col-xs-2">
                 <#if restrictedit>
-                    <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" type="text" class="route-data"/>
+                    <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" type="hidden" class="route-data"/>
+                    <input value="<@spring.message 'country.'+rp.countryCode />" readonly type="text"/>
                 <#else>
                     <select name="routePoints[${idx}].countryCode" class="route-data" id="country">
                         <#list countries as code>
-                            <option ${(rp.countryCode?? && code == rp.countryCode)?then('enabled','')} value="${code}"><@spring.message 'country.'+code /></option>
+                            <option ${(rp.countryCode?? && code == rp.countryCode)?then('selected','')} value="${code}"><@spring.message 'country.'+code /></option>
                         </#list>
-<#--    TODO remove
-                        <option value="ukraine">Украина</option>
-                        <option value="russia">Россия</option>
-                        <option value="moldova">Молдова</option>
-                        <option value="belarus">Белорусь</option>
-                        <option value="poland">Польша</option>
-                        <option value="estonia">Эстония</option>
-                        <option value="latvia">Латвия</option>
-                        <option value="lithuania">Литва</option>
-                        <option value="romania">Румыния</option>
-                        <option value="bulgaria">Болгария</option>
-                        <option value="czech republic">Чехия</option>
-                        <option value="slovakia">Словакия</option>
-                        <option value="austria">Австрия</option>
-                        <option value="germany">Германия</option>
-                        <option value="france">Франция</option>
-                        <option value="italy">Италия</option>
-                        <option value="portugal">Португалия</option>
--->
                     </select>
                 </#if>
         <#--<@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>-->
