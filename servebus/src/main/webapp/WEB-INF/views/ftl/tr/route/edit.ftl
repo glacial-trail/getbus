@@ -6,11 +6,23 @@
 <@spring.bind "route" />
 
 <script type="text/javascript">
+    var combodateConf = {
+        value:'00:00',
+        firstItem: 'none',
+        minuteStep: 1
+    };
+
+    $(function() {
+        $('.time:not(#route-point-template .time)').combodate(combodateConf);
+    });
+
     function addRoutePoint(button) {
         var rowWithButton = $(button).parent().parent();
         rowWithButton.after($("#route-point-template tr:nth-child(2)").clone());
-        rowWithButton.after($("#route-point-template tr:first-child").clone());
+        var inputsRow = $("#route-point-template tr:first-child").clone();
+        rowWithButton.after(inputsRow);
         reindexRoutePoints();
+        inputsRow.find('.time').combodate(combodateConf);
         return false;
     }
 
