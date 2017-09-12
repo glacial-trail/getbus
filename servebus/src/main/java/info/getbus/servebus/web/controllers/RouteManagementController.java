@@ -81,7 +81,7 @@ public class RouteManagementController {
         }
         //TODO do both actions in the same transaction?
         route = routeService.acquireForEdit(route.getId());
-        return new RouteView(route).edit();
+        return new RouteView(route).withCountries(countriesRepository.getAll()).edit();
     }
 
     @GetMapping("/{id}/periodicity")
