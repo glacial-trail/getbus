@@ -3,6 +3,7 @@ package info.getbus.servebus.model.route;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 public class RoutePoint {
@@ -14,12 +15,16 @@ public class RoutePoint {
     @NotEmpty(message = "common.notempty.error")
     private String address;
 //    @DateTimeFormat(iso = ISO.TIME)
+    @NotNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime arrival;
+    @NotNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime departure;
 //    private Duration tripTime;
+    @NotNull
     private Long tripTime;
+    @NotNull
     private Integer distance;
 
     public Long getId() {
