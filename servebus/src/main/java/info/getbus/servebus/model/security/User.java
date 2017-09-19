@@ -1,6 +1,7 @@
 package info.getbus.servebus.model.security;
 
 import info.getbus.servebus.model.Entity;
+import info.getbus.servebus.model.user.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.util.Assert;
@@ -22,6 +23,7 @@ public class User extends org.springframework.security.core.userdetails.User imp
 
     private Set<GrantedAuthority> authorities;
 
+    private Profile profile;
 
     public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
@@ -112,5 +114,13 @@ public class User extends org.springframework.security.core.userdetails.User imp
 
     public void setTransporterAreaId(@Nullable Long transporterAreaId) {
         this.transporterAreaId = transporterAreaId;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

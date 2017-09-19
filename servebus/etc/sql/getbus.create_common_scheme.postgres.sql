@@ -11,3 +11,12 @@ CREATE TABLE authorities (
   username VARCHAR(100) NOT NULL REFERENCES users(username),
   authority VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE user_profile (
+  username VARCHAR(100) NOT NULL REFERENCES users(username),
+  time_zone VARCHAR(50) NOT NULL REFERENCES time_zone(zone_id)
+);
+
+CREATE TABLE time_zone (
+  zone_id VARCHAR(50) PRIMARY KEY
+);
