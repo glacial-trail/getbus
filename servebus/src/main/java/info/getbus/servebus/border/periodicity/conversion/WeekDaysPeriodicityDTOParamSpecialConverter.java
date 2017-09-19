@@ -16,7 +16,6 @@ public class WeekDaysPeriodicityDTOParamSpecialConverter implements PeriodicityD
     @Override
     public void copyFields(PeriodicityPartDTO forward, PeriodicityPartDTO reverse) {
         reverse.setStart(forward.getStart());
-        reverse.setTZ(forward.getTZ());
     }
 
     private int arrayToBits(boolean[] bitArray) {
@@ -29,12 +28,11 @@ public class WeekDaysPeriodicityDTOParamSpecialConverter implements PeriodicityD
         return bits;
     }
 
-    boolean[] bitsToArray(int bits) {
+    private boolean[] bitsToArray(int bits) {
         boolean[] bitArray = new boolean[7];
         for (int i = 0; i < 7; i++) {
             bitArray[i] = (bits & (1L << i)) != 0;
         }
         return bitArray;
     }
-
 }

@@ -41,11 +41,6 @@
     <div style="float: left">
         <input name="forward.id" value="${forward.id!''}" type="hidden"/>
         <input name="forward.start" value="${forward.start!''}" type="date">
-        <select name="forward.TZ">
-        <#list tzList as tz>
-            <option ${(forward.TZ?? && tz == forward.TZ)?then('selected','')} value="${tz}">${tz}</option>
-        </#list>
-        </select>
 
         <br/><br/>
 
@@ -72,15 +67,6 @@
                    disabled style="display: none"
             </#if>
         >
-        <select class="js-week-days-strategy js-toggle-strategy" name="reverse.TZ"
-            <#if 'WEEK_DAYS' == strategy>
-                    disabled style="display: none"
-            </#if>
-        >
-        <#list tzList as tz>
-            <option ${(reverse.TZ?? && tz == reverse.TZ)?then('selected','')} value="${tz}">${tz}</option>
-        </#list>
-        </select>
         <br/><br/>
         <br/><br/>
 

@@ -7,6 +7,8 @@
 
 <script type="text/javascript">
     var combodateConf = {
+        format: 'HH:mm',
+        template: 'HH : mm',
         value:'00:00',
         firstItem: 'none',
         minuteStep: 1
@@ -125,8 +127,8 @@
             <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" class="route-data"/>
             <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
         </td>
-        <td class="col-xs-2"><input name="routePoints[${idx}].arrival" value="${rp.arrival!''}" type="text" class="route-data time" data-format="HH:mm" data-template="HH : mm"></td>
-        <td class="col-xs-2"><input name="routePoints[${idx}].departure" value="${rp.departure!''}" type="text" class="route-data time" data-format="HH:mm" data-template="HH : mm"></td>
+        <td class="col-xs-2"><input name="routePoints[${idx}].arrival" value="${rp.arrival!''}" type="text" class="route-data time"></td>
+        <td class="col-xs-2"><input name="routePoints[${idx}].departure" value="${rp.departure!''}" type="text" class="route-data time"></td>
         <td class="col-xs-1"><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" class="route-data" /></td>
         <td class="col-xs-1"><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" class="route-data" /></td>
     </tr>

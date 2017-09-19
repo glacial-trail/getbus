@@ -6,6 +6,7 @@ import info.getbus.servebus.model.periodicity.PeriodicityStrategy;
 import info.getbus.servebus.model.route.PeriodicityPair;
 import info.getbus.servebus.model.route.RoutePartId;
 import info.getbus.servebus.model.route.RoutePeriodicity;
+import info.getbus.servebus.service.security.SecurityHelper;
 import info.getbus.servebus.web.dto.route.PeriodicityPartDTO;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class ToPeriodicityConverter implements Converter<PeriodicityPairDTO, Per
 
     @Autowired
     private PeriodicityDTOSpecialConverterFactory specialConverterFactory;
+    @Autowired
+    private SecurityHelper securityHelper;
 
     @Override
     public PeriodicityPair convert(PeriodicityPairDTO source) {
@@ -40,15 +43,16 @@ public class ToPeriodicityConverter implements Converter<PeriodicityPairDTO, Per
         return new RoutePeriodicity(
                 routePartId,
                 new Periodicity(periodicityPart.getId(),
-                        makeZonedStart(periodicityPart.getStart(), periodicityPart.getTZ()),
+                        makeZonedStart(periodicityPart.getStart()),
                         strategy,
                         convertParam(strategy, periodicityPart)
                 )
         );
     }
 
-    private ZonedDateTime makeZonedStart(LocalDate start, String TZ) {
-        return ZonedDateTime.of(start, LocalTime.MIDNIGHT, ZoneId.of(TZ));
+    private ZonedDateTime makeZonedStart(LocalDate start) {
+        ZoneId tz = securityHelper.getCurrentUser().getProfile().getTimeZone();
+        return ZonedDateTime.of(start, LocalTime.MIDNIGHT, tz);
     }
 
     private int convertParam(PeriodicityStrategy strategy, PeriodicityPartDTO periodicityPart) {

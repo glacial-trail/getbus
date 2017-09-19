@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.ZoneId;
 import java.util.List;
 
 // TODO post-redirect-get
@@ -94,7 +93,7 @@ public class RouteManagementController {
         } else {
             dto = conversionService.convert(pair, PeriodicityPairDTO.class);
         }
-        return new RouteView(routeId).withTZlist(ZoneId.getAvailableZoneIds()).periodicity(dto);
+        return new RouteView(routeId).periodicity(dto);
     }
 
     @PostMapping("{id}/periodicity")
