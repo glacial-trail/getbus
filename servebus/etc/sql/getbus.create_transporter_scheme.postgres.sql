@@ -44,7 +44,7 @@ CREATE UNIQUE INDEX route_point_uniq_rs ON route_point (route_id, sequence);
 
 -- CREATE TYPE route_direction AS ENUM ('F', 'R');
 CREATE TABLE route_point_data (
-  route_point_id BIGINT PRIMARY KEY REFERENCES route_point(id),
+  route_point_id BIGINT REFERENCES route_point(id),
   direction CHAR(1) NOT NULL, -- (F|R)
   --   direction route_direction NOT NULL,
   arrival TIME NOT NULL /*without time zone*/,

@@ -2,6 +2,7 @@ package info.getbus.servebus.service.security;
 
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.model.security.UserBuilder;
+import info.getbus.servebus.persistence.datamappers.user.ProfileMapper;
 import info.getbus.servebus.repository.UserRepository;
 import info.getbus.servebus.model.security.RegisterUserDTO;
 import info.getbus.servebus.service.transporter.TransporterService;
@@ -20,15 +21,18 @@ public class RegistrationServiceImpl implements RegistrationService {
     private UserRepository userRepo;
     private PasswordEncoder encoder;
     private TransporterService transporterService;
+    private ProfileMapper userProfileMapper;
 
     public RegistrationServiceImpl(
             @Autowired UserRepository userRepo,
             @Autowired PasswordEncoder encoder,
-            @Autowired TransporterService transporterService
+            @Autowired TransporterService transporterService,
+            @Autowired ProfileMapper userProfileMapper
     ) {
         this.userRepo = userRepo;
         this.encoder = encoder;
         this.transporterService = transporterService;
+        this.userProfileMapper = userProfileMapper;
     }
 
     public void registerUser(RegisterUserDTO user) {
@@ -41,6 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         log.info("registering new transporter: " + transporterUser);
         Long transporterAreaId =  transporterService.createBaseTransporterInfrastructure();
         User registeredUser = register(transporterUser, "ROLE_USER_BUS");
+        userProfileMapper.insert(registeredUser.getUsername(), "Europe/Kiev");
         transporterService.linkUserToArea(transporterAreaId, registeredUser, "ROLE_USER_BUS");
     }
 
