@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
@@ -46,7 +48,15 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public Route acquireForEdit(long routeId) {
         tryToLock(routeId);
-        return routeMapper.selectById(routeId);
+        Route route = routeMapper.selectById(routeId);
+        return adjustTimezone(route);
+    }
+
+    private Route adjustTimezone(Route route) {
+        ZoneId currentUserTimezone = securityHelper.getCurrentUser().getProfile().getTimeZone();
+        ZonedDateTime adjustedTimezone = route.getStartSales().withZoneSameInstant(currentUserTimezone);
+        route.setStartSales(adjustedTimezone);
+        return route;
     }
 
     @Override

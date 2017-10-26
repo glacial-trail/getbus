@@ -22,11 +22,20 @@
         <jsr305.version>3.0.1</jsr305.version>
         <hibernate-validator.version>5.3.4.Final</hibernate-validator.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <lombok.version>1.16.18</lombok.version>
+        <modelmapper.version>1.1.0</modelmapper.version>
+        <modelmapper-spring-boot-starter.version>1.0.0</modelmapper-spring-boot-starter.version>
     </properties>
 
 
     <!--TODO switch to spring bom-->
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -122,6 +131,17 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-typehandlers-jsr310</artifactId>
             <version>${mybatis-typehandlers.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rozidan</groupId>
+            <artifactId>modelmapper-spring-boot-starter</artifactId>
+            <version>${modelmapper-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>

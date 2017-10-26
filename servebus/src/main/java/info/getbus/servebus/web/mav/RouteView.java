@@ -2,6 +2,7 @@ package info.getbus.servebus.web.mav;
 
 import info.getbus.servebus.model.route.*;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
+import info.getbus.servebus.web.dto.route.RouteDTO;
 import info.getbus.servebus.web.views.TransporterCabView;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,7 +21,7 @@ public class RouteView extends TransporterCabView {
     public static final String PERIODICITY_NAME = "periodicity";
 
     private Long routeId;
-    private Route route;
+    private RouteDTO route;
     private List<CompactRoute> routes;
     private List<String> countries;
     private Collection<String> tzList;
@@ -33,7 +34,7 @@ public class RouteView extends TransporterCabView {
         this.routeId = routeId;
     }
 
-    public RouteView(Route route) {
+    public RouteView(RouteDTO route) {
         this.route = route;
     }
 

@@ -6,7 +6,9 @@ import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
+import info.getbus.servebus.web.dto.route.RouteDTO;
 import info.getbus.servebus.web.mav.RouteView;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ public class RouteManagementController {
     private RouteService routeService;
     @Autowired
     private ConversionService conversionService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/list")
     public ModelAndView listRoutes() {
@@ -37,7 +41,7 @@ public class RouteManagementController {
     @GetMapping("/create")
     public ModelAndView getCreate() {
         //TODO refactor view instantiation with country-list (maybe prototype & lookup method)
-        return new RouteView(new Route()).withCountries(countriesRepository.getAll()).edit();
+        return new RouteView(new RouteDTO()).withCountries(countriesRepository.getAll()).edit();
     }
 
     @PostMapping("/cancel")
@@ -51,36 +55,42 @@ public class RouteManagementController {
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") long id) {
         //TODO handle lock exception
-        return new RouteView(routeService.acquireForEdit(id))
+        RouteDTO route = modelMapper.map(routeService.acquireForEdit(id), RouteDTO.class);
+        return new RouteView(route)
                 .withCountries(countriesRepository.getAll())
                 .edit();
     }
 
     @PostMapping( {"/save", "/edit/save"})
-    public ModelAndView save(@ModelAttribute("route") @Validated Route route, BindingResult errors) {
+    public ModelAndView save(@ModelAttribute("route") @Validated RouteDTO dto, BindingResult errors) {
         List<String> cc = countriesRepository.getAll();
         if (errors.hasErrors()) {
-            return new RouteView(route).withCountries(cc).edit();
+            return new RouteView(dto).withCountries(cc).edit();
         }
 
+        Route route = modelMapper.map(dto, Route.class);
         Route opposite = routeService.saveAndProceed(route);
         if (null == opposite) {
             return new RouteView().redirect().list();
         } else {
-            return new RouteView(opposite).withCountries(cc).edit();
+            RouteDTO oppositeDto = modelMapper.map(opposite, RouteDTO.class);
+            return new RouteView(oppositeDto).withCountries(cc).edit();
         }
     }
 
-    @PostMapping("/back")
-    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") @Validated Route route, BindingResult errors) {
+    @PostMapping({"/back", "/edit/back"})
+    public ModelAndView backToCreateRouteForward(@ModelAttribute("route") @Validated RouteDTO dto, BindingResult errors) {
 //        TODO for future: save partially filled route as tmp (dto not validated)
 //        TODO load forward part by id and return
+        Route route;
         if (!errors.hasErrors()) {
+            route = modelMapper.map(dto, Route.class);
             routeService.saveAndProceed(route); //TODO save later? no forget
         }
         //TODO do both actions in the same transaction?
-        route = routeService.acquireForEdit(route.getId());
-        return new RouteView(route).withCountries(countriesRepository.getAll()).edit();
+        route = routeService.acquireForEdit(dto.getId());//TODO what if route dto has empty id?
+        dto = modelMapper.map(route, RouteDTO.class);
+        return new RouteView(dto).withCountries(countriesRepository.getAll()).edit();
     }
 
     @GetMapping("/{id}/periodicity")
