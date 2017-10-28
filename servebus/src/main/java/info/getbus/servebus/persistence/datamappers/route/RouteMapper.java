@@ -13,6 +13,7 @@ public interface RouteMapper {
 
     String selectLockOwnerForUpdate(@Param("id") Long id);
     void insertLocked(@Param("transporterAreaId") Long transporterAreaId, @Param("route") Route route, @Param("lockOwner") String lockOwner);
+    void update(@Param("route") Route route);
     void updateLockOwner(@Param("id") Long id, @Param("lockOwner") String lockOwner);
     void unlockRoute(@Param("id") Long id);
 }

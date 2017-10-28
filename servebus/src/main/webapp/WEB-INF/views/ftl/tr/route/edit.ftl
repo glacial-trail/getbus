@@ -65,6 +65,16 @@
     <input name="name" value="${route.name!''}" id="name" class="route-data route_name"/>
     <@form.showFieldErrors 'name' 'error' />
     <br/>
+    <label for="base-price">base price</label>
+    <input name="basePrice" value="${route.basePrice!''}" type="text" id="base-price"/>
+    <label for="base-seats-qty">base seats qty</label>
+    <input name="baseSeatsQty" value="${route.baseSeatsQty!''}" type="number" id="base-seats-qty"/>
+    <label for="start-sales">start sales(voyage generation)</label>
+    <input name="startSales" value="${route.startSales!''}" type="date" id="start-sales"/>
+    <label for="sales-depth">sales(voyage) depth</label>
+    <input name="salesDepth" value="${route.salesDepth!''}" type="number" id="sales-depth"/>
+
+    <br/>
     <br/>
     <table class="table table-bordered table-fixed">
         <thead>

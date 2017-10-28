@@ -27,6 +27,10 @@ CREATE TABLE route (
   id BIGSERIAL PRIMARY KEY,
   transporter_area_id BIGINT NOT NULL REFERENCES transporter_area(id),
   name VARCHAR (100) NOT NULL,
+  base_price DECIMAL(6,2) NOT NULL,
+  base_seats_qty INTEGER NOT NULL,
+  start_sales TIMESTAMPTZ NOT NULL,
+  sales_depth INTEGER NOT NULL,
   lock_owner VARCHAR(100) REFERENCES users(username)
 );
 CREATE UNIQUE INDEX route_uniq_tn ON route (transporter_area_id, name);
@@ -57,7 +61,7 @@ CREATE UNIQUE INDEX route_point_data_uniq_rd ON route_point_data (route_point_id
 CREATE TABLE TZ (
   zone VARCHAR(16) PRIMARY KEY
 );
-
+--TODO? move route id and direction to another table(link table)? to share periodicity with many routes
 CREATE TABLE periodicity (
   id BIGSERIAL PRIMARY KEY,
   route_id BIGINT NOT NULL REFERENCES route(id),

@@ -108,7 +108,9 @@ public class RouteServiceImpl implements RouteService {
     }
 
     private void update(Route route) {
-        // TODO update records in route table
+        if (route.isForward()) {
+            routeMapper.update(route);
+        }
         persistenceManager.savePoints(route);
     }
 

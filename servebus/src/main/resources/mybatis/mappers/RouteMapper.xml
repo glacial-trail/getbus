@@ -9,6 +9,10 @@
       <id column="id" property="id" />
       <result column="direction" property="direction" />
       <result column="name" property="name" />
+      <result column="base_price" property="basePrice" />
+      <result column="base_seats_qty" property="baseSeatsQty" />
+      <result column="start_sales" property="startSales" />
+      <result column="sales_depth" property="salesDepth" />
       <collection property="routePoints" ofType="info.getbus.servebus.model.route.RoutePoint">
           <id column="rp_id" property="id" />
           <result column="rp_name" property="name" />
@@ -47,6 +51,10 @@
     SELECT
       r.id,
       r.name,
+      r.base_price,
+      r.base_seats_qty,
+      r.start_sales,
+      r.sales_depth,
       rpd.direction,
       rp.id           as rp_id,
       rp.sequence     as rp_sequence,
@@ -77,13 +85,32 @@
     INSERT INTO route (
       transporter_area_id,
       name,
+      base_price,
+      base_seats_qty,
+      start_sales,
+      sales_depth,
       lock_owner
     ) VALUES (
       #{transporterAreaId},
       #{route.name},
+      #{route.basePrice},
+      #{route.baseSeatsQty},
+      #{route.startSales},
+      #{route.salesDepth},
       #{lockOwner}
     )
   </insert>
+
+  <update id="update">
+      UPDATE route
+      SET
+          name           = #{route.name},
+          base_price     = #{route.basePrice},
+          base_seats_qty = #{route.baseSeatsQty},
+          start_sales    = #{route.startSales},
+          sales_depth    = #{route.salesDepth}
+      WHERE id = #{route.id}
+  </update>
 
   <update id="updateLockOwner">
     UPDATE route

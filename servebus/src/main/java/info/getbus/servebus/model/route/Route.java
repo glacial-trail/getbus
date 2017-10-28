@@ -3,6 +3,8 @@ package info.getbus.servebus.model.route;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -13,6 +15,10 @@ import static info.getbus.servebus.model.route.Direction.F;
 public class Route {
     private Long id;
     private String name;
+    private BigDecimal basePrice;
+    private int baseSeatsQty;
+    private ZonedDateTime startSales;
+    private int salesDepth;
     private Direction direction = F;
     private Deque<RoutePoint> routePoints = new LinkedList<>();
 
