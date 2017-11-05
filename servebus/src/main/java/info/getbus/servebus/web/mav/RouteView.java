@@ -19,6 +19,7 @@ public class RouteView extends TransporterCabView {
     public static final String COUNTRIES_NAME = "countries";
     public static final String TZ_LIST = "tzList";
     public static final String PERIODICITY_NAME = "periodicity";
+    public static final String VIEW_MODE_NAME = "viewMode";
 
     private Long routeId;
     private RouteDTO route;
@@ -26,6 +27,7 @@ public class RouteView extends TransporterCabView {
     private List<String> countries;
     private Collection<String> tzList;
     private PeriodicityPairDTO periodicity;
+    private boolean viewMode;
 
     public RouteView() {
     }
@@ -55,6 +57,7 @@ public class RouteView extends TransporterCabView {
     @Override
     public ModelAndView build() {
         ModelAndView mav = super.build();
+        mav.addObject(VIEW_MODE_NAME, viewMode);
         if (null != routeId) {
             mav.addObject(ROUTE_ID_NAME, routeId);
         }
@@ -89,6 +92,11 @@ public class RouteView extends TransporterCabView {
     }
 
     public ModelAndView edit() {
+        return page("edit").build();
+    }
+
+    public ModelAndView view() {
+        viewMode = true;
         return page("edit").build();
     }
 

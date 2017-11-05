@@ -1,8 +1,6 @@
 package info.getbus.servebus.web.controllers;
 
-import info.getbus.servebus.model.route.CompactRoute;
-import info.getbus.servebus.model.route.PeriodicityPair;
-import info.getbus.servebus.model.route.Route;
+import info.getbus.servebus.model.route.*;
 import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.service.transporter.RouteService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
@@ -36,6 +34,18 @@ public class RouteManagementController {
     public ModelAndView listRoutes() {
         List<CompactRoute> routes = routeService.list();
         return new RouteView(routes).list();
+    }
+
+    @GetMapping("/view/{id}")
+    public ModelAndView view(@PathVariable("id") long id, @RequestParam(name = "direction", required = false)Direction direction)  {
+        //TODO handle lock exception
+        if (null == direction) {
+            direction = Direction.F;
+        }
+        Route route = routeService.get(new RoutePartId(id, direction));
+        RouteDTO dto = modelMapper.map(route, RouteDTO.class);
+        return new RouteView(dto)
+                .view();
     }
 
     @GetMapping("/create")

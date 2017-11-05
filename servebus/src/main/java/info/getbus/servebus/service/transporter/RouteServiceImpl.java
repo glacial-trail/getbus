@@ -46,9 +46,14 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
+    public Route get(RoutePartId id) {
+        return routeMapper.selectById(id);
+    }
+
+    @Override
     public Route acquireForEdit(long routeId) {
         tryToLock(routeId);
-        Route route = routeMapper.selectById(routeId);
+        Route route = get(RoutePartId.forward(routeId));
         return adjustTimezone(route);
     }
 

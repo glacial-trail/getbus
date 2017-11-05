@@ -1,5 +1,6 @@
 <#-- @ftlvariable name="countries" type="java.util.List<String>" -->
 <#-- @ftlvariable name="route" type="info.getbus.servebus.model.route.Route" -->
+<#-- @ftlvariable name="viewMode" type="boolean" -->
 
 <#import "../../macro/forms.ftl" as form>
 
@@ -50,29 +51,31 @@
     }
 </script>
 
-<#assign isReverseRoute = !route.forward />
+<#--<#assign readonlyMode = false />-->
+<#assign isReverseRoute = route.direction == 'R' />
+<#--<#assign restrictedit = route.direction == 'R' />-->
 
-<#if !isReverseRoute>
+<#if !isReverseRoute && !viewMode>
     <table style="display: none;" id="route-point-template">
-        <@routepoint idx=-1 restrictedit=isReverseRoute />
+        <@routepoint idx=-1 />
     </table>
 </#if>
 
 <form name="route" action="create-route" method="post" id="data">
-    <input name="id" type="hidden" value="${route.id!''}" class="route-data"/>
-    <input name="direction" value="${route.direction}" type="hidden" class="route-data"/>
+    <@hidden name="id" value="${route.id!''}" />
+    <@hidden name="direction" value="${route.direction}" />
     <label for="name">Please, enter route name</label>
-    <input name="name" value="${route.name!''}" id="name" class="route-data route_name"/>
+    <@text name="name" value="${route.name!''}" id="name" class="route_name"/>
     <@form.showFieldErrors 'name' 'error' />
     <br/>
     <label for="base-price">base price</label>
-    <input name="basePrice" value="${route.basePrice!''}" type="text" id="base-price"/>
+    <@text name="basePrice" value="${route.basePrice!''}" id="base-price"/>
     <label for="base-seats-qty">base seats qty</label>
-    <input name="baseSeatsQty" value="${route.baseSeatsQty!''}" type="number" id="base-seats-qty"/>
+    <@number name="baseSeatsQty" value="${route.baseSeatsQty!''}" id="base-seats-qty"/>
     <label for="start-sales">start sales(voyage generation)</label>
-    <input name="startSales" value="${route.startSales!''}" type="date" id="start-sales"/>
+    <@date name="startSales" value="${route.startSales!''}" id="start-sales"/>
     <label for="sales-depth">sales(voyage) depth</label>
-    <input name="salesDepth" value="${route.salesDepth!''}" type="number" id="sales-depth"/>
+    <@number name="salesDepth" value="${route.salesDepth!''}" id="sales-depth"/>
 
     <br/>
     <br/>
@@ -90,34 +93,45 @@
         </thead>
     <#list route.routePoints as routePoint>
         <@routepoint idx=routePoint?index rp=routePoint
-            restrictedit=!route.forward
-            add=route.forward && !routePoint?is_last
-            remove=route.forward && !(routePoint?is_first||routePoint?is_last)
+            add=!routePoint?is_last
+            remove=!(routePoint?is_first||routePoint?is_last)
         />
     <#else>
-        <@routepoint idx="0" restrictedit=!route.forward remove=false />
-        <@routepoint idx="1" restrictedit=!route.forward add=false remove=false />
+        <@routepoint idx="0" remove=false />
+        <@routepoint idx="1" add=false remove=false />
     </#list>
     <tr>
         <td colspan="7" class="col-xs-12">
         <br/>
-        <button type="reset">reset</button>
-        <button formaction="cancel">cancel</button>
-        <#if isReverseRoute>
+        <#if !viewMode>
+            <button type="reset">reset</button>
+            <button formaction="cancel">cancel</button>
+        </#if>
+        <#if isReverseRoute && !viewMode>
             <button type="submit" formaction="back">back</button>
         </#if>
-        <button type="submit" formaction="save">${isReverseRoute?then('finish','next')}</button>
-    </td>
-</tr>
+        <#if viewMode>
+            <#if isReverseRoute>
+                <a href="${route.id}?direction=F">back</a>
+            <#else>
+                <a href="${route.id}?direction=R">next</a>
+            </#if>
+        <#else>
+            <button type="submit" formaction="save">${isReverseRoute?then('finish','next')}</button>
+        </#if>
+        </td>
+    </tr>
     </table>
 </form>
 
-<#macro routepoint idx rp={} restrictedit=true add=true remove=true >
+<#macro routepoint idx rp={} add=true remove=true >
     <tr class="route-point" data-rp-idx="${idx}">
         <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden" class="route-data"/>
 
         <td class="col-xs-2">
-                <#if restrictedit>
+                <#if viewMode>
+                    <span><@spring.message 'country.'+rp.countryCode /></span>
+                <#elseif isReverseRoute>
                     <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" type="hidden" class="route-data"/>
                     <input value="<@spring.message 'country.'+rp.countryCode />" readonly type="text"/>
                 <#else>
@@ -130,30 +144,79 @@
         <#--<@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>-->
         </td>
         <td class="col-xs-2">
-            <input name="routePoints[${idx}].name" value="${rp.name!''}" ${restrictedit?then('readonly','')} type="text" class="route-data" id="station"/>
+            <@text name="routePoints[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
             <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
         </td>
         <td class="col-xs-2">
-            <input name="routePoints[${idx}].address" value="${rp.address!''}" ${restrictedit?then('readonly','')} type="text" class="route-data"/>
+            <@text name="routePoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute />
             <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
         </td>
-        <td class="col-xs-2"><input name="routePoints[${idx}].arrival" value="${rp.arrival!''}" type="text" class="route-data time"></td>
-        <td class="col-xs-2"><input name="routePoints[${idx}].departure" value="${rp.departure!''}" type="text" class="route-data time"></td>
-        <td class="col-xs-1"><input name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" type="text" class="route-data" /></td>
-        <td class="col-xs-1"><input name="routePoints[${idx}].distance" value="${rp.distance!''}" type="text" class="route-data" /></td>
+        <td class="col-xs-2"><@time name="routePoints[${idx}].arrival" value="${rp.arrival!''}" /></td>
+        <td class="col-xs-2"><@time name="routePoints[${idx}].departure" value="${rp.departure!''}" /></td>
+        <td class="col-xs-1"><@text name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" /></td>
+        <td class="col-xs-1"><@text name="routePoints[${idx}].distance" value="${rp.distance!''}" /></td>
     </tr>
     <tr>
-        <#if add || remove>
+        <#if !isReverseRoute && !viewMode>
+            <#if add || remove>
             <td colspan="7" class="col-xs-12">
-        </#if>
-        <#if add>
+            </#if>
+            <#if add>
                 <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
-        </#if>
-        <#if remove>
+            </#if>
+            <#if remove>
                 <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
-        </#if>
-        <#if add || remove>
+            </#if>
+            <#if add || remove>
             </td>
+            </#if>
         </#if>
     </tr>
+</#macro>
+
+<#macro hidden name value class="" id="">
+    <@routedatafield id=id name=name value=value type="hidden" class=class />
+</#macro>
+
+<#macro text name value ro=false class="" id="">
+    <@routedatafield id=id name=name value=value ro=ro class=class />
+</#macro>
+
+<#macro number name value ro=false class="" id="">
+    <@routedatafield id=id name=name value=value type="number" ro=ro class=class />
+</#macro>
+
+<#macro date name value ro=false class="" id="">
+    <@routedatafield id=id name=name value=value type="date" ro=ro class=class />
+</#macro>
+
+<#macro time name value ro=false class="" id="">
+    <#assign iclass = ("time " + class)?trim />
+    <@routedatafield id=id name=name value=value ro=ro class=iclass />
+</#macro>
+
+<#macro routedatafield id name value type="text" ro=false class="">
+    <#assign iclass = ("route-data " + class)?trim />
+    <#if viewMode>
+        <#if type != "hidden">
+            <@span id=id class=class>${value}</@>
+        </#if>
+    <#else>
+        <@input id=id type=type name=name value=value ro=ro class=iclass />
+    </#if>
+</#macro>
+
+<#macro input id name value class type="text" ro=false>
+    <input
+        <#if id?has_content>id="${id}"</#if>
+        name="${name}"
+        value="${value}"
+        type="${type}"
+        <#if class?has_content>class="${class}"</#if>
+        <#if ro>readonly</#if>
+    />
+
+</#macro>
+<#macro span id class>
+    <span <#if id?has_content>id="${id}"</#if> <#if class?has_content>class="${class}"</#if>><#nested>&nbsp;</span>
 </#macro>

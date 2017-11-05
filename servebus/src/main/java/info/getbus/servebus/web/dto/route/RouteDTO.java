@@ -43,8 +43,4 @@ public class RouteDTO {
     @NotEmpty(message = "common.notempty.error")
     @Size(min = 2)
     private Deque<RoutePoint> routePoints = new LinkedList<>();
-
-    public boolean isForward() {//TODO get rid of this method
-        return F == direction;
-    }
 }

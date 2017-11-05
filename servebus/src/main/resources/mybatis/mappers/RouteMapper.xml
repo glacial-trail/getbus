@@ -68,9 +68,17 @@
     FROM route r
       LEFT JOIN route_point rp ON r.id = rp.route_id
       LEFT JOIN route_point_data rpd ON rpd.route_point_id = rp.id
-        AND rpd.direction = 'F'
-    WHERE r.id = #{id}
-    ORDER BY sequence ASC
+        AND rpd.direction = #{cid.direction}
+    WHERE r.id = #{cid.id}
+    ORDER BY sequence
+    <choose>
+      <when test='cid.direction.name == "F"'>
+          ASC
+      </when>
+      <otherwise>
+        DESC
+      </otherwise>
+    </choose>
   </select>
 
   <select id="selectLockOwnerForUpdate" resultType="string">
@@ -123,4 +131,11 @@
     SET lock_owner = NULL
     WHERE id = #{id}
   </update>
+
+    <select id="selectIsRouteLocked" resultType="_boolean">
+        SELECT EXISTS (
+        SELECT id FROM route WHERE id = #{id} AND (lock_owner IS NOT NULL AND lock_owner != #{except})
+        )
+    </select>
+
 </mapper>
