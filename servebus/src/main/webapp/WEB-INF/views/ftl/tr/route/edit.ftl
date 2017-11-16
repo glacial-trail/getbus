@@ -21,8 +21,9 @@
 
     function addRoutePoint(button) {
         var rowWithButton = $(button).parent().parent();
-        rowWithButton.after($("#route-point-template tr:nth-child(2)").clone());
-        var inputsRow = $("#route-point-template tr:first-child").clone();
+        var routePointTemplate = $("#route-point-template");
+        rowWithButton.after(routePointTemplate.find("tr:nth-child(2)").clone());
+        var inputsRow = routePointTemplate.find("tr:first-child").clone();
         rowWithButton.after(inputsRow);
         reindexRoutePoints();
         inputsRow.find('.time').combodate(combodateConf);
@@ -39,7 +40,7 @@
     function reindexRoutePoints() {
         $("form[name=route] tr.route-point").each(function (idx) {
             var elem = $(this);
-            if (elem.data("rp-idx") != idx) {
+            if (elem.data("rp-idx") !== idx) {
                 elem.attr("data-rp-idx", idx);
                 elem.find(".route-data:input").each(function () {
                     var input = $(this);
@@ -76,6 +77,7 @@
     <@date name="startSales" value="${route.startSales!''}" id="start-sales"/>
     <label for="sales-depth">sales(voyage) depth</label>
     <@number name="salesDepth" value="${route.salesDepth!''}" id="sales-depth"/>
+    <#--<input type="text" value="end sales(voyage generation, sales depth)">-->
 
     <br/>
     <br/>
