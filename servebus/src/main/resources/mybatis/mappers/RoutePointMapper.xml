@@ -16,7 +16,7 @@
        <result column="distance" property="distance" />
   </resultMap>
 
-  <select id="selectRoutePoints" resultMap="routePoint">
+  <select id="selectRoutePointsWithData" resultMap="routePoint">
     SELECT
       rp.id           as id,
       rp.sequence     as sequence,
@@ -118,7 +118,7 @@
     WHERE id = #{id}
   </update>
 
-  <select id="existInconsistentRoutePoints" resultType="_boolean">
+  <select id="existInconsistentRoutePoints" resultType="boolean">
     SELECT exists (
       SELECT rp.id, rpdf.route_point_id, rpdr.route_point_id, rpdf.direction, rpdr.direction
       FROM route_point rp

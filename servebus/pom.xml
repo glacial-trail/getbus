@@ -25,6 +25,8 @@
         <lombok.version>1.16.18</lombok.version>
         <modelmapper.version>1.1.0</modelmapper.version>
         <modelmapper-spring-boot-starter.version>1.0.0</modelmapper-spring-boot-starter.version>
+        <random-beans.version>3.7.0</random-beans.version>
+        <hamcrest.version>2.0.0.0</hamcrest.version>
     </properties>
 
 
@@ -155,6 +157,18 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.benas</groupId>
+            <artifactId>random-beans</artifactId>
+            <version>${random-beans.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-junit</artifactId>
+            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -79,7 +79,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
 
     public Route prepareReversed(Route route) {
         route.setDirection(route.isForward() ? Direction.R : Direction.F);
-        Deque<RoutePoint> routePoints = routePointMapper.selectRoutePoints(route.getId(), route.getDirection());
+        Deque<RoutePoint> routePoints = routePointMapper.selectRoutePointsWithData(route.getId(), route.getDirection());
         route.setRoutePoints(routePoints);
         return route;
     }

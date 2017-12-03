@@ -23,7 +23,7 @@
         WHERE route_id = #{id}
     </select>
 
-    <insert id="insert" useGeneratedKeys="false">
+    <insert id="insert"  useGeneratedKeys="true" keyProperty="periodicity.id" keyColumn="id">
         INSERT INTO periodicity (
             route_id,
             route_direction,
