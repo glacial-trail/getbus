@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-@RequestMapping("/tr/")
+@RequestMapping("/t/")
 public class TransporterMainController {
 
     @GetMapping("/")

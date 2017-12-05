@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="periodicity" type="info.getbus.servebus.web.dto.route.PeriodicityPairDTO" -->
 <#-- @ftlvariable name="countries" type="java.util.List<String>" -->
 <#-- @ftlvariable name="tzList" type="java.util.List<String>" -->
 
@@ -36,7 +37,7 @@
 
     <br/><br/>
 
-    <input name="routeId" value="${routeId}" type="hidden">
+    <input name="routeId" value="${periodicity.routeId}" type="hidden">
 
     <div style="float: left">
         <input name="forward.id" value="${forward.id!''}" type="hidden"/>

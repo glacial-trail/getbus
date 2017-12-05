@@ -20,8 +20,9 @@ public class PeriodicityPairDTO {
     @Valid
     private PeriodicityPartDTO reverse;
 
-    public static PeriodicityPairDTO empty() {
+    public static PeriodicityPairDTO empty(Long rid) {
         PeriodicityPairDTO dto = new PeriodicityPairDTO();
+        dto.setRouteId(rid);
         dto.setForward(new PeriodicityPartDTO());
         dto.setReverse(new PeriodicityPartDTO());
         return dto;

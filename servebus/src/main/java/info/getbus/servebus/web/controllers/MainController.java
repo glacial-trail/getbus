@@ -40,7 +40,7 @@ public class MainController {
         if (principal == null) {
             return "forward:/logon";
         } else if (request.isUserInRole("ROLE_USER_BUS")) {
-            return "redirect:/tr/";
+            return "redirect:/t/";
         } else {
             return "forward:/index";
         }
