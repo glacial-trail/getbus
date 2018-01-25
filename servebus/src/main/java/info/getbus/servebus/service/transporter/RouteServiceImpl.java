@@ -1,11 +1,15 @@
 package info.getbus.servebus.service.transporter;
 
-import info.getbus.servebus.model.route.*;
-import info.getbus.servebus.persistence.managers.RoutePeriodicityPersistenceManager;
-import info.getbus.servebus.persistence.managers.RoutePersistenceManager;
+import info.getbus.servebus.model.route.CompactRoute;
+import info.getbus.servebus.model.route.PeriodicityPair;
+import info.getbus.servebus.model.route.Route;
+import info.getbus.servebus.model.route.RoutePartId;
+import info.getbus.servebus.model.route.RoutePeriodicity;
+import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
-import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.persistence.managers.RoutePeriodicityPersistenceManager;
+import info.getbus.servebus.persistence.managers.RoutePersistenceManager;
 import info.getbus.servebus.service.MalformedArgumentException;
 import info.getbus.servebus.service.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nullable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.List;
 
 @Service
 @Transactional
@@ -45,17 +49,17 @@ public class RouteServiceImpl implements RouteService {
         return routeMapper.selectCompactRoutesByUsername(resolveCurrentUserName());
     }
 
-    @Override
+    @Override //TODO decorate by calculator reversed distances or route calculate itself?
     public Route get(RoutePartId id) {
         return routeMapper.selectById(id);
     }
 
     @Override
-    public Route acquireForEdit(long routeId) {
-        tryToLock(routeId);
-        Route route = get(RoutePartId.forward(routeId));
-        return adjustTimezone(route);
-    }
+    public Route acquireForEdit(RoutePartId partId) {
+        tryToLock(partId.getId());
+        Route route = get(partId);
+        return adjustTimezone(route);//TODO decorator fom mapper interface?
+    }//or adjust tz only for display on web
 
     private Route adjustTimezone(Route route) {
         ZoneId currentUserTimezone = securityHelper.getCurrentUser().getProfile().getTimeZone();
@@ -76,7 +80,7 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public void releaseConsistent(long routeId) {
-        tryToLock(routeId);
+        checkLock(routeId);
         unlockConsistent(routeId);
     }
 
@@ -86,30 +90,34 @@ public class RouteServiceImpl implements RouteService {
         }
     }
 
-    @Nullable
     @Override
-    public Route saveAndProceed(Route route) {
+    public boolean saveAndCheckConsistency(Route route, boolean unlockIfConsistent) {
         if (null == route.getId()) {
             if (route.isForward()) {
                 createLocked(route);
-                return invert(route);
+                return false;
             } else {
-                throw new MalformedArgumentException("New route can't be reverse");
+                throw new MalformedArgumentException("New route can't be reverse");// really?
             }
         } else {
-            tryToLock(route);
+            checkLock(route);
             update(route);
             if (isConsistent(route)) {
-                if (route.isForward()) {
-                    return invert(route);
-                } else {
+                if (unlockIfConsistent) {
                     unlock(route);
-                    return null;
                 }
+                return true;
             } else {
-                return invert(route);
+                return false;
             }
         }
+    }
+
+    private void checkLock(Route route) {
+        checkLock(route.getId());
+    }
+    private void checkLock(long routeId) {
+        persistenceManager.checkLock(routeId, resolveCurrentUserName());
     }
 
     private void update(Route route) {
@@ -137,11 +145,6 @@ public class RouteServiceImpl implements RouteService {
         persistenceManager.tryToLockFor(id, resolveCurrentUserName());
     }
 
-    private Route invert(Route route) {
-        // TODO calculate reverse distance
-        return persistenceManager.prepareReversed(route);
-    }
-
     @Nullable
     @Override
     public PeriodicityPair getPeriodicityPair(long routeId) {
@@ -153,6 +156,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     //TODO create RouteServiceFacade for methods like this
+    //TODO maybe lock it on display phase? like route
     @Override
     public void savePeriodicity(PeriodicityPair pair) {
         tryToLock(pair.getRouteId());

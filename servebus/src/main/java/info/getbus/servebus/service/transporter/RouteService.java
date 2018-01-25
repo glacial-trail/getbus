@@ -11,12 +11,11 @@ import java.util.List;
 public interface RouteService {
     List<CompactRoute> list();
     Route get(RoutePartId id);
-    Route acquireForEdit(long routeId);
+    Route acquireForEdit(RoutePartId partId);
     void acquireLock(long routeId);
     void cancelEdit(long routeId);
     void releaseConsistent(long routeId);
-    @Nullable
-    Route saveAndProceed(Route route);
+    boolean saveAndCheckConsistency(Route route, boolean unlockIfConsistent);
     @Nullable
     PeriodicityPair getPeriodicityPair(long routeId);
     void savePeriodicity(PeriodicityPair pair);

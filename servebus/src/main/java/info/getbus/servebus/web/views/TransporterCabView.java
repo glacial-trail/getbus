@@ -1,43 +1,30 @@
 package info.getbus.servebus.web.views;
 
+import com.google.common.base.Joiner;
 import org.springframework.web.servlet.ModelAndView;
 
-public /*abstract*/ class TransporterCabView {
-    public static final String CAB_URL = "/t";
-    public static final String FTL_VIEW_SUFFIX = ".ftl";
+public class TransporterCabView extends ModelAndView {
 
-    private String viewSuffix = FTL_VIEW_SUFFIX;
-//    private String viewSuffix;
-    private String cabPage;
+    private static final Joiner joiner = Joiner.on("").skipNulls();
 
-    protected ModelAndView mav = new ModelAndView("tr/cab");
+    private String innerViewPrefix;
+    private String innerViewSuffix;
+    private String innerViewModelParamName;
 
-    public TransporterCabView() {
+    public void setInnerViewPrefix(String innerViewPrefix) {
+        this.innerViewPrefix = innerViewPrefix;
     }
 
-    public TransporterCabView(String cabPage) {
-        this.cabPage = cabPage;
+    public void setInnerViewSuffix(String innerViewSuffix) {
+        this.innerViewSuffix = innerViewSuffix;
     }
 
-    protected TransporterCabView page(String cabPage) {
-        this.cabPage = cabPage;
+    public void setInnerViewModelParamName(String innerViewModelParamName) {
+        this.innerViewModelParamName = innerViewModelParamName;
+    }
+
+    public ModelAndView page(String name) {
+        addObject(innerViewModelParamName, joiner.join(innerViewPrefix, name, innerViewSuffix));
         return this;
-    }
-
-    public ModelAndView build() {
-        mav.addObject("cabPageName", getCabPage() + viewSuffix);
-        return mav;
-    }
-
-    protected String getCabPage() {
-        return cabPage;
-    }
-
-    public String getViewSuffix() {
-        return viewSuffix;
-    }
-
-    public void setViewSuffix(String viewSuffix) {
-        this.viewSuffix = viewSuffix;
     }
 }

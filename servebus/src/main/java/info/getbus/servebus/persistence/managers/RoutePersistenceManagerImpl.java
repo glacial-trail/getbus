@@ -4,7 +4,7 @@ import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.RoutePoint;
 import info.getbus.servebus.model.security.User;
-import info.getbus.servebus.persistence.LockedEntityException;
+import info.getbus.servebus.persistence.LockedRouteException;
 import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
         }
     }
 
+    @Override
     public void savePoints(Route route) {
         Deque<PointId2Sequence> points = new LinkedList<>();
         int c = 0;
@@ -67,6 +68,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
         }
     }
 
+    @Override
     public void createRoute(Route route, User forUser, boolean lock) {
         if (lock) {
             routeMapper.insertLocked(forUser.getTransporterAreaId(), route, forUser.getUsername());
@@ -77,6 +79,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
         }
     }
 
+    @Override
     public Route prepareReversed(Route route) {
         route.setDirection(route.isForward() ? Direction.R : Direction.F);
         Deque<RoutePoint> routePoints = routePointMapper.selectRoutePointsWithData(route.getId(), route.getDirection());
@@ -85,12 +88,21 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
     public void  tryToLockFor(Long routeId, String me) {
         String lockOwner = routeMapper.selectLockOwnerForUpdate(routeId);
         if (null == lockOwner) {
             routeMapper.updateLockOwner(routeId, me);
         } else if (!lockOwner.equals(me)) {
-            throw new LockedEntityException(routeId, me, lockOwner);
+            throw new LockedRouteException(routeId, me, lockOwner);
+        }
+    }
+
+    @Override
+    public void  checkLock(long routeId, String me) {
+        String lockOwner = routeMapper.selectLockOwnerForUpdate(routeId);
+        if (null!= lockOwner && !me.equals(lockOwner)) {
+            throw new LockedRouteException(routeId, me, lockOwner);
         }
     }
 }

@@ -55,7 +55,7 @@
       r.base_seats_qty,
       r.start_sales,
       r.sales_depth,
-      rpd.direction,
+      #{cid.direction} as direction,
       rp.id           as rp_id,
       rp.sequence     as rp_sequence,
       rp.name         as rp_name,

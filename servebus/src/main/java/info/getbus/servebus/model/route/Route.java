@@ -9,6 +9,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import static info.getbus.servebus.model.route.Direction.F;
+import static info.getbus.servebus.model.route.Direction.R;
 
 @Getter
 @Setter
@@ -24,5 +25,9 @@ public class Route {
 
     public boolean isForward() {
         return F == direction;
+    }
+
+    public Direction oppositeDirection() {
+        return isForward() ? R : F;
     }
 }

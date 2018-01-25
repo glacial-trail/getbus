@@ -63,7 +63,7 @@
 </#if>
 
 <form name="route" action="create-route" method="post" id="data">
-    <@hidden name="id" value="${route.id!''}" />
+    <@hidden name="id" value="${route.id?c!''}" />
     <@hidden name="direction" value="${route.direction}" />
     <label for="name">Please, enter route name</label>
     <@text name="name" value="${route.name!''}" id="name" class="route_name"/>
@@ -109,17 +109,19 @@
             <button type="reset">reset</button>
             <button formaction="cancel">cancel</button>
         </#if>
-        <#if isReverseRoute && !viewMode>
-            <button type="submit" formaction="back">back</button>
-        </#if>
         <#if viewMode>
             <#if isReverseRoute>
-                <a href="${route.id}?direction=F">back</a>
+                <a href="${route.id?c}?direction=F">back</a>
             <#else>
-                <a href="${route.id}?direction=R">next</a>
+                <a href="${route.id?c}?direction=R">next</a>
             </#if>
         <#else>
-            <button type="submit" formaction="save">${isReverseRoute?then('finish','next')}</button>
+            <#if isReverseRoute>
+                <button type="submit" formaction="back">back</button>
+            <#else>
+                <button type="submit" formaction="save">next</button>
+            </#if>
+            <button type="submit" formaction="save?finish=true">finish</button>
         </#if>
         </td>
     </tr>
@@ -128,7 +130,7 @@
 
 <#macro routepoint idx rp={} add=true remove=true >
     <tr class="route-point" data-rp-idx="${idx}">
-        <input name="routePoints[${idx}].id" value="${rp.id!''}" type="hidden" class="route-data"/>
+        <input name="routePoints[${idx}].id" value="${(rp.id?c)!''}" type="hidden" class="route-data"/>
 
         <td class="col-xs-2">
                 <#if viewMode>

@@ -1,6 +1,7 @@
 package info.getbus.servebus.web.controllers;
 
 import info.getbus.servebus.web.views.TransporterCabView;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,18 +12,23 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/t/")
 public class TransporterMainController {
 
+    @Lookup("transporterCabView")
+    public TransporterCabView view() {
+        return null;
+    }
+
     @GetMapping("/")
     public ModelAndView welcome() {
-        return new TransporterCabView("welcome").build();
+        return view().page("welcome");
     }
 
     @GetMapping("/voyages")
     public ModelAndView listVoyages() {
-        return new TransporterCabView("voyage-list").build();
+        return view().page("voyage-list");
     }
 
     @GetMapping("/about")
     public ModelAndView about() {
-        return new TransporterCabView("about").build();
+        return view().page("about");
     }
 }

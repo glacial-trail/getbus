@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
+//TODO GREAT refactoring: lombok, modelmapper etc
+//TODO rename to WayPoint
 public class RoutePoint {
     private Long id;
     @NotEmpty(message = "common.notempty.error")
