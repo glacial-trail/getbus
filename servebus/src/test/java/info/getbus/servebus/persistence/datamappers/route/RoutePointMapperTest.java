@@ -1,22 +1,25 @@
 package info.getbus.servebus.persistence.datamappers.route;
 
 import info.getbus.servebus.model.route.Direction;
+import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.RoutePoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
-public class RoutePointMapperTest extends RouteAwareBaseTest {
+public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
     @Autowired
     private RoutePointMapper routePointMapper;
 
@@ -29,7 +32,7 @@ public class RoutePointMapperTest extends RouteAwareBaseTest {
     public void selectPoints() throws Exception {
         insertPointsFor(route);
         Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
-        assertThat(points, hasSize(route.getRoutePoints().size()));
+        assertThat(points, hasSizeOf(route.getRoutePoints()));
         new DoubleFor<>(route.getRoutePoints(), points).iterate(
                 (actual, expected) -> assertThat(expected.getId(), is(actual.getId())));
     }
@@ -62,7 +65,8 @@ public class RoutePointMapperTest extends RouteAwareBaseTest {
     public void insertAndSelectDataIfNonExist() throws Exception {
         RoutePoint expected = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), expected, 0);
-        routePointMapper.insertDataIfNonExist(expected, Direction.R);
+        int upc = routePointMapper.insertDataIfNonExist(expected, Direction.R);
+        assertThat(upc, is(1));
         Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), Direction.R);
         assertThatPointsAreEqual(points.getFirst(), expected);
         assertThatPointsDataAreEqual(points.getFirst(), expected);
@@ -122,7 +126,7 @@ public class RoutePointMapperTest extends RouteAwareBaseTest {
         RoutePoint point = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), point, 0);
         routePointMapper.insertDataIfNonExist(point, Direction.F);
-        assertTrue(routePointMapper.existInconsistentRoutePoints(route.getId()));
+        assertThat(routePointMapper.existInconsistentRoutePoints(route.getId()), is(true));
     }
 
     @Test
@@ -131,7 +135,7 @@ public class RoutePointMapperTest extends RouteAwareBaseTest {
         routePointMapper.insert(route.getId(), point, 0);
         routePointMapper.insertDataIfNonExist(point, Direction.F);
         routePointMapper.insertDataIfNonExist(point, Direction.R);
-        assertFalse(routePointMapper.existInconsistentRoutePoints(route.getId()));
+        assertThat(routePointMapper.existInconsistentRoutePoints(route.getId()), is(false));
     }
 
     private void assertThatRoutePointDataIsNull(RoutePoint point) {
@@ -139,5 +143,9 @@ public class RoutePointMapperTest extends RouteAwareBaseTest {
         assertThat(point.getDeparture(), nullValue());
         assertThat(point.getDistance(), nullValue());
         assertThat(point.getTripTime(), nullValue());
+    }
+
+    public static <E> org.hamcrest.Matcher<java.util.Collection<? extends E>> hasSizeOf(Collection c) {
+        return hasSize(c.size());
     }
 }

@@ -9,15 +9,17 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static info.getbus.servebus.model.route.Direction.F;
+import static info.getbus.servebus.model.route.Direction.R;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class RoutePeriodicityMapperTest extends RouteAwareBaseTest {
+public class RoutePeriodicityMapperTest extends RouteAwarePersistenceBaseTest {
 
     @Autowired
     private RoutePeriodicityMapper periodicityMapper;
@@ -36,10 +38,10 @@ public class RoutePeriodicityMapperTest extends RouteAwareBaseTest {
         List<RoutePeriodicity> periodicity = periodicityMapper.selectByRouteId(route.getId());
         assertThat(periodicity, hasSize(1));
         RoutePeriodicity actual = periodicity.iterator().next();
-        assertNotNull(actual.getRoutePartId());
-        assertNotNull(actual.getPeriodicity());
+        assertThat(actual.getRoutePartId(), is(notNullValue()));
+        assertThat(actual.getPeriodicity(), is(notNullValue()));
         assertThat(actual.getRoutePartId().getId(), is(route.getId()));
-        assertThat(directionOf(actual), is(Direction.F));
+        assertThat(directionOf(actual), is(F));
         assertThatPeriodicitiesAreEqual(actual, expected);
     }
 
@@ -57,17 +59,15 @@ public class RoutePeriodicityMapperTest extends RouteAwareBaseTest {
 
         Periodicity expForward = newPeriodicity();
         periodicityMapper.insert(RoutePartId.forward(route.getId()), expForward);
-        expIdContainer.put(Direction.F, expForward);
+        expIdContainer.put(F, expForward);
         Periodicity expReverse = newPeriodicity();
         periodicityMapper.insert(RoutePartId.reverse(route.getId()), expReverse);
-        expIdContainer.put(Direction.R, expReverse);
+        expIdContainer.put(R, expReverse);
 
         List<RoutePeriodicity> actualPair = periodicityMapper.selectByRouteId(route.getId());
         assertThat(actualPair, hasSize(2));
         assertThat(actualPair.stream()
-                .map(this::directionOf)
-                .distinct().count(),
-                is(2L));
+                .map(this::directionOf).collect(Collectors.toSet()), containsInAnyOrder(F,R));
         actualPair.forEach(actPeriodicity ->
                 assertThat(idOf(actPeriodicity), is(expIdContainer.getFor(actPeriodicity)))
         );
@@ -81,8 +81,8 @@ public class RoutePeriodicityMapperTest extends RouteAwareBaseTest {
         expected.setId(periodicity.getId());
         periodicityMapper.update(route.getId(), expected);
         RoutePeriodicity actual = periodicityMapper.selectByRouteId(route.getId()).iterator().next();
-        assertEquals(route.getId(), actual.getRoutePartId().getId());
-        assertEquals(Direction.F, directionOf(actual));
+        assertThat(route.getId(), is(actual.getRoutePartId().getId()));
+        assertThat(F, is(directionOf(actual)));
         assertThatPeriodicitiesAreEqual(actual, expected);
     }
 

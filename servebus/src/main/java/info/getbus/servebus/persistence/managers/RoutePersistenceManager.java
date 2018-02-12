@@ -8,6 +8,6 @@ public interface RoutePersistenceManager {
     void savePoints(Route route);
     @Deprecated
     Route prepareReversed(Route route);
-    void tryToLockFor(Long routeId, String me);
-    void  checkLock(long routeId, String me);
+    void tryLockFor(Long routeId, String me);
+    void checkLock(long routeId, String me);
 }

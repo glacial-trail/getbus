@@ -79,6 +79,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
         }
     }
 
+    @Deprecated
     @Override
     public Route prepareReversed(Route route) {
         route.setDirection(route.isForward() ? Direction.R : Direction.F);
@@ -89,7 +90,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void  tryToLockFor(Long routeId, String me) {
+    public void tryLockFor(Long routeId, String me) {
         String lockOwner = routeMapper.selectLockOwnerForUpdate(routeId);
         if (null == lockOwner) {
             routeMapper.updateLockOwner(routeId, me);
@@ -100,8 +101,8 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
 
     @Override
     public void  checkLock(long routeId, String me) {
-        String lockOwner = routeMapper.selectLockOwnerForUpdate(routeId);
-        if (null!= lockOwner && !me.equals(lockOwner)) {
+        String lockOwner = routeMapper.selectLockOwner(routeId);
+        if (null == lockOwner || !me.equals(lockOwner)) {
             throw new LockedRouteException(routeId, me, lockOwner);
         }
     }

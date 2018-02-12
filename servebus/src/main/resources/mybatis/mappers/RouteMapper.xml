@@ -81,6 +81,13 @@
     </choose>
   </select>
 
+  <select id="selectLockOwner" resultType="string">
+    SELECT
+      lock_owner
+    FROM route
+    WHERE id = #{id}
+  </select>
+
   <select id="selectLockOwnerForUpdate" resultType="string">
     SELECT
       lock_owner

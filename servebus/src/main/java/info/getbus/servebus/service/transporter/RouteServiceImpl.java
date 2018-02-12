@@ -56,7 +56,7 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public Route acquireForEdit(RoutePartId partId) {
-        tryToLock(partId.getId());
+        tryLock(partId.getId());
         Route route = get(partId);
         return adjustTimezone(route);//TODO decorator fom mapper interface?
     }//or adjust tz only for display on web
@@ -70,7 +70,7 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public void acquireLock(long routeId) {
-        tryToLock(routeId);
+        tryLock(routeId);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class RouteServiceImpl implements RouteService {
                 throw new MalformedArgumentException("New route can't be reverse");// really?
             }
         } else {
-            checkLock(route);
+            tryLock(route);
             update(route);
             if (isConsistent(route)) {
                 if (unlockIfConsistent) {
@@ -138,11 +138,11 @@ public class RouteServiceImpl implements RouteService {
         return !routePointMapper.existInconsistentRoutePoints(routeId);
     }
 
-    private void tryToLock(Route route) {
-        tryToLock(route.getId());
+    private void tryLock(Route route) {
+        tryLock(route.getId());
     }
-    private void tryToLock(Long id) {
-        persistenceManager.tryToLockFor(id, resolveCurrentUserName());
+    private void tryLock(Long id) {
+        persistenceManager.tryLockFor(id, resolveCurrentUserName());
     }
 
     @Nullable
@@ -159,7 +159,7 @@ public class RouteServiceImpl implements RouteService {
     //TODO maybe lock it on display phase? like route
     @Override
     public void savePeriodicity(PeriodicityPair pair) {
-        tryToLock(pair.getRouteId());
+        checkLock(pair.getRouteId());
         savePeriodicity(pair.getForward());
         savePeriodicity(pair.getReverse());
         unlockConsistent(pair.getRouteId());

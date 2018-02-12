@@ -17,9 +17,8 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
-public class RouteMapperTest extends RouteAwareBaseTest {
+public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
 
     private long transporterAreaId2;
 
@@ -87,20 +86,19 @@ public class RouteMapperTest extends RouteAwareBaseTest {
         route = insertRouteFor(transporterAreaId, "username14");
         expContainer.putNonEditable(route);
         route = insertRouteFor(transporterAreaId2, "username24");
-        expContainer.putNonEditable(route);
         Long alienRoute = route.getId();
         route = insertRouteFor(transporterAreaId, null);
         expContainer.putEditable(route);
 
         List<CompactRoute> compactRoutes = routeMapper.selectCompactRoutesByUsername(user.getUsername());
         assertThat(compactRoutes, hasSize(4));
-        assertTrue(compactRoutes.stream().noneMatch(cRoute -> alienRoute == cRoute.getId()));
+        assertThat(compactRoutes.stream().noneMatch(cRoute -> alienRoute == cRoute.getId()), is(true));
 
         for (CompactRoute actual : compactRoutes) {
             Route expected = expContainer.getFor(actual);
             assertThat(actual.getName(), is(expected.getName()));
             assertThat(actual.getStartPoint(), is(nameOfFirstPoint(expected)));
-            assertThat(actual.getEndPoint(), is(nameOfLstPoint(expected)));
+            assertThat(actual.getEndPoint(), is(nameOfLastPoint(expected)));
             assertThat(actual.isEditable(), is(expContainer.isEditable(actual)));
         }
     }
@@ -112,7 +110,7 @@ public class RouteMapperTest extends RouteAwareBaseTest {
         return route;
     }
 
-    private String nameOfLstPoint(Route expected) {
+    private String nameOfLastPoint(Route expected) {
         return expected.getRoutePoints().getLast().getName();
     }
 
@@ -124,6 +122,13 @@ public class RouteMapperTest extends RouteAwareBaseTest {
     public void selectLockOwnerForUpdate() throws Exception {
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
         String actualOwner = routeMapper.selectLockOwnerForUpdate(route.getId());
+        assertThat(actualOwner, is(user.getUsername()));
+    }
+
+    @Test
+    public void selectLockOwner() throws Exception {
+        routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
+        String actualOwner = routeMapper.selectLockOwner(route.getId());
         assertThat(actualOwner, is(user.getUsername()));
     }
 
