@@ -131,4 +131,12 @@
     )
   </select>
 
+  <delete id="deleteNotIn">
+    DELETE FROM route_point rp
+    WHERE rp.route_id = #{routeId} AND rp.id NOT IN
+    <foreach item="id" collection="ids" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+
 </mapper>

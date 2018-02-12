@@ -3,18 +3,25 @@ package info.getbus.servebus.persistence.datamappers.route;
 import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.RoutePoint;
+import org.hamcrest.Matcher;
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static info.getbus.servebus.model.route.Direction.R;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -62,12 +69,21 @@ public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
     }
 
     @Test
+    public void insertAndSelectData() throws Exception {
+        testInsert((wp, direction) -> routePointMapper.insertData(wp, direction));
+    }
+
+    @Test
     public void insertAndSelectDataIfNonExist() throws Exception {
+        testInsert((wp, direction) -> routePointMapper.insertDataIfNonExist(wp, direction));
+    }
+
+    private void testInsert(BiFunction<RoutePoint, Direction, Integer> insert) {
         RoutePoint expected = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), expected, 0);
-        int upc = routePointMapper.insertDataIfNonExist(expected, Direction.R);
+        int upc = insert.apply(expected, R);
         assertThat(upc, is(1));
-        Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), Direction.R);
+        Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), R);
         assertThatPointsAreEqual(points.getFirst(), expected);
         assertThatPointsDataAreEqual(points.getFirst(), expected);
     }
@@ -76,7 +92,7 @@ public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
     public void selectPointDataNegative() throws Exception {
         RoutePoint point = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), point, 0);
-        routePointMapper.insertDataIfNonExist(point, Direction.R);
+        routePointMapper.insertDataIfNonExist(point, R);
         Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
         assertThatPointsAreEqual(points.getFirst(), point);
         assertThatRoutePointDataIsNull(points.getFirst());
@@ -86,11 +102,11 @@ public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
     public void insertInsertDataIfNonExist() throws Exception {
         RoutePoint point = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), point, 0);
-        int rowsInserted = routePointMapper.insertDataIfNonExist(point, Direction.R);
+        int rowsInserted = routePointMapper.insertDataIfNonExist(point, R);
         assertThat(rowsInserted, is(1));
         RoutePoint toUpdate = route.getRoutePoints().getLast();
         toUpdate.setId(point.getId());
-        rowsInserted = routePointMapper.insertDataIfNonExist(toUpdate, Direction.R);
+        rowsInserted = routePointMapper.insertDataIfNonExist(toUpdate, R);
         assertThat(rowsInserted, is(0));
     }
 
@@ -134,7 +150,7 @@ public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
         RoutePoint point = route.getRoutePoints().getFirst();
         routePointMapper.insert(route.getId(), point, 0);
         routePointMapper.insertDataIfNonExist(point, Direction.F);
-        routePointMapper.insertDataIfNonExist(point, Direction.R);
+        routePointMapper.insertDataIfNonExist(point, R);
         assertThat(routePointMapper.existInconsistentRoutePoints(route.getId()), is(false));
     }
 
@@ -145,7 +161,46 @@ public class RoutePointMapperTest extends RouteAwarePersistenceBaseTest {
         assertThat(point.getTripTime(), nullValue());
     }
 
+    @Test
+    public void deleteNotIn() throws Exception {
+        Route otherRoute = insertNewRoute();
+        insertPointsFor(route);
+        Set<Long> notDeletedIdsExp = new HashSet<>();
+        int i = 1;
+        for (RoutePoint wp : route.getRoutePoints()) {
+            if (1 == i || 3 == i || 6 == i) {
+                notDeletedIdsExp.add(wp.getId());
+            }
+            i++;
+        }
+        int deleted = routePointMapper.deleteNotIn(route.getId(), notDeletedIdsExp);
+        assertThat(deleted, is(route.getRoutePoints().size() - notDeletedIdsExp.size()));
+
+        Deque<RoutePoint> points = routePointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        assertThat(points, hasSizeOf(notDeletedIdsExp));
+        Set<Long> notDeletedIdsAct = points.stream().map(RoutePoint::getId).collect(Collectors.toSet());
+        assertThat(notDeletedIdsAct, containsInAnyOrder(notDeletedIdsExp));
+
+        points = routePointMapper.selectRoutePointsWithData(otherRoute.getId(), Direction.F);
+        assertThat(points, hasSizeOf(otherRoute.getRoutePoints()));
+    }
+
+    private Route insertNewRoute() {
+        Route otherRoute = newRoute();
+        routeMapper.insertLocked(transporterAreaId, otherRoute, user.getUsername());
+        insertPointsFor(otherRoute);
+        return otherRoute;
+    }
+
     public static <E> org.hamcrest.Matcher<java.util.Collection<? extends E>> hasSizeOf(Collection c) {
         return hasSize(c.size());
+    }
+
+    public static <T> Matcher<Iterable<? extends T>> containsInAnyOrder(Iterable<T> items) {
+        List<Matcher<? super T>> matchers = new ArrayList<>();
+        for (T item : items) {
+            matchers.add(equalTo(item));
+        }
+        return new IsIterableContainingInAnyOrder<>(matchers);
     }
 }

@@ -30,4 +30,21 @@ public class Route {
     public Direction oppositeDirection() {
         return isForward() ? R : F;
     }
+
+    /**
+     * @return new copy of way points collection in forward direction
+     */
+    public Deque<RoutePoint> getRoutePointsInNaturalOrder() {
+        if (isForward()) {
+            return new LinkedList<>(routePoints);
+        } else {
+            return reverse(routePoints);
+        }
+    }
+
+    private Deque<RoutePoint> reverse(Deque<RoutePoint> routePoints) {
+        Deque<RoutePoint> reversed = new LinkedList<>();
+        routePoints.forEach(reversed::addFirst);
+        return reversed;
+    }
 }

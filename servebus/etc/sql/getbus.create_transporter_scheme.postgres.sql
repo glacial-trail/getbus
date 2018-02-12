@@ -36,7 +36,7 @@ CREATE TABLE route (
 CREATE UNIQUE INDEX route_uniq_tn ON route (transporter_area_id, name);
 
 CREATE TABLE route_point (
-  route_id BIGINT NOT NULL REFERENCES route(id),
+  route_id BIGINT NOT NULL REFERENCES route(id) ON DELETE CASCADE,
   id BIGSERIAL PRIMARY KEY,
 --  code VARCHAR(40) NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -48,7 +48,7 @@ CREATE UNIQUE INDEX route_point_uniq_rs ON route_point (route_id, sequence);
 
 -- CREATE TYPE route_direction AS ENUM ('F', 'R');
 CREATE TABLE route_point_data (
-  route_point_id BIGINT REFERENCES route_point(id),
+  route_point_id BIGINT REFERENCES route_point(id) ON DELETE CASCADE,
   direction CHAR(1) NOT NULL, -- (F|R)
   --   direction route_direction NOT NULL,
   arrival TIME NOT NULL /*without time zone*/,

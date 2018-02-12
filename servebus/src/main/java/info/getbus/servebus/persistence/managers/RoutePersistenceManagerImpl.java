@@ -7,64 +7,74 @@ import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.persistence.LockedRouteException;
 import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 @Service
 public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
-    @Autowired
-    private RouteMapper routeMapper;
-    @Autowired
-    private RoutePointMapper routePointMapper;
+    private final RouteMapper routeMapper;
+    private final RoutePointMapper routePointMapper;
 
-    public static class PointId2Sequence {
+
+    @Autowired
+    public RoutePersistenceManagerImpl(RouteMapper routeMapper, RoutePointMapper routePointMapper) {
+        this.routeMapper = routeMapper;
+        this.routePointMapper = routePointMapper;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class IdSequence {
         private Long id;
         private int sequence;
+    }
 
-        PointId2Sequence(Long id, int seq) {
-            this.id = id;
-            this.sequence = seq;
+    private class PointSequenceStack implements Iterable<IdSequence> {
+        Deque<IdSequence> stack = new LinkedList<>();
+        private int c;
+
+        public void push(RoutePoint wp) {
+            stack.push(new IdSequence( wp.getId(), ++c));
         }
 
-        Long getId() {
-            return id;
-        }
-
-        int getSequence() {
-            return sequence;
+        @Override
+        public Iterator<IdSequence> iterator() {
+            return stack.iterator();
         }
     }
 
-    @Override
     public void savePoints(Route route) {
-        Deque<PointId2Sequence> points = new LinkedList<>();
-        int c = 0;
-
-        Iterator<RoutePoint> pointItr = route.isForward() ? route.getRoutePoints().iterator() : route.getRoutePoints().descendingIterator();
-        while (pointItr.hasNext()) {
-            RoutePoint routePoint = pointItr.next();
-            c++;
-            if (null == routePoint.getId()) {
-                routePointMapper.insert(route.getId(), routePoint, -1 * c);
+        Collection<Long> ids = new LinkedList<>();
+        PointSequenceStack sequenceStack = new PointSequenceStack();
+        int c = 1;
+        for (RoutePoint wp : route.getRoutePointsInNaturalOrder()) {
+            if (null == wp.getId()) {
+                routePointMapper.insert(route.getId(), wp, -1 * c++);
+                routePointMapper.insertData(wp, route.getDirection());
             } else {
-                routePointMapper.update(routePoint);
+                routePointMapper.update(wp);
+                upsertData(route, c++, wp);
             }
-//          TODO upsert
-            routePointMapper.insertDataIfNonExist(routePoint, route.getDirection());
-            routePointMapper.updateData(routePoint, route.getDirection());
-
-            points.add(new PointId2Sequence(routePoint.getId(), c));
+            sequenceStack.push(wp);
+            ids.add(wp.getId());
         }
+        routePointMapper.deleteNotIn(route.getId(), ids);
+        sequenceStack.forEach(wp -> routePointMapper.updateSequence(wp.getId(), wp.getSequence()));
+    }
 
-        for (Iterator<PointId2Sequence> pointSequenceItr = points.descendingIterator(); pointSequenceItr.hasNext();) {
-            PointId2Sequence point = pointSequenceItr.next();
-            routePointMapper.updateSequence(point.getId(), point.getSequence());
+    private void upsertData(Route route, int c, RoutePoint routePoint) {
+        int rowsInserted = routePointMapper.insertDataIfNonExist(routePoint, route.getDirection());
+        if (0 == rowsInserted) {
+            routePointMapper.updateData(routePoint, route.getDirection());
         }
     }
 
