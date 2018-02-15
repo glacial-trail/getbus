@@ -47,4 +47,8 @@ public class Route {
         routePoints.forEach(reversed::addFirst);
         return reversed;
     }
+
+    public boolean isDistanceFulfilled() {
+        return routePoints.stream().noneMatch(wp -> null == wp.getDistance());
+    }
 }

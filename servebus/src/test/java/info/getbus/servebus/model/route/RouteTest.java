@@ -63,4 +63,38 @@ class RouteTest {
         route.setRoutePoints(wps);
         return route;
     }
+
+    @Test
+    void isDistanceFulfilled() {
+        Route route = new Route();
+        for (int i = 0; i < 4; i++) {
+            route.getRoutePoints().add(newWPWithDistance());
+        }
+        assertThat(route.isDistanceFulfilled(), is(true));
+    }
+
+    @Test
+    void isDistanceFulfilledNegativeFull() {
+        Route route = new Route();
+        for (int i = 0; i < 4; i++) {
+            route.getRoutePoints().add(new RoutePoint());
+        }
+        assertThat(route.isDistanceFulfilled(), is(false));
+    }
+
+    @Test
+    void isDistanceFulfilledNegative() {
+        Route route = new Route();
+        route.getRoutePoints().add(newWPWithDistance());
+        route.getRoutePoints().add(newWPWithDistance());
+        route.getRoutePoints().add(new RoutePoint());
+        route.getRoutePoints().add(newWPWithDistance());
+        assertThat(route.isDistanceFulfilled(), is(false));
+    }
+
+    private RoutePoint newWPWithDistance() {
+        RoutePoint wp = new RoutePoint();
+        wp.setDistance(4);
+        return wp;
+    }
 }
