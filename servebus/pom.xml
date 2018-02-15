@@ -25,6 +25,7 @@
         <lombok.version>1.16.18</lombok.version>
         <modelmapper.version>1.1.0</modelmapper.version>
         <modelmapper-spring-boot-starter.version>1.0.0</modelmapper-spring-boot-starter.version>
+        <log4j.version>2.10.0</log4j.version>
         <random-beans.version>3.7.0</random-beans.version>
         <hamcrest.version>2.0.0.0</hamcrest.version>
         <guava.version>23.6-jre</guava.version>
@@ -146,6 +147,12 @@
             <groupId>com.github.rozidan</groupId>
             <artifactId>modelmapper-spring-boot-starter</artifactId>
             <version>${modelmapper-spring-boot-starter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>

@@ -9,6 +9,7 @@ import info.getbus.servebus.persistence.datamappers.route.RouteMapper;
 import info.getbus.servebus.persistence.datamappers.route.RoutePointMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 @Service
+@Log4j2
 public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     private final RouteMapper routeMapper;
     private final RoutePointMapper routePointMapper;
@@ -55,6 +57,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     public void savePoints(Route route) {
         Collection<Long> ids = new LinkedList<>();
         PointSequenceStack sequenceStack = new PointSequenceStack();
+        log.debug("Saving points for route {} {}, points amount {}", route.getId(), route.getDirection(), route.getRoutePoints().size());
         int c = 1;
         for (RoutePoint wp : route.getRoutePointsInNaturalOrder()) {
             if (null == wp.getId()) {
