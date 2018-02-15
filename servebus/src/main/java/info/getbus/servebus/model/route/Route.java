@@ -21,7 +21,7 @@ public class Route {
     private ZonedDateTime startSales;
     private int salesDepth;
     private Direction direction = F;
-    private Deque<RoutePoint> routePoints = new LinkedList<>();
+    private Deque<WayPoint> wayPoints = new LinkedList<>();
 
     public boolean isForward() {
         return F == direction;
@@ -34,21 +34,21 @@ public class Route {
     /**
      * @return new copy of way points collection in forward direction
      */
-    public Deque<RoutePoint> getRoutePointsInNaturalOrder() {
+    public Deque<WayPoint> getRoutePointsInNaturalOrder() {
         if (isForward()) {
-            return new LinkedList<>(routePoints);
+            return new LinkedList<>(wayPoints);
         } else {
-            return reverse(routePoints);
+            return reverse(wayPoints);
         }
     }
 
-    private Deque<RoutePoint> reverse(Deque<RoutePoint> routePoints) {
-        Deque<RoutePoint> reversed = new LinkedList<>();
-        routePoints.forEach(reversed::addFirst);
+    private Deque<WayPoint> reverse(Deque<WayPoint> wayPoints) {
+        Deque<WayPoint> reversed = new LinkedList<>();
+        wayPoints.forEach(reversed::addFirst);
         return reversed;
     }
 
     public boolean isDistanceFulfilled() {
-        return routePoints.stream().noneMatch(wp -> null == wp.getDistance());
+        return wayPoints.stream().noneMatch(wp -> null == wp.getDistance());
     }
 }

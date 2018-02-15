@@ -12,7 +12,7 @@
         <typeAlias type="info.getbus.servebus.model.user.Profile" alias="UserProfile"/>
         <typeAlias type="info.getbus.servebus.model.route.CompactRoute" alias="CompactRoute"/>
         <typeAlias type="info.getbus.servebus.model.route.Route" alias="Route"/>
-        <typeAlias type="info.getbus.servebus.model.route.RoutePoint" alias="RoutePoint"/>
+        <typeAlias type="info.getbus.servebus.model.route.WayPoint" alias="WayPoint"/>
 
         <typeAlias type="info.getbus.servebus.model.periodicity.Periodicity" alias="Periodicity"/>
         <typeAlias type="info.getbus.servebus.model.route.RoutePartId" alias="RoutePartId"/>

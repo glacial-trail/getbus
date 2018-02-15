@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 //TODO GREAT refactoring: lombok, modelmapper etc
 //TODO rename to WayPoint
-public class RoutePoint {
+public class WayPoint {
     private Long id;
     @NotEmpty(message = "common.notempty.error")
     private String name;

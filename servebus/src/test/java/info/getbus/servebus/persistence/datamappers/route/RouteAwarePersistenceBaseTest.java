@@ -2,7 +2,7 @@ package info.getbus.servebus.persistence.datamappers.route;
 
 import info.getbus.servebus.dao.security.UserMapper;
 import info.getbus.servebus.model.route.Route;
-import info.getbus.servebus.model.route.RoutePoint;
+import info.getbus.servebus.model.route.WayPoint;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
 import info.getbus.servebus.service.transporter.TransporterService;
@@ -56,7 +56,7 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
     @Autowired
     protected RouteMapper routeMapper;
     @Autowired
-    protected RoutePointMapper routePointMapper;
+    protected WayPointMapper wayPointMapper;
 
     protected long transporterAreaId;
 
@@ -94,21 +94,21 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
             private InsertHelper(Long routeId) {
                 this.routeId = routeId;
             }
-            private void insertPoint(RoutePoint point) {
-                routePointMapper.insert(routeId, point, sequence++);
+            private void insertPoint(WayPoint point) {
+                wayPointMapper.insert(routeId, point, sequence++);
                 if (insertPointData) {
-                    routePointMapper.insertDataIfNonExist(point, route.getDirection());
+                    wayPointMapper.insertDataIfNonExist(point, route.getDirection());
                 }
             }
         }
-        route.getRoutePoints().forEach(new InsertHelper(route.getId())::insertPoint);
+        route.getWayPoints().forEach(new InsertHelper(route.getId())::insertPoint);
     }
 
-    protected void assertThatPointsAreEqual(RoutePoint actual, RoutePoint expected) {
+    protected void assertThatPointsAreEqual(WayPoint actual, WayPoint expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "id", "name", "countryCode", "address");
     }
 
-    protected void assertThatPointsDataAreEqual(RoutePoint actual, RoutePoint expected) {
+    protected void assertThatPointsDataAreEqual(WayPoint actual, WayPoint expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "arrival", "departure", "distance", "tripTime");
     }
 

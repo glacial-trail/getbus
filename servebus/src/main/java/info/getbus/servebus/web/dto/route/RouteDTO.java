@@ -1,7 +1,7 @@
 package info.getbus.servebus.web.dto.route;
 
 import info.getbus.servebus.model.route.Direction;
-import info.getbus.servebus.model.route.RoutePoint;
+import info.getbus.servebus.model.route.WayPoint;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -42,5 +42,5 @@ public class RouteDTO {
     @Valid
     @NotEmpty(message = "common.notempty.error")
     @Size(min = 2)
-    private Deque<RoutePoint> routePoints = new LinkedList<>();
+    private Deque<WayPoint> wayPoints = new LinkedList<>();
 }

@@ -35,7 +35,7 @@ CREATE TABLE route (
 );
 CREATE UNIQUE INDEX route_uniq_tn ON route (transporter_area_id, name);
 
-CREATE TABLE route_point (
+CREATE TABLE way_point (
   route_id BIGINT NOT NULL REFERENCES route(id) ON DELETE CASCADE,
   id BIGSERIAL PRIMARY KEY,
 --  code VARCHAR(40) NOT NULL,
@@ -44,11 +44,11 @@ CREATE TABLE route_point (
   address VARCHAR(100) NOT NULL,
   sequence INT NOT NULL
 );
-CREATE UNIQUE INDEX route_point_uniq_rs ON route_point (route_id, sequence);
+CREATE UNIQUE INDEX way_point_uniq_rs ON way_point (route_id, sequence);
 
 -- CREATE TYPE route_direction AS ENUM ('F', 'R');
-CREATE TABLE route_point_data (
-  route_point_id BIGINT REFERENCES route_point(id) ON DELETE CASCADE,
+CREATE TABLE way_point_data (
+  way_point_id BIGINT REFERENCES way_point(id) ON DELETE CASCADE,
   direction CHAR(1) NOT NULL, -- (F|R)
   --   direction route_direction NOT NULL,
   arrival TIME NOT NULL /*without time zone*/,
@@ -56,7 +56,7 @@ CREATE TABLE route_point_data (
   trip_time BIGINT NOT NULL,
   distance INT NOT NULL
 );
-CREATE UNIQUE INDEX route_point_data_uniq_rd ON route_point_data (route_point_id, direction);
+CREATE UNIQUE INDEX way_point_data_uniq_rd ON way_point_data (way_point_id, direction);
 
 CREATE TABLE TZ (
   zone VARCHAR(16) PRIMARY KEY
@@ -73,4 +73,4 @@ CREATE TABLE periodicity (
   param INT NOT NULL
 );
 
-CREATE UNIQUE INDEX route_point_data_uniq_p ON periodicity (route_id, route_direction);
+CREATE UNIQUE INDEX way_point_data_uniq_p ON periodicity (route_id, route_direction);

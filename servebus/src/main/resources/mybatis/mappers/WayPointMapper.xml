@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RoutePointMapper">
+<mapper namespace="info.getbus.servebus.persistence.datamappers.route.WayPointMapper">
 
-  <resultMap id="routePoint" type="RoutePoint">
+  <resultMap id="wayPoint" type="WayPoint">
        <id column="id" property="id" />
        <result column="name" property="name" />
        <result column="country_code" property="countryCode" />
@@ -16,20 +16,20 @@
        <result column="distance" property="distance" />
   </resultMap>
 
-  <select id="selectRoutePointsWithData" resultMap="routePoint">
+  <select id="selectRoutePointsWithData" resultMap="wayPoint">
     SELECT
-      rp.id           as id,
-      rp.sequence     as sequence,
-      rp.name         as name,
-      rp.country_code as country_code,
-      rp.address      as address,
-      rpd.departure   as departure,
-      rpd.arrival     as arrival,
-      rpd.trip_time   as trip_time,
-      rpd.distance    as distance
-    FROM route_point rp
-    LEFT JOIN route_point_data rpd ON rpd.route_point_id = rp.id AND rpd.direction = #{direction}
-    WHERE rp.route_id = #{routeId}
+      wp.id           as id,
+      wp.sequence     as sequence,
+      wp.name         as name,
+      wp.country_code as country_code,
+      wp.address      as address,
+      wpd.departure   as departure,
+      wpd.arrival     as arrival,
+      wpd.trip_time   as trip_time,
+      wpd.distance    as distance
+    FROM way_point wp
+    LEFT JOIN way_point_data wpd ON wpd.way_point_id = wp.id AND wpd.direction = #{direction}
+    WHERE wp.route_id = #{routeId}
     ORDER BY sequence
     <choose>
       <when test='direction.name == "F"'>
@@ -42,7 +42,7 @@
   </select>
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="point.id" keyColumn="id">
-    INSERT INTO route_point (
+    INSERT INTO way_point (
       route_id,
       name,
       country_code,
@@ -58,7 +58,7 @@
   </insert>
 
   <update id="update">
-    UPDATE route_point SET
+    UPDATE way_point SET
     name = #{point.name},
     country_code = #{point.countryCode},
     address = #{point.address}
@@ -66,8 +66,8 @@
   </update>
 
   <insert id="insertData" useGeneratedKeys="false">
-    INSERT INTO route_point_data (
-      route_point_id,
+    INSERT INTO way_point_data (
+      way_point_id,
       direction,
       departure,
       arrival,
@@ -84,8 +84,8 @@
   </insert>
 
   <insert id="insertDataIfNonExist" useGeneratedKeys="false">
-    INSERT INTO route_point_data (
-      route_point_id,
+    INSERT INTO way_point_data (
+      way_point_id,
       direction,
       departure,
       arrival,
@@ -99,41 +99,41 @@
         #{point.tripTime},
         #{point.distance}
     WHERE NOT EXISTS (
-      SELECT rpd.route_point_id FROM route_point_data rpd WHERE rpd.route_point_id = #{point.id} AND rpd.direction = #{direction}
+      SELECT wpd.way_point_id FROM way_point_data wpd WHERE wpd.way_point_id = #{point.id} AND wpd.direction = #{direction}
     )
   </insert>
 
   <update id="updateData">
-    UPDATE route_point_data SET
+    UPDATE way_point_data SET
     departure = #{point.departure},
     arrival = #{point.arrival},
     trip_time = #{point.tripTime},
     distance = #{point.distance}
-    WHERE route_point_id = #{point.id} AND direction = #{direction}
+    WHERE way_point_id = #{point.id} AND direction = #{direction}
   </update>
 
   <update id="updateSequence">
-    UPDATE route_point SET
+    UPDATE way_point SET
       sequence = #{sequence}
     WHERE id = #{id}
   </update>
 
   <select id="existInconsistentRoutePoints" resultType="boolean">
     SELECT exists (
-      SELECT rp.id, rpdf.route_point_id, rpdr.route_point_id, rpdf.direction, rpdr.direction
-      FROM route_point rp
-      LEFT JOIN route_point_data rpdf
-        ON rp.id = rpdf.route_point_id and rpdf.direction = 'F'
-      LEFT JOIN route_point_data rpdr
-        ON rp.id = rpdr.route_point_id and rpdr.direction = 'R'
-      --        and rpd.route_point_id is NULL
-      WHERE rp.route_id = #{routeId} AND (rpdf.route_point_id is NULL or rpdr.route_point_id is NULL)
+      SELECT wp.id, wpdf.way_point_id, wpdr.way_point_id, wpdf.direction, wpdr.direction
+      FROM way_point wp
+      LEFT JOIN way_point_data wpdf
+        ON wp.id = wpdf.way_point_id and wpdf.direction = 'F'
+      LEFT JOIN way_point_data wpdr
+        ON wp.id = wpdr.way_point_id and wpdr.direction = 'R'
+      --        and wpd.way_point_id is NULL
+      WHERE wp.route_id = #{routeId} AND (wpdf.way_point_id is NULL or wpdr.way_point_id is NULL)
     )
   </select>
 
   <delete id="deleteNotIn">
-    DELETE FROM route_point rp
-    WHERE rp.route_id = #{routeId} AND rp.id NOT IN
+    DELETE FROM way_point wp
+    WHERE wp.route_id = #{routeId} AND wp.id NOT IN
     <foreach item="id" collection="ids" open="(" separator="," close=")">
       #{id}
     </foreach>

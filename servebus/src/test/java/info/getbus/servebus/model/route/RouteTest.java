@@ -36,7 +36,7 @@ class RouteTest {
     void getRoutePointsInNaturalOrderF() {
         Route route = makeRoute(F);
         long i = 1;
-        for (RoutePoint wp : route.getRoutePointsInNaturalOrder()) {
+        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
             assertThat(wp.getId(), is(i++));
         }
     }
@@ -45,22 +45,22 @@ class RouteTest {
     void getRoutePointsInNaturalOrderR() {
         Route route = makeRoute(R);
         long i = 4;
-        for (RoutePoint wp : route.getRoutePointsInNaturalOrder()) {
+        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
             assertThat(wp.getId(), is(i--));
         }
     }
 
     private Route makeRoute(Direction direction) {
-        Deque<RoutePoint> wps = new LinkedList<>();
+        Deque<WayPoint> wps = new LinkedList<>();
         for (long i = 1; i <= 4 ; i++) {
-            RoutePoint wp = new RoutePoint();
+            WayPoint wp = new WayPoint();
             wp.setId(i);
             wps.add(wp);
         }
 
         Route route = new Route();
         route.setDirection(direction);
-        route.setRoutePoints(wps);
+        route.setWayPoints(wps);
         return route;
     }
 
@@ -68,7 +68,7 @@ class RouteTest {
     void isDistanceFulfilled() {
         Route route = new Route();
         for (int i = 0; i < 4; i++) {
-            route.getRoutePoints().add(newWPWithDistance());
+            route.getWayPoints().add(newWPWithDistance());
         }
         assertThat(route.isDistanceFulfilled(), is(true));
     }
@@ -77,7 +77,7 @@ class RouteTest {
     void isDistanceFulfilledNegativeFull() {
         Route route = new Route();
         for (int i = 0; i < 4; i++) {
-            route.getRoutePoints().add(new RoutePoint());
+            route.getWayPoints().add(new WayPoint());
         }
         assertThat(route.isDistanceFulfilled(), is(false));
     }
@@ -85,15 +85,15 @@ class RouteTest {
     @Test
     void isDistanceFulfilledNegative() {
         Route route = new Route();
-        route.getRoutePoints().add(newWPWithDistance());
-        route.getRoutePoints().add(newWPWithDistance());
-        route.getRoutePoints().add(new RoutePoint());
-        route.getRoutePoints().add(newWPWithDistance());
+        route.getWayPoints().add(newWPWithDistance());
+        route.getWayPoints().add(newWPWithDistance());
+        route.getWayPoints().add(new WayPoint());
+        route.getWayPoints().add(newWPWithDistance());
         assertThat(route.isDistanceFulfilled(), is(false));
     }
 
-    private RoutePoint newWPWithDistance() {
-        RoutePoint wp = new RoutePoint();
+    private WayPoint newWPWithDistance() {
+        WayPoint wp = new WayPoint();
         wp.setDistance(4);
         return wp;
     }

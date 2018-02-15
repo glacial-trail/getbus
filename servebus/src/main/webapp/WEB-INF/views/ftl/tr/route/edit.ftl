@@ -44,7 +44,7 @@
                 elem.attr("data-rp-idx", idx);
                 elem.find(".route-data:input").each(function () {
                     var input = $(this);
-                    var newName = input.attr("name").replace(/(routePoints\[)(-?\d+)(\])/, "$1"+idx+"$3");
+                    var newName = input.attr("name").replace(/(wayPoints\[)(-?\d+)(\])/, "$1"+idx+"$3");
                     input.attr("name", newName);
                 })
             }
@@ -63,7 +63,7 @@
 </#if>
 
 <form name="route" action="create-route" method="post" id="data">
-    <@hidden name="id" value="${route.id?c!''}" />
+    <@hidden name="id" value="${(route.id?c)!''}" />
     <@hidden name="direction" value="${route.direction}" />
     <label for="name">Please, enter route name</label>
     <@text name="name" value="${route.name!''}" id="name" class="route_name"/>
@@ -93,10 +93,10 @@
                 <th class="col-xs-1"><@spring.message "route.create.distance"/></th>
             </tr>
         </thead>
-    <#list route.routePoints as routePoint>
-        <@routepoint idx=routePoint?index rp=routePoint
-            add=!routePoint?is_last
-            remove=!(routePoint?is_first||routePoint?is_last)
+    <#list route.wayPoints as wayPoint>
+        <@routepoint idx=wayPoint?index rp=wayPoint
+            add=!wayPoint?is_last
+            remove=!(wayPoint?is_first||wayPoint?is_last)
         />
     <#else>
         <@routepoint idx="0" remove=false />
@@ -130,35 +130,35 @@
 
 <#macro routepoint idx rp={} add=true remove=true >
     <tr class="route-point" data-rp-idx="${idx}">
-        <input name="routePoints[${idx}].id" value="${(rp.id?c)!''}" type="hidden" class="route-data"/>
+        <input name="wayPoints[${idx}].id" value="${(rp.id?c)!''}" type="hidden" class="route-data"/>
 
         <td class="col-xs-2">
                 <#if viewMode>
                     <span><@spring.message 'country.'+rp.countryCode /></span>
                 <#elseif isReverseRoute>
-                    <input name="routePoints[${idx}].countryCode" value="${rp.countryCode!''}" type="hidden" class="route-data"/>
+                    <input name="wayPoints[${idx}].countryCode" value="${rp.countryCode!''}" type="hidden" class="route-data"/>
                     <input value="<@spring.message 'country.'+rp.countryCode />" readonly type="text"/>
                 <#else>
-                    <select name="routePoints[${idx}].countryCode" class="route-data" id="country">
+                    <select name="wayPoints[${idx}].countryCode" class="route-data" id="country">
                         <#list countries as code>
                             <option ${(rp.countryCode?? && code == rp.countryCode)?then('selected','')} value="${code}"><@spring.message 'country.'+code /></option>
                         </#list>
                     </select>
                 </#if>
-        <#--<@form.showFieldErrors 'routePoints[${idx}].countryCode' 'error'/>-->
+        <#--<@form.showFieldErrors 'wayPoints[${idx}].countryCode' 'error'/>-->
         </td>
         <td class="col-xs-2">
-            <@text name="routePoints[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
-            <@form.showFieldErrors 'routePoints[${idx}].name' 'error'/>
+            <@text name="wayPoints[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
+            <@form.showFieldErrors 'wayPoints[${idx}].name' 'error'/>
         </td>
         <td class="col-xs-2">
-            <@text name="routePoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute />
-            <@form.showFieldErrors 'routePoints[${idx}].address' 'error'/>
+            <@text name="wayPoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute />
+            <@form.showFieldErrors 'wayPoints[${idx}].address' 'error'/>
         </td>
-        <td class="col-xs-2"><@time name="routePoints[${idx}].arrival" value="${rp.arrival!''}" /></td>
-        <td class="col-xs-2"><@time name="routePoints[${idx}].departure" value="${rp.departure!''}" /></td>
-        <td class="col-xs-1"><@text name="routePoints[${idx}].tripTime" value="${rp.tripTime!''}" /></td>
-        <td class="col-xs-1"><@text name="routePoints[${idx}].distance" value="${rp.distance!''}" /></td>
+        <td class="col-xs-2"><@time name="wayPoints[${idx}].arrival" value="${rp.arrival!''}" /></td>
+        <td class="col-xs-2"><@time name="wayPoints[${idx}].departure" value="${rp.departure!''}" /></td>
+        <td class="col-xs-1"><@text name="wayPoints[${idx}].tripTime" value="${rp.tripTime!''}" /></td>
+        <td class="col-xs-1"><@text name="wayPoints[${idx}].distance" value="${rp.distance!''}" /></td>
     </tr>
     <tr>
         <#if !isReverseRoute && !viewMode>

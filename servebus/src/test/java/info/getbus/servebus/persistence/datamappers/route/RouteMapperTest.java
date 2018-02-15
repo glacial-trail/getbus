@@ -41,7 +41,7 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
         Route actualRoute = routeMapper.selectById(new RoutePartId(route.getId(), route.getDirection()));
         assertThatRoutesAreEqual(actualRoute, route);
-        assertThat(actualRoute.getRoutePoints(), is(empty()));
+        assertThat(actualRoute.getWayPoints(), is(empty()));
     }
 
     @Test
@@ -111,11 +111,11 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
     }
 
     private String nameOfLastPoint(Route expected) {
-        return expected.getRoutePoints().getLast().getName();
+        return expected.getWayPoints().getLast().getName();
     }
 
     private String nameOfFirstPoint(Route expected) {
-        return expected.getRoutePoints().getFirst().getName();
+        return expected.getWayPoints().getFirst().getName();
     }
 
     @Test
@@ -167,7 +167,7 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
     private void assertThatRoutesAreFullyEqual(Route actual, Route expected) {
         assertThatRoutesAreEqual(actual, expected);
         assertThatObjectsAreEqualUsingFields(actual, expected,"direction");
-        new DoubleFor<>(actual.getRoutePoints(), expected.getRoutePoints()).iterate(
+        new DoubleFor<>(actual.getWayPoints(), expected.getWayPoints()).iterate(
                 (act, exp) -> {
                     assertThatPointsAreEqual(act, exp);
                     assertThatPointsDataAreEqual(act, exp);

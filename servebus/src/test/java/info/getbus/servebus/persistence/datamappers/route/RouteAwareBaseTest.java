@@ -2,7 +2,7 @@ package info.getbus.servebus.persistence.datamappers.route;
 
 import info.getbus.servebus.model.periodicity.Periodicity;
 import info.getbus.servebus.model.route.Route;
-import info.getbus.servebus.model.route.RoutePoint;
+import info.getbus.servebus.model.route.WayPoint;
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
@@ -43,7 +43,7 @@ public class RouteAwareBaseTest {
             .exclude(field().named("id").ofType(Long.class).inClass(Route.class).get())
             .exclude(field().named("version").ofType(Integer.class).inClass(Route.class).get())
 //            .exclude(field().named("direction").ofType(Integer.class).inClass(Route.class).get())
-            .exclude(field().named("id").ofType(Long.class).inClass(RoutePoint.class).get())
+            .exclude(field().named("id").ofType(Long.class).inClass(WayPoint.class).get())
             .overrideDefaultInitialization(true)
             .collectionSizeRange(14,22)
             .randomize(field().named("basePrice").ofType(BigDecimal.class).inClass(Route.class).get(),
@@ -52,7 +52,7 @@ public class RouteAwareBaseTest {
                     (Supplier<ZonedDateTime>) () ->  ZonedDateTime.of(random(LocalDateTime.class), ZoneId.of("UTC")))
             .randomize(field().named("start").ofType(ZonedDateTime.class).inClass(Periodicity.class).get(),
                     (Supplier<ZonedDateTime>) () ->  ZonedDateTime.of(random(LocalDateTime.class), ZoneId.of("UTC")))
-            .randomize(field().named("countryCode").ofType(String.class).inClass(RoutePoint.class).get(),
+            .randomize(field().named("countryCode").ofType(String.class).inClass(WayPoint.class).get(),
                     (Supplier<String>) () ->  "UA")
             .build();
 

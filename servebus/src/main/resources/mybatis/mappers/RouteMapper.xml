@@ -13,15 +13,15 @@
       <result column="base_seats_qty" property="baseSeatsQty" />
       <result column="start_sales" property="startSales" />
       <result column="sales_depth" property="salesDepth" />
-      <collection property="routePoints" ofType="info.getbus.servebus.model.route.RoutePoint">
-          <id column="rp_id" property="id" />
-          <result column="rp_name" property="name" />
-          <result column="rp_country_code" property="countryCode" />
-          <result column="rp_address" property="address" />
-          <result column="rp_departure" property="departure" />
-          <result column="rp_arrival" property="arrival" />
-          <result column="rp_trip_time" property="tripTime" />
-          <result column="rp_distance" property="distance" />
+      <collection property="wayPoints" ofType="info.getbus.servebus.model.route.WayPoint">
+          <id column="wp_id" property="id" />
+          <result column="wp_name" property="name" />
+          <result column="wp_country_code" property="countryCode" />
+          <result column="wp_address" property="address" />
+          <result column="wp_departure" property="departure" />
+          <result column="wp_arrival" property="arrival" />
+          <result column="wp_trip_time" property="tripTime" />
+          <result column="wp_distance" property="distance" />
       </collection>
   </resultMap>
 
@@ -37,12 +37,12 @@
     FROM route r
     INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
     INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
-    INNER JOIN route_point start ON r.id = start.route_id AND start.sequence = 1
-    INNER JOIN route_point finish ON r.id = finish.route_id
+    INNER JOIN way_point start ON r.id = start.route_id AND start.sequence = 1
+    INNER JOIN way_point finish ON r.id = finish.route_id
     INNER JOIN (SELECT
                   max(sequence) AS last,
                   route_id
-                FROM route_point
+                FROM way_point
                 GROUP BY route_id) AS last_points
       ON finish.route_id = last_points.route_id AND finish.sequence = last_points.last
   </select>
@@ -56,19 +56,19 @@
       r.start_sales,
       r.sales_depth,
       #{cid.direction} as direction,
-      rp.id           as rp_id,
-      rp.sequence     as rp_sequence,
-      rp.name         as rp_name,
-      rp.country_code as rp_country_code,
-      rp.address      as rp_address,
-      rpd.departure   as rp_departure,
-      rpd.arrival     as rp_arrival,
-      rpd.trip_time   as rp_trip_time,
-      rpd.distance    as rp_distance
+      wp.id           as wp_id,
+      wp.sequence     as wp_sequence,
+      wp.name         as wp_name,
+      wp.country_code as wp_country_code,
+      wp.address      as wp_address,
+      wpd.departure   as wp_departure,
+      wpd.arrival     as wp_arrival,
+      wpd.trip_time   as wp_trip_time,
+      wpd.distance    as wp_distance
     FROM route r
-      LEFT JOIN route_point rp ON r.id = rp.route_id
-      LEFT JOIN route_point_data rpd ON rpd.route_point_id = rp.id
-        AND rpd.direction = #{cid.direction}
+      LEFT JOIN way_point wp ON r.id = wp.route_id
+      LEFT JOIN way_point_data wpd ON wpd.way_point_id = wp.id
+        AND wpd.direction = #{cid.direction}
     WHERE r.id = #{cid.id}
     ORDER BY sequence
     <choose>
