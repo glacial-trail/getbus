@@ -1,6 +1,7 @@
 package info.getbus.servebus.dao.security;
 
 import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.persistence.datamappers.user.ProfileMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,8 @@ import static org.junit.Assert.*;
 public class UserMapperTest {
     @Autowired
     private UserMapper mapper;
+    @Autowired
+    private ProfileMapper userProfileMapper;
 
     private String username = "khun@com";
     private User user;
@@ -43,6 +46,7 @@ public class UserMapperTest {
 
         mapper.insert(user);
         mapper.insertRoles(user.getUsername(), roles);
+        userProfileMapper.insert(user.getUsername(), "Europe/Kiev");
     }
 
     @Test
@@ -77,6 +81,7 @@ public class UserMapperTest {
         user.setAuthorities(roles);
         mapper.insert(user);
         mapper.insertRoles(user.getUsername(), roles);
+        userProfileMapper.insert(user.getUsername(), "Europe/Kiev");
 
         User selected = mapper.selectById("###");
         assertNotNull(selected);
@@ -96,7 +101,6 @@ public class UserMapperTest {
         Collection<User> users = mapper.selectByUsernameOrPhone("lziusdfhzgljh", "lkjfbjxkh");
         assertNotNull(users);
         assertTrue(users.isEmpty());
-
     }
 
     private void assertCollectionSize(int size, Collection<?> c) {
