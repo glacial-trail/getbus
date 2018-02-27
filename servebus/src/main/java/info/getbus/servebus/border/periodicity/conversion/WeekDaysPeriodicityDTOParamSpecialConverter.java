@@ -20,7 +20,7 @@ public class WeekDaysPeriodicityDTOParamSpecialConverter implements PeriodicityD
 
     private int arrayToBits(boolean[] bitArray) {
         int bits = 0;
-        for (int i = 0; i < bitArray.length; i ++) {
+        for (int i = 1; i < bitArray.length; i ++) {
             if (bitArray[i]) {
                 bits = bits | (1 << i);
             }
@@ -29,8 +29,8 @@ public class WeekDaysPeriodicityDTOParamSpecialConverter implements PeriodicityD
     }
 
     private boolean[] bitsToArray(int bits) {
-        boolean[] bitArray = new boolean[7];
-        for (int i = 0; i < 7; i++) {
+        boolean[] bitArray = new boolean[8];
+        for (int i = 1; i <= 7; i++) {
             bitArray[i] = (bits & (1L << i)) != 0;
         }
         return bitArray;

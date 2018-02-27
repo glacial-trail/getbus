@@ -24,7 +24,7 @@
     <#assign strategy = 'DAILY' /><#--TODO add defaultStrategy to DTO-->
 </#if>
 
-<#--TODO move to DB-->
+<#--TODO move to DB or to i18n-->
 <#assign days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] >
 
 <form name="periodicity" method="post">
@@ -88,8 +88,8 @@
 
 <#macro drawWeekDays directionName weekDays=[]>
     <#list days as day>
-        ${day} <input name="${directionName}.weekDays[${day?index}]" type="checkbox"
-                    <@drawSelected weekDays=weekDays idx=day?index />
+        ${day} <input name="${directionName}.weekDays[${day?index+1}]" type="checkbox"
+                    <@drawSelected weekDays=weekDays idx=day?index+1 />
                 >
     </#list>
 </#macro>
