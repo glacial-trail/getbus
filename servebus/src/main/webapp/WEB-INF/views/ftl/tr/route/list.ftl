@@ -4,7 +4,7 @@
 
 <#list routes>
 <#--TODO sold tickets last 45 days-->
-    <table>
+    <table class="table table-bordered">
         <tr>
             <th>tickets sold</th>
             <th>name</th>
