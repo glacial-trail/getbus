@@ -6,27 +6,49 @@
 
 <@spring.bind "route" />
 
+<#--<#assign readonlyMode = false />-->
+<#assign isReverseRoute = route.direction == 'R' />
+<#--<#assign restrictedit = route.direction == 'R' />-->
+<#assign wpEditable = !viewMode && route.direction == 'F' />
+
 <script type="text/javascript">
-    var combodateConf = {
+    const combodateConf = {
         format: 'HH:mm',
         template: 'HH : mm',
-        value:'00:00',
+        value: '00:00',
         firstItem: 'none',
         minuteStep: 1
     };
+    const autocompleteOpts = {
+        componentRestrictions: {
+            country: ['${countries?join("','")}'] //Warn. Up tu 5 countries
+        }
+    };
+
+    function submitForm(btn) {
+        btn = $(btn);
+        let url = btn.attr('formaction');
+        btn.closest('form').attr('action', url).submit()
+    }
 
     $(function() {
         $('.time:not(#route-point-template .time)').combodate(combodateConf);
     });
 
+<#if !isReverseRoute && !viewMode>
     function addRoutePoint(button) {
-        var rowWithButton = $(button).parent().parent();
-        var routePointTemplate = $("#route-point-template");
+        let rowWithButton = $(button).parent().parent();
+        let routePointTemplate = $("#route-point-template");
         rowWithButton.after(routePointTemplate.find("tr:nth-child(2)").clone());
-        var inputsRow = routePointTemplate.find("tr:first-child").clone();
+        let inputsRow = routePointTemplate.find("tr:first-child").clone();
+        inputsRow.attr("data-new-row-marker","this-is-new");
         rowWithButton.after(inputsRow);
         reindexRoutePoints();
         inputsRow.find('.time').combodate(combodateConf);
+        inputsRow = $("tr.route-point[data-new-row-marker='this-is-new']");
+        inputsRow.removeAttr("data-new-row-marker");
+        let addressInput = inputsRow.find('input.address-autocomplete')[0];
+        attachAutocomplete(addressInput/*, inputsRow.attr('data-wp-idx')*/);
         return false;
     }
 
@@ -39,22 +61,78 @@
 
     function reindexRoutePoints() {
         $("form[name=route] tr.route-point").each(function (idx) {
-            var elem = $(this);
-            if (elem.data("rp-idx") !== idx) {
-                elem.attr("data-rp-idx", idx);
+            let elem = $(this);
+            if (elem.data("wp-idx") !== idx) {
+                elem.attr("data-wp-idx", idx);
                 elem.find(".route-data:input").each(function () {
-                    var input = $(this);
-                    var newName = input.attr("name").replace(/(wayPoints\[)(-?\d+)(\])/, "$1"+idx+"$3");
+                    let input = $(this);
+                    let newName = input.attr("name").replace(/(wayPoints\[)(-?\d+)(\])/, "$1" + idx + "$3");
                     input.attr("name", newName);
                 })
             }
         });
     }
-</script>
 
-<#--<#assign readonlyMode = false />-->
-<#assign isReverseRoute = route.direction == 'R' />
-<#--<#assign restrictedit = route.direction == 'R' />-->
+    function attachAutocomplete(elm) {
+        let autocomplete = new google.maps.places.Autocomplete(elm, autocompleteOpts);
+        autocomplete.addListener('place_changed', function () {
+            let place = autocomplete.getPlace();
+            let handler = new AddressComponentHandler(place);
+            fillInAddressFields(wpIdx(elm), handler);
+        });
+    }
+
+    function initAutocomplete() {
+        $('.address-autocomplete:not(#route-point-template .address-autocomplete)').each(function (i, elm) {
+            attachAutocomplete(elm);
+        });
+    }
+    
+    function wpIdx(someWpElem) {
+        return $(someWpElem).closest('tr').attr("data-wp-idx");
+    }
+
+    class AddressComponentHandler {
+        constructor(place) {
+            let components = place.address_components;
+            if (components) {
+                components.forEach((elm) => {
+                    let addressType = elm.types[0];
+                    if (this[addressType]) {
+                        this[addressType](elm);
+                    }
+                });
+                this.street = [this.streetName, this.streetNumber].join(" ").trim();
+            }
+            this.utcOffset = place.utc_offset;
+        }
+        street_number(addressComponent) { this.streetNumber = addressComponent.long_name; }
+        route(addressComponent) { this.streetName = addressComponent.long_name; }
+        locality(addressComponent) { this.city = addressComponent.long_name; }
+        administrative_area_level_1 (addressComponent) { this.region = addressComponent.long_name; }
+        country(addressComponent) { this.countryCode = addressComponent.short_name; }
+        postal_code(addressComponent) { this.zip = addressComponent.short_name; }
+    }
+
+    function fillInAddressFields(idx, address) {
+        component("address").val(address.street);
+        component("city").val(address.city);
+        component("zip").val(address.zip);
+        component("region").val(address.region);
+        component("countryCode").val(address.countryCode);
+        component("utcOffset").val(address.utcOffset);
+
+        function component(name) {
+            return $(`:input[name='wayPoints[${r"${idx}"}].${r"${name}"}']`);
+        }
+    }
+</#if>
+</script>
+<#if !isReverseRoute && !viewMode>
+<script
+        src="https://maps.googleapis.com/maps/api/js?language=${.lang}&key=AIzaSyBONWRRnzYQe0Zk19ChzzOWfJTEPGDehyg&libraries=places&callback=initAutocomplete"
+        async defer></script>
+</#if>
 
 <#if !isReverseRoute && !viewMode>
     <table style="display: none;" id="route-point-template">
@@ -107,7 +185,7 @@
         <br/>
         <#if !viewMode>
             <button type="reset">reset</button>
-            <button formaction="cancel">cancel</button>
+            <@btn formaction="cancel">cancel</@btn>
         </#if>
         <#if viewMode>
             <#if isReverseRoute>
@@ -117,11 +195,12 @@
             </#if>
         <#else>
             <#if isReverseRoute>
-                <button type="submit" formaction="back">back</button>
+                <@btn formaction="back">back</@btn>
             <#else>
-                <button type="submit" formaction="save">next</button>
+                <@btn formaction="save">next</@btn>
+                <#--<button type="submit" formaction="save">next</button>-->
             </#if>
-            <button type="submit" formaction="save?finish=true">finish</button>
+            <@btn formaction="save?finish=true">finish</@btn>
         </#if>
         </td>
     </tr>
@@ -129,7 +208,7 @@
 </form>
 
 <#macro routepoint idx rp={} add=true remove=true >
-    <tr class="route-point" data-rp-idx="${idx}">
+    <tr class="route-point" data-wp-idx="${idx}">
         <input name="wayPoints[${idx}].id" value="${(rp.id?c)!''}" type="hidden" class="route-data"/>
 
         <td class="col-xs-2">
@@ -151,8 +230,12 @@
             <@text name="wayPoints[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
             <@form.showFieldErrors 'wayPoints[${idx}].name' 'error'/>
         </td>
-        <td class="col-xs-2">
-            <@text name="wayPoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute />
+        <td class="col-xs-2 address">
+            <@hidden name="wayPoints[${idx}].utcOffset" value=rp.utcOffset!"" />
+            <@hidden name="wayPoints[${idx}].zip" value=rp.zip!"" />
+            <@text name="wayPoints[${idx}].region" value=rp.region!"" class="region" ro=true />
+            <@text name="wayPoints[${idx}].city" value=rp.city!"" class="city" ro=true />
+            <@text id="wayPoints[${idx}].address" name="wayPoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute class="address-autocomplete" />
             <@form.showFieldErrors 'wayPoints[${idx}].address' 'error'/>
         </td>
         <td class="col-xs-2"><@time name="wayPoints[${idx}].arrival" value="${rp.arrival!''}" /></td>
@@ -176,6 +259,12 @@
             </#if>
         </#if>
     </tr>
+</#macro>
+
+<#macro btn formaction>
+    <button type="button" formaction="${formaction}" onclick="submitForm(this)">
+        <#nested/>
+    </button>
 </#macro>
 
 <#macro hidden name value class="" id="">

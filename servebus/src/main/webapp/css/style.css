@@ -454,6 +454,7 @@ tr input{
     overflow-y: auto;
     width: 100%;
 }
+/*
 .table-fixed thead,
 .table-fixed tbody,
 .table-fixed tr,
@@ -464,14 +465,22 @@ tr input{
 .table-fixed tbody td {
     float: left;
 }
+*/
 .table-fixed thead tr th {
-    float: left;
+    /*float: left;*/
     font-size: 12px;
     background-color: #f39c12;
     border-color: #e67e22;
 }
 /*table*/
 
+tr.address region,
+tr.address city {
+    width: 50%;
+}
+tr.address city {
+    float: right;
+}
 
 /*WELCOME.FTL*/
 .sc-title{
