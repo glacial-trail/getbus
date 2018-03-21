@@ -157,8 +157,14 @@
         </td>
         <td class="col-xs-2"><@time name="wayPoints[${idx}].arrival" value="${rp.arrival!''}" /></td>
         <td class="col-xs-2"><@time name="wayPoints[${idx}].departure" value="${rp.departure!''}" /></td>
-        <td class="col-xs-1"><@text name="wayPoints[${idx}].tripTime" value="${rp.tripTime!''}" /></td>
-        <td class="col-xs-1"><@text name="wayPoints[${idx}].distance" value="${rp.distance!''}" /></td>
+        <td class="col-xs-1">
+            <@text name="wayPoints[${idx}].tripTime" value="${rp.tripTime!''}" />
+            <@form.showFieldErrors 'wayPoints[${idx}].tripTime' 'error'/>
+        </td>
+        <td class="col-xs-1">
+            <@text name="wayPoints[${idx}].distance" value="${rp.distance!''}"/>
+            <@form.showFieldErrors 'wayPoints[${idx}].distance' 'error'/>
+        </td>
     </tr>
     <tr>
         <#if !isReverseRoute && !viewMode>
