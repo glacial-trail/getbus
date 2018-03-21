@@ -5,6 +5,8 @@ import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.RoutePartId;
 import info.getbus.servebus.model.security.User;
+import info.getbus.test.util.SelfContainer;
+import info.getbus.utils.collect.DoubleFor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static info.getbus.test.util.Assertions.assertThatObjectsAreEqualUsingFields;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;

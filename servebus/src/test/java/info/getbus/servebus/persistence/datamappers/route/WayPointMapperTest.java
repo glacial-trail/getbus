@@ -3,25 +3,22 @@ package info.getbus.servebus.persistence.datamappers.route;
 import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.Route;
 import info.getbus.servebus.model.route.WayPoint;
-import org.hamcrest.Matcher;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import info.getbus.utils.collect.DoubleFor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static info.getbus.servebus.model.route.Direction.R;
+import static info.getbus.test.harmcrest.Matchers.containsInAnyOrder;
+import static info.getbus.test.harmcrest.Matchers.hasSizeOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -190,17 +187,5 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         routeMapper.insertLocked(transporterAreaId, otherRoute, user.getUsername());
         insertPointsFor(otherRoute);
         return otherRoute;
-    }
-
-    public static <E> org.hamcrest.Matcher<java.util.Collection<? extends E>> hasSizeOf(Collection c) {
-        return hasSize(c.size());
-    }
-
-    public static <T> Matcher<Iterable<? extends T>> containsInAnyOrder(Iterable<T> items) {
-        List<Matcher<? super T>> matchers = new ArrayList<>();
-        for (T item : items) {
-            matchers.add(equalTo(item));
-        }
-        return new IsIterableContainingInAnyOrder<>(matchers);
     }
 }

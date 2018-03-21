@@ -4,6 +4,7 @@ import info.getbus.servebus.model.periodicity.Periodicity;
 import info.getbus.servebus.model.route.Direction;
 import info.getbus.servebus.model.route.RoutePartId;
 import info.getbus.servebus.model.route.RoutePeriodicity;
+import info.getbus.test.util.Container;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static info.getbus.servebus.model.route.Direction.F;
 import static info.getbus.servebus.model.route.Direction.R;
+import static info.getbus.test.util.Assertions.assertThatObjectsAreEqualUsingFields;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;

@@ -7,7 +7,6 @@ import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaM
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
 import info.getbus.servebus.service.transporter.TransporterService;
 import info.getbus.servebus.service.transporter.TransporterServiceImpl;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
@@ -20,18 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.PropertyDescriptor;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static info.getbus.test.util.Assertions.assertThatObjectsAreEqualUsingFields;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration( classes = {RouteAwarePersistenceBaseTest.class})
@@ -68,22 +56,6 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
         transporterService.linkUserToArea(transporterAreaId, user, "ROLE");
     }
 
-    //TODO implement hamcrest matcher
-    @SneakyThrows
-    protected void assertThatObjectsAreEqualUsingFields(Object oAct, Object oExp, String... fields) {
-        for (String field : fields) {
-            Object actual = new PropertyDescriptor(field, oAct.getClass()).getReadMethod().invoke(oAct);
-            Object expected = new PropertyDescriptor(field, oExp.getClass()).getReadMethod().invoke(oExp);
-            assertNotNull(actual);
-            if (expected instanceof Comparable) {
-                //noinspection unchecked
-                assertEquals(field,0, ((Comparable)actual).compareTo(expected));
-            } else {
-                assertEquals(field, expected, actual);
-            }
-        }
-    }
-
     protected void insertPointsFor(Route route) {
         insertPointsFor(route, false);
     }
@@ -110,62 +82,5 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
 
     protected void assertThatPointsDataAreEqual(WayPoint actual, WayPoint expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "arrival", "departure", "distance", "tripTime");
-    }
-
-    class SelfContainer<K,O> extends Container<K,O,O> {
-        public SelfContainer(Function<O, K> keyFunc) {
-            super(keyFunc, o -> o);
-        }
-    }
-    class Container<K,O,V> {
-        private Function<O, K> keyFunc;
-        private Function<O, V> valFunc;
-        private Map<K, V> entities = new HashMap<>();
-
-        public Container(Function<O, K> keyFunc, Function<O, V> valFunc) {
-            this.keyFunc = keyFunc;
-            this.valFunc = valFunc;
-        }
-
-        public void put(O entity) {
-            entities.put(keyFunc.apply(entity), valFunc.apply(entity));
-        }
-        public void put(K key, O entity) {
-            entities.put(key, valFunc.apply(entity));
-        }
-        public V getFor(O entity) {
-            assertTrue(entities.containsKey(keyFunc.apply(entity)));
-            return entities.get(keyFunc.apply(entity));
-        }
-        public V getByKey(K key) {
-            return entities.get(key);
-        }
-    }
-
-    static class DoubleFor<T> {
-        private Iterable<T> uno;
-        private Iterable<T> dos;
-
-        public DoubleFor(Iterable<T> uno, Iterable<T> dos) {
-            this.uno = uno;
-            this.dos = dos;
-        }
-
-        public void iterate(BiConsumer<? super T, ? super T> action) {
-            Objects.requireNonNull(action);
-            Iterator<T> itUno = uno.iterator();
-            Iterator<T> itDos = dos.iterator();
-            while (itUno.hasNext()) {
-                if (!itDos.hasNext()) {
-                    fail("The size of iterables are different. Uno bigger");
-                }
-                T elementOfUno = itUno.next();
-                T elementOfDos = itDos.next();
-                action.accept(elementOfUno, elementOfDos);
-            }
-            if (itDos.hasNext()) {
-                fail("The size of iterables are different. Dos bigger");
-            }
-        }
     }
 }
