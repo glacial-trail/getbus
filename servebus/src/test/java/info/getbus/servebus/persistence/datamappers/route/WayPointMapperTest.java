@@ -38,7 +38,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
     @Test
     public void selectPoints() throws Exception {
         insertPointsFor(route);
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
         assertThat(points, hasSizeOf(route.getWayPoints()));
         new DoubleFor<>(route.getWayPoints(), points).iterate(
                 (actual, expected) -> assertThat(expected.getId(), is(actual.getId())));
@@ -50,7 +50,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         wayPointMapper.insert(route.getId(), expected, 0);
         assertThat(expected.getId(), is(notNullValue()));
 
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), route.getDirection());
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
         assertThat(points, hasSize(1));
         WayPoint actual = points.getFirst();
         assertThatPointsAreEqual(actual, expected);
@@ -64,7 +64,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         WayPoint expected = route.getWayPoints().getLast();
         expected.setId(point.getId());
         wayPointMapper.update(expected);
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), route.getDirection());
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
         assertThatPointsAreEqual(points.getFirst(), expected);
     }
 
@@ -83,7 +83,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         wayPointMapper.insert(route.getId(), expected, 0);
         int upc = insert.apply(expected, R);
         assertThat(upc, is(1));
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), R);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), R);
         assertThatPointsAreEqual(points.getFirst(), expected);
         assertThatPointsDataAreEqual(points.getFirst(), expected);
     }
@@ -93,7 +93,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         WayPoint point = route.getWayPoints().getFirst();
         wayPointMapper.insert(route.getId(), point, 0);
         wayPointMapper.insertDataIfNonExist(point, R);
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
         assertThatPointsAreEqual(points.getFirst(), point);
         assertThatRoutePointDataIsNull(points.getFirst());
     }
@@ -118,7 +118,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         WayPoint expectedData = route.getWayPoints().getLast();
         expectedData.setId(expectedPoint.getId());
         wayPointMapper.updateData(expectedData, Direction.F);
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
         assertThatPointsAreEqual(points.getFirst(), expectedPoint);
         assertThatPointsDataAreEqual(points.getFirst(), expectedData);
     }
@@ -132,7 +132,7 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         wayPointMapper.updateSequence(uno.getId(), -1);
         wayPointMapper.updateSequence(dos.getId(), 1);
         wayPointMapper.updateSequence(uno.getId(), 2);
-        Deque<WayPoint> actual = wayPointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        Deque<WayPoint> actual = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
         assertThat(actual.getFirst().getId(), is(dos.getId()));
         assertThat(actual.getLast().getId(), is(uno.getId()));
     }
@@ -176,12 +176,12 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
         int deleted = wayPointMapper.deleteNotIn(route.getId(), notDeletedIdsExp);
         assertThat(deleted, is(route.getWayPoints().size() - notDeletedIdsExp.size()));
 
-        Deque<WayPoint> points = wayPointMapper.selectRoutePointsWithData(route.getId(), Direction.F);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
         assertThat(points, hasSizeOf(notDeletedIdsExp));
         Set<Long> notDeletedIdsAct = points.stream().map(WayPoint::getId).collect(Collectors.toSet());
         assertThat(notDeletedIdsAct, containsInAnyOrder(notDeletedIdsExp));
 
-        points = wayPointMapper.selectRoutePointsWithData(otherRoute.getId(), Direction.F);
+        points = wayPointMapper.selectFullWayPoints(otherRoute.getId(), Direction.F);
         assertThat(points, hasSizeOf(otherRoute.getWayPoints()));
     }
 

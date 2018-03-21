@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Deque;
 
 public interface WayPointMapper {
-    Deque<WayPoint> selectRoutePointsWithData(@Param("routeId") Long routeId, @Param("direction") Direction direction);
+    Deque<WayPoint> selectFullWayPoints(@Param("routeId") Long routeId, @Param("direction") Direction direction);
     void insert(@Param("routeId") Long routeId, @Param("point") WayPoint point, @Param("sequence") int sequence);
     void update(@Param("point")WayPoint point);
     int insertData(@Param("point") WayPoint point, @Param("direction") Direction direction);

@@ -16,7 +16,7 @@
        <result column="distance" property="distance" />
   </resultMap>
 
-  <select id="selectRoutePointsWithData" resultMap="wayPoint">
+  <select id="selectFullWayPoints" resultMap="wayPoint">
     SELECT
       wp.id           as id,
       wp.sequence     as sequence,
@@ -27,7 +27,7 @@
       wpd.arrival     as arrival,
       wpd.trip_time   as trip_time,
       wpd.distance    as distance
-    FROM way_point wp
+    FROM way_point wp /*TODO left join?*/
     LEFT JOIN way_point_data wpd ON wpd.way_point_id = wp.id AND wpd.direction = #{direction}
     WHERE wp.route_id = #{routeId}
     ORDER BY sequence

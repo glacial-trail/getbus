@@ -96,7 +96,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     @Override
     public Route prepareReversed(Route route) {
         route.setDirection(route.isForward() ? Direction.R : Direction.F);
-        Deque<WayPoint> wayPoints = wayPointMapper.selectRoutePointsWithData(route.getId(), route.getDirection());
+        Deque<WayPoint> wayPoints = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
         route.setWayPoints(wayPoints);
         return route;
     }
