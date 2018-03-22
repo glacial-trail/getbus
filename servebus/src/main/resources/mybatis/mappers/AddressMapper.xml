@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.geo.address.persistence.mapper.AddressMapper">
+
+    <resultMap id="address" type="Address">
+        <id column="id" property="id"/>
+        <result column="country" property="countryCode"/>
+        <result column="admin_area1" property="adminArea1"/>
+        <result column="city" property="city"/>
+        <result column="street_building" property="streetBuilding"/>
+        <result column="street" property="street"/>
+        <result column="building" property="building"/>
+        <result column="zip" property="zip"/>
+        <result column="utc_offset" property="utcOffset"/>
+    </resultMap>
+
+    <sql id="selectFields">
+        SELECT
+            ai.id,
+            ai.country AS country,
+            al.admin_area1,
+            al.city,
+            al.street_building,
+            al.street,
+            al.building,
+            ai.zip,
+            ai.utc_offset
+        FROM address_i ai
+            JOIN address_l10n al ON ai.id = al.id
+    </sql>
+
+
+    <select id="select" resultMap="address">
+        <include refid="selectFields"/>
+        WHERE a.id = #{id}
+        AND lang = '--'
+    </select>
+
+    <select id="selectSame" resultMap="address">
+        <include refid="selectFields"/>
+        WHERE
+            a.country = #{address.countryCode}
+            AND al.admin_area1 = #{address.adminArea1}
+            AND al.city = #{address.city}
+            AND al.street_building = #{address.streetBuilding}
+            AND lang = '--'
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="address.id" keyColumn="id">
+        INSERT INTO address_i (
+            country,
+            utc_offset,
+            zip
+        )
+        VALUES (
+            #{address.countryCode},
+            #{address.utcOffset},
+            #{address.zip}
+        )
+    </insert>
+
+    <insert id="insertL10n">
+        INSERT INTO address_l10n (
+            lang,
+            id,
+            admin_area1,
+            city,
+            street_building,
+            street,
+            building
+        )
+        VALUES (
+            '--',
+            #{address.id},
+            #{address.adminArea1},
+            #{address.city},
+            #{address.streetBuilding},
+            #{address.street},
+            #{address.building}
+        )
+    </insert>
+</mapper>

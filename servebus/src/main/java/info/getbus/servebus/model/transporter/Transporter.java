@@ -1,7 +1,7 @@
 package info.getbus.servebus.model.transporter;
 
 import info.getbus.servebus.model.AbstractEntity;
-import info.getbus.servebus.model.common.Address;
+import info.getbus.servebus.geo.address.Address;
 
 public class Transporter extends AbstractEntity<Long> {
     private Address actualAddress;
