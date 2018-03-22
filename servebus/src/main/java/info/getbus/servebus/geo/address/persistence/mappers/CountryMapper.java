@@ -1,4 +1,4 @@
-package info.getbus.servebus.persistence.datamappers.common;
+package info.getbus.servebus.geo.address.persistence.mappers;
 
 import java.util.List;
 

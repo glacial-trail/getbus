@@ -1,7 +1,7 @@
 package info.getbus.servebus.web.mav;
 
 import info.getbus.servebus.route.model.CompactRoute;
-import info.getbus.servebus.repository.CountriesRepository;
+import info.getbus.servebus.geo.address.persistence.CountriesRepository;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
 import info.getbus.servebus.web.views.TransporterCabView;
@@ -46,7 +46,7 @@ public class RouteView extends TransporterCabView {
     }
 
     private ModelAndView route(RouteDTO route) {
-        addObject("countries", countriesRepository.getAll());
+        addObject("countries", countriesRepository.getCodes());
         addObject("route", route);
         return page("edit");
     }

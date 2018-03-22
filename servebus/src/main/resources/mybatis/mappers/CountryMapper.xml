@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.persistence.datamappers.common.CountryMapper">
+<mapper namespace="info.getbus.servebus.geo.address.persistence.mappers.CountryMapper">
 
 	<select id="selectAllCodes" resultType="string">
         SELECT code FROM country ORDER BY sequence ASC NULLS LAST
