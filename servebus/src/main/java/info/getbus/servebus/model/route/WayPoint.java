@@ -24,9 +24,9 @@ public class WayPoint {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime departure;
 //    private Duration tripTime;
-    @NotNull
+    @NotNull(message = "common.notempty.error")
     private Long tripTime;
-    @NotNull
+    @NotNull(message = "common.notempty.error")
     private Integer distance;
 
     public Long getId() {
