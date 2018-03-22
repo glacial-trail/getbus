@@ -1,3 +1,7 @@
+CREATE TABLE lang (
+  code CHAR(2) NOT NULL PRIMARY KEY
+);
+
 CREATE TABLE users (
   username VARCHAR(100) PRIMARY KEY,
   password VARCHAR(100) NOT NULL,
@@ -18,5 +22,6 @@ CREATE TABLE user_profile (
 );
 
 CREATE TABLE time_zone (
-  zone_id VARCHAR(50) PRIMARY KEY
+  zone_id VARCHAR(50) PRIMARY KEY,
+  utc_offset INTEGER NOT NULL
 );
