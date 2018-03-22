@@ -1,6 +1,6 @@
 package info.getbus.servebus.web.mav;
 
-import info.getbus.servebus.model.route.CompactRoute;
+import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.repository.CountriesRepository;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;

@@ -1,7 +1,7 @@
 package info.getbus.servebus.border.periodicity;
 
 import info.getbus.servebus.border.periodicity.conversion.PeriodicityDTOStrategyDependSpecialConverter;
-import info.getbus.servebus.model.periodicity.PeriodicityStrategy;
+import info.getbus.servebus.route.model.PeriodicityStrategy;
 
 import java.util.Map;
 

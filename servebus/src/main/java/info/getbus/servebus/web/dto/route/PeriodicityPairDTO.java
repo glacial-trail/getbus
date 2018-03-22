@@ -1,7 +1,7 @@
 package info.getbus.servebus.web.dto.route;
 
 
-import info.getbus.servebus.model.periodicity.PeriodicityStrategy;
+import info.getbus.servebus.route.model.PeriodicityStrategy;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

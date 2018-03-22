@@ -1,7 +1,7 @@
 package info.getbus.servebus.border.modelmapping;
 
 import com.github.rozidan.springboot.modelmapper.TypeMapConfigurer;
-import info.getbus.servebus.model.route.Route;
+import info.getbus.servebus.route.model.Route;
 import info.getbus.servebus.service.security.SecurityHelper;
 import info.getbus.servebus.web.dto.route.RouteDTO;
 import org.modelmapper.Converter;

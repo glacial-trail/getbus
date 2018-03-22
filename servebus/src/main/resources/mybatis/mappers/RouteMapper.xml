@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RouteMapper">
+<mapper namespace="info.getbus.servebus.route.persistence.mappers.RouteMapper">
 
   <resultMap id="route" type="Route">
       <id column="id" property="id" />
@@ -13,7 +13,7 @@
       <result column="base_seats_qty" property="baseSeatsQty" />
       <result column="start_sales" property="startSales" />
       <result column="sales_depth" property="salesDepth" />
-      <collection property="wayPoints" ofType="info.getbus.servebus.model.route.WayPoint">
+      <collection property="wayPoints" ofType="info.getbus.servebus.route.model.WayPoint">
           <id column="wp_id" property="id" />
           <result column="wp_name" property="name" />
           <result column="wp_country_code" property="countryCode" />

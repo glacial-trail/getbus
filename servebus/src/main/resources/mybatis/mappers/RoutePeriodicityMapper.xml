@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.persistence.datamappers.route.RoutePeriodicityMapper">
+<mapper namespace="info.getbus.servebus.route.persistence.mappers.RoutePeriodicityMapper">
 
     <resultMap id="routePeriodicity" type="RoutePeriodicity">
         <association property="routePartId" javaType="RoutePartId">

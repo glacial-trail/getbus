@@ -1,9 +1,9 @@
 package info.getbus.servebus.border.periodicity.conversion;
 
 import info.getbus.servebus.border.periodicity.PeriodicityDTOSpecialConverterFactory;
-import info.getbus.servebus.model.periodicity.Periodicity;
-import info.getbus.servebus.model.periodicity.PeriodicityStrategy;
-import info.getbus.servebus.model.route.PeriodicityPair;
+import info.getbus.servebus.route.model.Periodicity;
+import info.getbus.servebus.route.model.PeriodicityStrategy;
+import info.getbus.servebus.route.model.PeriodicityPair;
 import info.getbus.servebus.service.security.SecurityHelper;
 import info.getbus.servebus.web.dto.route.PeriodicityPartDTO;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;

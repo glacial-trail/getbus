@@ -1,5 +1,5 @@
 <#-- @ftlvariable name="countries" type="java.util.List<String>" -->
-<#-- @ftlvariable name="route" type="info.getbus.servebus.model.route.Route" -->
+<#-- @ftlvariable name="route" type="info.getbus.servebus.route.model.Route" -->
 <#-- @ftlvariable name="viewMode" type="boolean" -->
 
 <#import "../../macro/forms.ftl" as form>

@@ -20,7 +20,7 @@
     <bean class="info.getbus.servebus.border.periodicity.MapPeriodicityDTOSpecialConverterFactory">
         <constructor-arg index="0">
             <util:map
-                    key-type="info.getbus.servebus.model.periodicity.PeriodicityStrategy"
+                    key-type="info.getbus.servebus.route.model.PeriodicityStrategy"
                     value-type="info.getbus.servebus.border.periodicity.conversion.PeriodicityDTOStrategyDependSpecialConverter"
             >
                 <entry key="DAILY">

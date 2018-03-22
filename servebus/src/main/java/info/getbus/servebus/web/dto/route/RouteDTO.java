@@ -1,7 +1,7 @@
 package info.getbus.servebus.web.dto.route;
 
-import info.getbus.servebus.model.route.Direction;
-import info.getbus.servebus.model.route.WayPoint;
+import info.getbus.servebus.route.model.Direction;
+import info.getbus.servebus.route.model.WayPoint;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import static info.getbus.servebus.model.route.Direction.F;
+import static info.getbus.servebus.route.model.Direction.F;
 
 @Getter
 @Setter

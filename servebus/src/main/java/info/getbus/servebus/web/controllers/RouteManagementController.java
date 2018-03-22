@@ -1,11 +1,11 @@
 package info.getbus.servebus.web.controllers;
 
-import info.getbus.servebus.model.route.CompactRoute;
-import info.getbus.servebus.model.route.Direction;
-import info.getbus.servebus.model.route.PeriodicityPair;
-import info.getbus.servebus.model.route.Route;
-import info.getbus.servebus.model.route.RoutePartId;
-import info.getbus.servebus.service.transporter.RouteService;
+import info.getbus.servebus.route.model.CompactRoute;
+import info.getbus.servebus.route.model.Direction;
+import info.getbus.servebus.route.model.PeriodicityPair;
+import info.getbus.servebus.route.model.Route;
+import info.getbus.servebus.route.model.RoutePartId;
+import info.getbus.servebus.route.RouteService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
 import info.getbus.servebus.web.mav.Redirect;
