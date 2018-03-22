@@ -1,7 +1,7 @@
 package info.getbus.servebus.geo.address.persistence;
 
 import info.getbus.servebus.geo.address.Address;
-import info.getbus.servebus.geo.address.persistence.mapper.AddressMapper;
+import info.getbus.servebus.geo.address.persistence.mappers.AddressMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.geo.address.persistence.mapper.AddressMapper">
+<mapper namespace="info.getbus.servebus.geo.address.persistence.mappers.AddressMapper">
 
     <resultMap id="address" type="Address">
         <id column="id" property="id"/>
@@ -35,18 +35,19 @@
 
     <select id="select" resultMap="address">
         <include refid="selectFields"/>
-        WHERE a.id = #{id}
-        AND lang = '--'
+        WHERE
+            ai.id = #{id}
+            AND al.lang = '--'
     </select>
 
     <select id="selectSame" resultMap="address">
         <include refid="selectFields"/>
         WHERE
-            a.country = #{address.countryCode}
+            ai.country = #{address.countryCode}
             AND al.admin_area1 = #{address.adminArea1}
             AND al.city = #{address.city}
             AND al.street_building = #{address.streetBuilding}
-            AND lang = '--'
+            AND al.lang = '--'
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="address.id" keyColumn="id">

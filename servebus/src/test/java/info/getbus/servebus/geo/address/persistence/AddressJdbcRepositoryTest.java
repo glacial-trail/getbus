@@ -1,7 +1,7 @@
 package info.getbus.servebus.geo.address.persistence;
 
 import info.getbus.servebus.geo.address.Address;
-import info.getbus.servebus.geo.address.persistence.mapper.AddressMapper;
+import info.getbus.servebus.geo.address.persistence.mappers.AddressMapper;
 import info.getbus.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package info.getbus.servebus.geo.address.persistence.mapper;
+package info.getbus.servebus.geo.address.persistence.mappers;
 
 import info.getbus.servebus.geo.address.Address;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
