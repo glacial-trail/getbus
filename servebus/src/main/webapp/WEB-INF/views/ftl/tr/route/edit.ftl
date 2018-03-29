@@ -105,6 +105,8 @@
                 this.street = [this.streetName, this.streetNumber].join(" ").trim();
             }
             this.utcOffset = place.utc_offset;
+            this.longitude = place.geometry.location.lng();
+            this.latitude = place.geometry.location.lat();
         }
         street_number(addressComponent) { this.streetNumber = addressComponent.long_name; }
         route(addressComponent) { this.streetName = addressComponent.long_name; }
@@ -121,6 +123,8 @@
         component("region").val(address.region);
         component("countryCode").val(address.countryCode);
         component("utcOffset").val(address.utcOffset);
+        component("longitude").val(address.longitude);
+        component("latitude").val(address.latitude);
 
         function component(name) {
             return $(`:input[name='wayPoints[${r"${idx}"}].${r"${name}"}']`);
@@ -233,6 +237,8 @@
         <td class="col-xs-2 address">
             <@hidden name="wayPoints[${idx}].utcOffset" value=rp.utcOffset!"" />
             <@hidden name="wayPoints[${idx}].zip" value=rp.zip!"" />
+            <@hidden name="wayPoints[${idx}].longitude" value=rp.longitude!"" />
+            <@hidden name="wayPoints[${idx}].latitude" value=rp.latitude!"" />
             <@text name="wayPoints[${idx}].region" value=rp.region!"" class="region" ro=true />
             <@text name="wayPoints[${idx}].city" value=rp.city!"" class="city" ro=true />
             <@text id="wayPoints[${idx}].address" name="wayPoints[${idx}].address" value="${rp.address!''}" ro=isReverseRoute class="address-autocomplete" />
