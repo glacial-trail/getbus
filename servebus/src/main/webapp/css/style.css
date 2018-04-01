@@ -5,6 +5,7 @@ tr input{
     width: 100%;
 }
 .navbar-default {
+    margin-bottom: 0px;
     background-color: rgba(240, 240, 240, 0.9);
     /*height: 60px;*/
 }
@@ -167,6 +168,11 @@ tr input{
 .register-container {
     margin-top:90px;
     padding-bottom: 100px;
+}
+
+.register{
+    max-width: 700px;
+    margin: auto;
 }
 
 .register form {
