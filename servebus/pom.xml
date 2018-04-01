@@ -32,6 +32,14 @@
         <mockito.version>2.13.0</mockito.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>bintray-stokito-maven</id>
+            <name>stokito-maven</name>
+            <url>https://dl.bintray.com/stokito/maven</url>
+        </repository>
+    </repositories>
+
 
     <!--TODO switch to spring bom-->
     <dependencies>
@@ -210,6 +218,12 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${commons-beanutils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.liqpay</groupId>
+            <artifactId>liqpay-sdk</artifactId>
+            <version>0.6</version>
         </dependency>
     </dependencies>
 
