@@ -198,6 +198,7 @@ tr input{
 .register form input {
     width:95%;
     height: 30px;
+    padding-left: 15px;
     background: #fcfcfc;
     border: 1px solid #ddd;
     -moz-border-radius: 2px;
@@ -234,7 +235,7 @@ tr input{
 
 .register form button {
     cursor: pointer;
-    width: 60%;
+    width: 200px;
     height: 42px;
     margin-top: 25px;
     padding: 0;
@@ -451,6 +452,11 @@ tr input{
     color: #5C5670;
 }
 /*table*/
+
+.table-bordered{
+    border: none;
+}
+
 .table-fixed {
     width: 100%;
     background-color: #f3f3f3;
@@ -473,10 +479,13 @@ tr input{
 }
 */
 .table-fixed thead tr th {
-    /*float: left;*/
+    float: none;
     font-size: 12px;
     background-color: #f39c12;
     border-color: #e67e22;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /*table*/
 
