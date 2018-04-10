@@ -70,7 +70,7 @@ class MainControllerUserRegistrationTest {
     @BeforeEach
     public void setup() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .alwaysExpect(status().isOk())
+                .alwaysExpect(status().isOk())// TODO is this correct?
                 .alwaysExpect(view().name("register-partner"))
                 .build();
         reset(userMapper, registrationService);
@@ -82,7 +82,6 @@ class MainControllerUserRegistrationTest {
                 .param("email", "dirty@email.com")
                 .param("phone", "+3801234567")
         )
-                .andExpect(status().isOk())
                 .andExpect(model().hasErrors())
                 .andExpect(attributeHasNoFieldErrors("user", "email", "phone"))
                 .andExpect(view().name("register-partner"));
@@ -99,7 +98,6 @@ class MainControllerUserRegistrationTest {
                 .param("email", "dirty@email.com")
                 .param("phone", "+3801234567")
         )
-                .andExpect(status().isOk())
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors("user", "email", "phone"))
                 .andExpect(view().name("register-partner"));
@@ -118,9 +116,9 @@ class MainControllerUserRegistrationTest {
     @Test
     void verifyEmail_negative() throws Exception {
         mockMvc.perform(post("/register-partner")
-                .param("email", "dirty@email.com")
+                .param("email", "dirtmail.com")
         )
-                .andExpect(view().name("register-partner"));
+                .andExpect(model().attributeHasFieldErrors("user", "email"));
     }
 
 }
