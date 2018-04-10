@@ -33,7 +33,16 @@
         <mockito.version>2.13.0</mockito.version>
         <glassfish-el.version>3.0.0</glassfish-el.version>
         <jackson.version>2.9.5</jackson.version>
+        <liqpay.version>0.6</liqpay.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>bintray-stokito-maven</id>
+            <name>stokito-maven</name>
+            <url>https://dl.bintray.com/stokito/maven</url>
+        </repository>
+    </repositories>
 
 
     <!--TODO switch to spring bom-->
@@ -230,6 +239,12 @@
             <artifactId>javax.el</artifactId>
             <version>${glassfish-el.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.liqpay</groupId>
+            <artifactId>liqpay-sdk</artifactId>
+            <version>${liqpay.version}</version>
         </dependency>
     </dependencies>
 
