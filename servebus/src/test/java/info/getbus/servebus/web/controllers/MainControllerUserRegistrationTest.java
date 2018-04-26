@@ -121,4 +121,115 @@ class MainControllerUserRegistrationTest {
                 .andExpect(model().attributeHasFieldErrors("user", "email"));
     }
 
+    @Test
+    void verifyFirstName_positive() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("firstname", "Huilo")
+        )
+                .andExpect(attributeHasNoFieldErrors("user", "firstname"));
+    }
+
+    @Test
+    void verifyFirstName_negative_null() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                //.param("name", "")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "firstname"));
+    }
+
+    @Test
+    void verifyFirstName_negative_empty() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("firstname", "")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "firstname"));
+    }
+
+    @Test
+    void verifyLastName_positive() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("lastname", "Huilo")
+        )
+                .andExpect(attributeHasNoFieldErrors("user", "lastname"));
+    }
+
+    @Test
+    void verifyLastName_negative_null() throws Exception {
+        mockMvc.perform(post("/register-partner"))
+                .andExpect(model().attributeHasFieldErrors("user", "lastname"));
+    }
+
+    @Test
+    void verifyLastName_negative_empty() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("lastname", "")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "lastname"));
+    }
+
+    @Test
+    void verifyPhone_positive() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("phone", "+380648204581") //"Redesign regexp according to our needs
+        )
+                .andExpect(attributeHasNoFieldErrors("user", "phone"));
+    }
+
+    @Test
+    void verifyPhone_negative() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("phone", "0667651234")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "phone"));
+    }
+    @Test
+    void verifyPassword_positive() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("email", "dirty@gmail.com")
+                .param("phone", "+380648204581")
+                .param("name", "Jorje")
+                .param("lastname", "dirty")
+                .param("password", "908345")
+        )
+                .andExpect(attributeHasNoFieldErrors("user", "password"));
+    }
+
+
+    @Test
+    void verifyPassword_negative() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("email", "dirty@gmail.com")
+                .param("phone", "+380648204581")
+                .param("name", "Jorje")
+                .param("lastname", "dirty")
+                .param("password", "90834")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "password"));
+    }
+    @Test
+    void verifyRePassword_positive() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("email", "dirty@gmail.com")
+                .param("phone", "+380648204581")
+                .param("name", "Jorje")
+                .param("lastname", "dirty")
+                .param("password", "908345")
+                .param("repassword", "908345")
+        )
+                .andExpect(attributeHasNoFieldErrors("user", "repassword"));
+    }
+
+
+    @Test
+    void verifyRePassword_negative() throws Exception {
+        mockMvc.perform(post("/register-partner")
+                .param("email", "dirty@gmail.com")
+                .param("phone", "+380648204581")
+                .param("name", "Jorje")
+                .param("lastname", "dirty")
+                .param("password", "908341")
+                .param("repassword", "908345")
+        )
+                .andExpect(model().attributeHasFieldErrors("user", "repassword"));
+    }
 }
