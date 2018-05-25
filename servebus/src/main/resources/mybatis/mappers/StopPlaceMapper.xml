@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="info.getbus.servebus.topology.persistence.mappers.StopPlaceMapper">
+
+    <select id="selectByAddress" resultType="StopPlace">
+        SELECT
+          id,
+          name,
+          address_id as address
+        FROM stop_place
+        WHERE address_id = #{addressId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO
+        stop_place(name, address_id)
+        VALUES (#{name}, #{address})
+    </insert>
+</mapper>

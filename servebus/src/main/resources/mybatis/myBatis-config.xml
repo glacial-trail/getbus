@@ -13,6 +13,8 @@
         <typeAlias type="info.getbus.servebus.model.user.Profile" alias="UserProfile"/>
         <typeAlias type="info.getbus.servebus.geo.address.Address" alias="Address"/>
 
+        <typeAlias type="info.getbus.servebus.topology.StopPlace" alias="StopPlace"/>
+
         <typeAlias type="info.getbus.servebus.route.model.CompactRoute" alias="CompactRoute"/>
         <typeAlias type="info.getbus.servebus.route.model.Route" alias="Route"/>
         <typeAlias type="info.getbus.servebus.route.model.WayPoint" alias="WayPoint"/>

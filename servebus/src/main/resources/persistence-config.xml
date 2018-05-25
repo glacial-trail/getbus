@@ -31,5 +31,6 @@
     <mybatis:scan base-package="info.getbus.servebus.persistence.datamappers"/>
     <mybatis:scan base-package="info.getbus.servebus.geo.address.persistence.mappers"/>
     <mybatis:scan base-package="info.getbus.servebus.route.persistence.mappers"/>
+    <mybatis:scan base-package="info.getbus.servebus.topology.persistence.mappers"/>
 
 </beans>
