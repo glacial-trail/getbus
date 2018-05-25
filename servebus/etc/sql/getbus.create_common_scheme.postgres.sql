@@ -3,6 +3,7 @@ CREATE TABLE lang (
 );
 
 CREATE TABLE users (
+--   TODO id BIGSERIAL
   username VARCHAR(100) PRIMARY KEY,
   password VARCHAR(100) NOT NULL,
   enabled BOOLEAN,
