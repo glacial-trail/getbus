@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,12 +49,12 @@ class AddressJdbcRepositoryTest {
     @Test
     void ensureSaved_exist() {
         Address saved = new Address();
-        when(mapper.selectSame(any())).thenReturn(saved);
         Address neW = new Address();
+        when(mapper.selectSame(eq(neW))).thenReturn(saved);
         Address expSaved = repo.ensureSaved(neW);
-        verify(mapper).selectSame(any());
+        verify(mapper).selectSame(eq(neW));
         verifyNoMoreInteractions(mapper);
         assertThat(expSaved, is(saved));
-        assertThat(expSaved, not(is(neW)));
+        assertThat(expSaved, is(not(neW)));
     }
 }
