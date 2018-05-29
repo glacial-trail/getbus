@@ -10,6 +10,7 @@ public class Address implements Entity {
     private Long id;
 //    private Lang lang;
     private String countryCode;
+//    private String adminArea1Code;
     private String adminArea1;
     private String city;
     private String streetBuilding;

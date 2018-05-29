@@ -2,6 +2,7 @@ package info.getbus.servebus.route.model;
 
 import java.time.ZonedDateTime;
 
+//TODO rename to calendar
 public class Periodicity {
     private Long id;
     private ZonedDateTime start;

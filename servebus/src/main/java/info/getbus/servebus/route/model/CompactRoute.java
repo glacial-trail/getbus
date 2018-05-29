@@ -3,6 +3,7 @@ package info.getbus.servebus.route.model;
 public class CompactRoute {
     private long id;
     private String name;
+    //TODO rename
     private String startPoint;
     private String endPoint;
 
