@@ -25,10 +25,13 @@ import java.util.Collection;
 
 @Controller
 public class MainController {
-    @Autowired
+    @Autowired (required = false)
     private BRepo bRepo;
-    @Autowired
     private RegistrationService registrationService;
+
+    public MainController(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
 
     @GetMapping("/logon")
     public String logon() {

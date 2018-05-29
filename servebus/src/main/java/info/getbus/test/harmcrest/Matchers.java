@@ -1,6 +1,6 @@
 package info.getbus.test.harmcrest;
 
-
+import info.getbus.test.harmcrest.object.IsEqualsUsingReflection;
 import org.hamcrest.Matcher;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
@@ -14,7 +14,6 @@ import static org.hamcrest.Matchers.hasSize;
 public final class Matchers {
     private Matchers(){}
 
-
     public static <E> Matcher<java.util.Collection<? extends E>> hasSizeOf(Collection c) {
         return hasSize(c.size());
     }
@@ -27,4 +26,7 @@ public final class Matchers {
         return new IsIterableContainingInAnyOrder<>(matchers);
     }
 
+    public static <T> Matcher<T> recursivelyEqualsTo(T obj) {
+        return IsEqualsUsingReflection.recursivelyEqualsTo(obj);
+    }
 }
