@@ -1,10 +1,10 @@
 package info.getbus.servebus.route.persistence.mappers;
 
+import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.route.model.Direction;
 import info.getbus.servebus.route.model.Route;
 import info.getbus.servebus.route.model.RoutePartId;
-import info.getbus.servebus.model.security.User;
 import info.getbus.test.util.SelfContainer;
 import info.getbus.utils.collect.DoubleFor;
 import org.junit.Before;
@@ -39,20 +39,22 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         transporterService.linkUserToArea(transporterAreaId, user, "ROLE");
     }
 
+    //TODO do we really need route without bus stops? test fails due to INNER JOIN
     @Test
     public void insertAndSelect() throws Exception {
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
-        Route actualRoute = routeMapper.selectById(new RoutePartId(route.getId(), route.getDirection()));
+        Route actualRoute = routeMapper.selectShallowById(new RoutePartId(route.getId(), route.getDirection()));
         assertThatRoutesAreEqual(actualRoute, route);
         assertThat(actualRoute.getWayPoints(), is(empty()));
     }
 
     @Test
     public void insertAndSelectWithPoints() throws Exception {
-        //to use direction R insertPointsFor must act as PersistenceManager (probably out of score mapper test?)
+        //to use direction R insertStopsFor must act as PersistenceManager (probably out of score mapper test?)
+        route = newRouteWithPersistedTopology();
         route.setDirection(Direction.F);
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
-        insertPointsFor(route, true);
+        insertStopsFor(route, true);
         Route actualRoute = routeMapper.selectById(new RoutePartId(route.getId(), route.getDirection()));
         assertThatRoutesAreFullyEqual(actualRoute, route);
     }
@@ -82,15 +84,15 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         }
         RouteContainer expContainer = new RouteContainer();
 
-        Route route = insertRouteFor(transporterAreaId, user.getUsername());
+        Route route = fullyCreateAndInsertRouteFor(transporterAreaId, user.getUsername());
         expContainer.putEditable(route);
-        route = insertRouteFor(transporterAreaId, user.getUsername());
+        route = fullyCreateAndInsertRouteFor(transporterAreaId, user.getUsername());
         expContainer.putEditable(route);
-        route = insertRouteFor(transporterAreaId, "username14");
+        route = fullyCreateAndInsertRouteFor(transporterAreaId, "username14");
         expContainer.putNonEditable(route);
-        route = insertRouteFor(transporterAreaId2, "username24");
+        route = fullyCreateAndInsertRouteFor(transporterAreaId2, "username24");
         Long alienRoute = route.getId();
-        route = insertRouteFor(transporterAreaId, null);
+        route = fullyCreateAndInsertRouteFor(transporterAreaId, null);
         expContainer.putEditable(route);
 
         List<CompactRoute> compactRoutes = routeMapper.selectCompactRoutesByUsername(user.getUsername());
@@ -106,19 +108,19 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         }
     }
 
-    private Route insertRouteFor(long transporterAreaId, String username) {
-        Route route = newRoute();
+    private Route fullyCreateAndInsertRouteFor(long transporterAreaId, String username) {
+        Route route = newRouteWithPersistedTopology();
         routeMapper.insertLocked(transporterAreaId, route, username);
-        insertPointsFor(route);
+        insertStopsFor(route);
         return route;
     }
 
     private String nameOfLastPoint(Route expected) {
-        return expected.getWayPoints().getLast().getName();
+        return expected.getLastStop().getName();
     }
 
     private String nameOfFirstPoint(Route expected) {
-        return expected.getWayPoints().getFirst().getName();
+        return expected.getFirstStop().getName();
     }
 
     @Test
@@ -141,7 +143,7 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         Route expected = newRoute();
         expected.setId(route.getId());
         routeMapper.update(expected);
-        Route actualRoute = routeMapper.selectById(new RoutePartId(route.getId(), expected.getDirection()));
+        Route actualRoute = routeMapper.selectShallowById(new RoutePartId(route.getId(), expected.getDirection()));
         assertThatRoutesAreEqual(actualRoute, expected);
     }
 
@@ -172,8 +174,11 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         assertThatObjectsAreEqualUsingFields(actual, expected,"direction");
         new DoubleFor<>(actual.getWayPoints(), expected.getWayPoints()).iterate(
                 (act, exp) -> {
-                    assertThatPointsAreEqual(act, exp);
-                    assertThatPointsDataAreEqual(act, exp);
+                    assertThatStopsAreEqual(act, exp);
+//       TODO?             assertReflectionEquals(addr, actAddress);
+                    assertThatObjectsAreEqualUsingFields(act.getAddress(), exp.getAddress(),
+                            "id", "countryCode", "adminArea1", "city", "streetBuilding", "street", "building", "zip", "utcOffset");
+                    assertThatStopsDataAreEqual(act, exp);
                 });
     }
 }

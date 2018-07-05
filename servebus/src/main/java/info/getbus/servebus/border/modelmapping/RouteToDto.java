@@ -23,6 +23,6 @@ public class RouteToDto extends TypeMapConfigurer<Route, RouteDTO> {
                         .map(Route::getStartSales, RouteDTO::setStartSales))
                 .addMappings(mapping -> mapping
                         .with(request -> new LinkedList<>())
-                        .map(Route::getWayPoints, RouteDTO::setWayPoints));
+                        .map(Route::getWayPoints, RouteDTO::setStops));
     }
 }

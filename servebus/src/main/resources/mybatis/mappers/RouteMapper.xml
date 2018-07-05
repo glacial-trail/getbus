@@ -13,73 +13,91 @@
       <result column="base_seats_qty" property="baseSeatsQty" />
       <result column="start_sales" property="startSales" />
       <result column="sales_depth" property="salesDepth" />
-      <collection property="wayPoints" ofType="info.getbus.servebus.route.model.WayPoint">
-          <id column="wp_id" property="id" />
-          <result column="wp_name" property="name" />
-          <result column="wp_country_code" property="countryCode" />
-          <result column="wp_address" property="address" />
-          <result column="wp_departure" property="departure" />
-          <result column="wp_arrival" property="arrival" />
-          <result column="wp_trip_time" property="tripTime" />
-          <result column="wp_distance" property="distance" />
+      <collection property="wayPoints"
+                  resultMap="info.getbus.servebus.route.persistence.mappers.WayPointMapper.wayPoint">
       </collection>
   </resultMap>
 
-  <select id="selectCompactRoutesByUsername" resultType="CompactRoute">
-    SELECT
-      r.id,
-      r.name,
-      start.name AS start_point,
-      finish.name AS end_point,
-      CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username} THEN TRUE ELSE FALSE END
-        AS editable
+    <select id="selectCompactRoutesByUsername" resultType="CompactRoute">
+        SELECT
+            r.id,
+            r.name,
+            start.name  AS start_point,
+            finish.name AS end_point,
+            CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username}
+                THEN TRUE
+            ELSE FALSE END
+                        AS editable
         /*TODO AS in_edit_mode*/
-    FROM route r
-    INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
-    INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
-    INNER JOIN way_point start ON r.id = start.route_id AND start.sequence = 1
-    INNER JOIN way_point finish ON r.id = finish.route_id
-    INNER JOIN (SELECT
-                  max(sequence) AS last,
-                  route_id
-                FROM way_point
-                GROUP BY route_id) AS last_points
-      ON finish.route_id = last_points.route_id AND finish.sequence = last_points.last
-  </select>
+        FROM route r
+            INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
+            INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
+            INNER JOIN route_stop start ON r.id = start.route_id AND start.sequence = 1
+            INNER JOIN route_stop finish ON r.id = finish.route_id
+            INNER JOIN (SELECT
+                            max(sequence) AS last,
+                            route_id
+                        FROM route_stop
+                        GROUP BY route_id) AS last_stops
+                ON finish.route_id = last_stops.route_id AND finish.sequence = last_stops.last
+    </select>
 
-  <select id="selectById" resultMap="route">
-    SELECT
-      r.id,
-      r.name,
-      r.base_price,
-      r.base_seats_qty,
-      r.start_sales,
-      r.sales_depth,
-      #{cid.direction} as direction,
-      wp.id           as wp_id,
-      wp.sequence     as wp_sequence,
-      wp.name         as wp_name,
-      wp.country_code as wp_country_code,
-      wp.address      as wp_address,
-      wpd.departure   as wp_departure,
-      wpd.arrival     as wp_arrival,
-      wpd.trip_time   as wp_trip_time,
-      wpd.distance    as wp_distance
-    FROM route r
-      LEFT JOIN way_point wp ON r.id = wp.route_id
-      LEFT JOIN way_point_data wpd ON wpd.way_point_id = wp.id
-        AND wpd.direction = #{cid.direction}
-    WHERE r.id = #{cid.id}
-    ORDER BY sequence
-    <choose>
-      <when test='cid.direction.name == "F"'>
-          ASC
-      </when>
-      <otherwise>
-        DESC
-      </otherwise>
-    </choose>
-  </select>
+    <select id="selectById" resultMap="route">
+        SELECT
+          r.id,
+          r.name as name,
+          r.base_price,
+          r.base_seats_qty,
+          r.start_sales,
+          r.sales_depth,
+          #{cid.direction} as direction,
+          rs.route_id,
+          rs.stop_id,
+          coalesce(rs.name, sp.name) as stop_name,
+          rs.sequence,
+          ai.id as address_id,
+          ai.country,
+          al.admin_area1,
+          al.city,
+          al.street_building,
+          al.street,
+          al.building,
+          ai.zip,
+          ai.utc_offset,
+          rl.distance,
+          rt.arrival,
+          rt.departure,
+          rt.trip_time
+        FROM route r
+        LEFT JOIN route_stop rs ON r.id = rs.route_id
+        JOIN stop_place sp ON rs.stop_id = sp.id
+        JOIN address_i ai ON sp.address_id = ai.id
+        JOIN address_l10n al ON ai.id = al.id AND al.lang = '--' /*TODO remove left join after route split*/
+        LEFT JOIN route_length rl ON rs.route_id = rl.route_id AND rs.stop_id = rl.route_stop_id AND rl.direction = #{cid.direction}
+        LEFT JOIN route_timetable rt ON rs.route_id = rt.route_id AND rs.stop_id = rt.route_stop_id AND rt.direction = #{cid.direction}
+        WHERE r.id = #{cid.id}
+        ORDER BY sequence
+        <choose>
+            <when test='cid.direction.name == "F"'>
+                ASC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectShallowById" resultMap="route">
+        SELECT
+            r.id,
+            r.name AS name,
+            r.base_price,
+            r.base_seats_qty,
+            r.start_sales,
+            r.sales_depth
+        FROM route r
+        WHERE r.id = #{cid.id}
+    </select>
 
   <select id="selectLockOwner" resultType="string">
     SELECT
@@ -138,11 +156,5 @@
     SET lock_owner = NULL
     WHERE id = #{id}
   </update>
-
-    <select id="selectIsRouteLocked" resultType="_boolean">
-        SELECT EXISTS (
-        SELECT id FROM route WHERE id = #{id} AND (lock_owner IS NOT NULL AND lock_owner != #{except})
-        )
-    </select>
 
 </mapper>

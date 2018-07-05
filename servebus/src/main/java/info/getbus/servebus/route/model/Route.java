@@ -6,7 +6,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class Route {
     /**
      * @return new copy of way points collection in forward direction
      */
-    public Deque<WayPoint> getRoutePointsInNaturalOrder() {
+    public List<WayPoint> getRoutePointsInNaturalOrder() {
         if (isForward()) {
             return new LinkedList<>(wayPoints);
         } else {
@@ -71,8 +70,8 @@ public class Route {
         }
     }
 
-    private Deque<WayPoint> reverse(Collection<WayPoint> wayPoints) {
-        Deque<WayPoint> reversed = new LinkedList<>();
+    private List<WayPoint> reverse(Collection<WayPoint> wayPoints) {
+        LinkedList<WayPoint> reversed = new LinkedList<>();
         wayPoints.forEach(reversed::addFirst);
         return reversed;
     }

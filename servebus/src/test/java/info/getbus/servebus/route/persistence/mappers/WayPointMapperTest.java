@@ -1,157 +1,204 @@
 package info.getbus.servebus.route.persistence.mappers;
 
+ import info.getbus.servebus.geo.address.Address;
 import info.getbus.servebus.route.model.Direction;
 import info.getbus.servebus.route.model.Route;
+import info.getbus.servebus.route.model.RoutePartId;
 import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.topology.StopPlace;
 import info.getbus.utils.collect.DoubleFor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
+import java.util.List;
 
+import static info.getbus.servebus.route.model.Direction.F;
 import static info.getbus.servebus.route.model.Direction.R;
-import static info.getbus.test.harmcrest.Matchers.containsInAnyOrder;
 import static info.getbus.test.harmcrest.Matchers.hasSizeOf;
+import static info.getbus.test.util.Assertions.assertThatObjectsAreEqualUsingFields;
+import static info.getbus.test.util.Assertions.assertThatObjectsAreNotEqualUsingFields;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
     @Autowired
+    private RouteMapper routeMapper;
+    @Autowired
     private WayPointMapper wayPointMapper;
+
+
+    @Test
+    public void stopAddress() throws Exception {
+        Route route = newRoute();
+        WayPoint stop = route.getFirstStop();
+        Address address = stop.getAddress();
+        addressMapper.insert(address);
+        addressMapper.insertL10n(address);
+        StopPlace place = newPlace(address);
+        stopPlaceMapper.insert(place);
+        stop.setStopId(place.getId());
+        routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
+        wayPointMapper.upsert(stop);
+
+        Route actualRoute = routeMapper.selectById(new RoutePartId(route.getId(), route.getDirection()));
+        Address actualAddress = actualRoute.getFirstStop().getAddress();
+        assertThat(actualAddress, notNullValue());
+        assertReflectionEquals(address, actualAddress);
+//        assertThat(actAddress, recursivelyEqualsTo(addr)); string equals issue
+    }
 
     @Before
     public final void setUpRoute() {
+        route = newRouteWithPersistedTopology();
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
     }
 
     @Test
     public void selectPoints() throws Exception {
-        insertPointsFor(route);
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
+        insertStopsFor(route);
+        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), F);
         assertThat(points, hasSizeOf(route.getWayPoints()));
         new DoubleFor<>(route.getWayPoints(), points).iterate(
-                (actual, expected) -> assertThat(expected.getId(), is(actual.getId())));
+                (actual, expected) -> assertThat(expected.getStopId(), is(actual.getStopId())));
     }
 
     @Test
-    public void insertAndSelectPoint() throws Exception {
-        WayPoint expected = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), expected, 0);
-        assertThat(expected.getId(), is(notNullValue()));
-
+    public void fullInsertAndSelectPoint() throws Exception {
+        WayPoint expected = route.getFirstStop();
+        wayPointMapper.upsert(expected);
+        wayPointMapper.upsertLength(expected, route.getDirection());
+        wayPointMapper.upsertTimetable(expected, route.getDirection());
+        //TODO delete wayPointMapper.selectFullWayPoints
         Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
         assertThat(points, hasSize(1));
         WayPoint actual = points.getFirst();
-        assertThatPointsAreEqual(actual, expected);
-        assertThatRoutePointDataIsNull(actual);
+        assertReflectionEquals(expected, actual);
+//        assertThat(actual, recursivelyEqualsTo(expected));
+    }
+
+    private abstract class AbstractPersistTestTemplate {
+        String eqFields[];
+        AbstractPersistTestTemplate(String... fields) {
+            this.eqFields = new String[fields.length + 2];
+            this.eqFields[0] = "routeId";
+            this.eqFields[1] = "stopId";
+            System.arraycopy(fields, 0, this.eqFields, 2, fields.length);
+        }
+        abstract void persistData(WayPoint stop, Direction direction);
+        abstract void test();
+    }
+    private abstract class InsertTestTemplate extends AbstractPersistTestTemplate {
+        InsertTestTemplate(String... fields) {
+            super(fields);
+        }
+        @Override
+        void test() {
+            WayPoint expected = route.getFirstStop();
+            wayPointMapper.upsert(expected);
+            persistData(expected, route.getDirection());
+            Route routeWithInsertedStop = routeMapper.selectById(routeId());
+            assertThat(routeWithInsertedStop.getWayPoints(), hasSize(1));
+            WayPoint actual = routeWithInsertedStop.getFirstStop();
+            assertThatObjectsAreEqualUsingFields(actual, expected, eqFields);
+        }
+    }
+    private abstract class UpdateTestTemplate extends AbstractPersistTestTemplate {
+        String neqFields[];
+        UpdateTestTemplate(String... fields) {
+            super(fields);
+            neqFields = fields;
+        }
+        @Override
+        void test() {
+            WayPoint stopV1 = route.getFirstStop();
+            wayPointMapper.upsert(stopV1);
+            persistData(stopV1, route.getDirection());
+            Route routeAfterInsert = routeMapper.selectById(routeId());
+
+            WayPoint expected = route.getLastStop();
+            expected.setStopId(stopV1.getStopId());
+            persistData(expected, route.getDirection());
+            Route routeAfterUpdate = routeMapper.selectById(routeId());
+            assertThat(routeAfterUpdate.getWayPoints(), hasSize(1));
+            WayPoint actualStopAfterUpdate = routeAfterUpdate.getFirstStop();
+
+            assertThatObjectsAreEqualUsingFields(actualStopAfterUpdate, expected, eqFields);
+            assertThatObjectsAreNotEqualUsingFields(actualStopAfterUpdate, routeAfterInsert.getFirstStop(), neqFields);
+        }
     }
 
     @Test
-    public void updatePoint() throws Exception {
-        WayPoint point = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), point, 0);
-        WayPoint expected = route.getWayPoints().getLast();
-        expected.setId(point.getId());
-        wayPointMapper.update(expected);
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
-        assertThatPointsAreEqual(points.getFirst(), expected);
+    public void insert() throws Exception {
+        new InsertTestTemplate("name", "sequence") {
+            void persistData(WayPoint stop, Direction direction) { }
+        }.test();
     }
 
     @Test
-    public void insertAndSelectData() throws Exception {
-        testInsert((wp, direction) -> wayPointMapper.insertData(wp, direction));
+    public void update() throws Exception {
+        new UpdateTestTemplate() {
+            int cc;
+            void persistData(WayPoint stop, Direction direction) {
+               if (++cc == 2) {
+                   wayPointMapper.upsert(stop);
+               }
+            }
+        }.test();
     }
 
     @Test
-    public void insertAndSelectDataIfNonExist() throws Exception {
-        testInsert((wp, direction) -> wayPointMapper.insertDataIfNonExist(wp, direction));
-    }
-
-    private void testInsert(BiFunction<WayPoint, Direction, Integer> insert) {
-        WayPoint expected = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), expected, 0);
-        int upc = insert.apply(expected, R);
-        assertThat(upc, is(1));
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), R);
-        assertThatPointsAreEqual(points.getFirst(), expected);
-        assertThatPointsDataAreEqual(points.getFirst(), expected);
+    public void insertLength() throws Exception {
+        new InsertTestTemplate("distance") {
+            void persistData(WayPoint stop, Direction direction) {
+                wayPointMapper.upsertLength(stop, direction);
+            }
+        }.test();
     }
 
     @Test
-    public void selectPointDataNegative() throws Exception {
-        WayPoint point = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), point, 0);
-        wayPointMapper.insertDataIfNonExist(point, R);
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
-        assertThatPointsAreEqual(points.getFirst(), point);
-        assertThatRoutePointDataIsNull(points.getFirst());
+    public void updateLength() throws Exception {
+        new UpdateTestTemplate("distance") {
+            void persistData(WayPoint stop, Direction direction) {
+                wayPointMapper.upsertLength(stop, direction);
+            }
+        }.test();
     }
 
     @Test
-    public void insertInsertDataIfNonExist() throws Exception {
-        WayPoint point = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), point, 0);
-        int rowsInserted = wayPointMapper.insertDataIfNonExist(point, R);
-        assertThat(rowsInserted, is(1));
-        WayPoint toUpdate = route.getWayPoints().getLast();
-        toUpdate.setId(point.getId());
-        rowsInserted = wayPointMapper.insertDataIfNonExist(toUpdate, R);
-        assertThat(rowsInserted, is(0));
+    public void insertTimetable() throws Exception {
+        new InsertTestTemplate("arrival", "departure", "tripTime") {
+            void persistData(WayPoint stop, Direction direction) {
+                wayPointMapper.upsertTimetable(stop, direction);
+            }
+        }.test();
     }
 
     @Test
-    public void updatePointData() throws Exception {
-        WayPoint expectedPoint = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), expectedPoint, 0);
-        wayPointMapper.insertDataIfNonExist(expectedPoint, Direction.F);
-        WayPoint expectedData = route.getWayPoints().getLast();
-        expectedData.setId(expectedPoint.getId());
-        wayPointMapper.updateData(expectedData, Direction.F);
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
-        assertThatPointsAreEqual(points.getFirst(), expectedPoint);
-        assertThatPointsDataAreEqual(points.getFirst(), expectedData);
+    public void updateTimetable() throws Exception {
+        new UpdateTestTemplate("arrival", "departure", "tripTime") {
+            void persistData(WayPoint stop, Direction direction) {
+                wayPointMapper.upsertTimetable(stop, direction);
+            }
+        }.test();
     }
 
     @Test
-    public void updatePointSequence() throws Exception {
-        WayPoint uno = route.getWayPoints().getFirst();
-        WayPoint dos = route.getWayPoints().getLast();
-        wayPointMapper.insert(route.getId(), uno, 1);
-        wayPointMapper.insert(route.getId(), dos, 2);
-        wayPointMapper.updateSequence(uno.getId(), -1);
-        wayPointMapper.updateSequence(dos.getId(), 1);
-        wayPointMapper.updateSequence(uno.getId(), 2);
-        Deque<WayPoint> actual = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
-        assertThat(actual.getFirst().getId(), is(dos.getId()));
-        assertThat(actual.getLast().getId(), is(uno.getId()));
+    public void selectStopDataNegative() throws Exception {
+        WayPoint stop = route.getFirstStop();
+        wayPointMapper.upsert(stop);
+        wayPointMapper.upsertLength(stop, R);
+        Deque<WayPoint> stops = wayPointMapper.selectFullWayPoints(route.getId(), F);
+        assertThatStopsAreEqual(stops.getFirst(), stop);
+        assertThatRouteStopDataIsNull(stops.getFirst());
     }
 
-    @Test
-    public void existInconsistentPoints() throws Exception {
-        WayPoint point = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), point, 0);
-        wayPointMapper.insertDataIfNonExist(point, Direction.F);
-        assertThat(wayPointMapper.existInconsistentRoutePoints(route.getId()), is(true));
-    }
-
-    @Test
-    public void existInconsistentPointsNegative() throws Exception {
-        WayPoint point = route.getWayPoints().getFirst();
-        wayPointMapper.insert(route.getId(), point, 0);
-        wayPointMapper.insertDataIfNonExist(point, Direction.F);
-        wayPointMapper.insertDataIfNonExist(point, R);
-        assertThat(wayPointMapper.existInconsistentRoutePoints(route.getId()), is(false));
-    }
-
-    private void assertThatRoutePointDataIsNull(WayPoint point) {
+    private void assertThatRouteStopDataIsNull(WayPoint point) {
         assertThat(point.getArrival(), nullValue());
         assertThat(point.getDeparture(), nullValue());
         assertThat(point.getDistance(), nullValue());
@@ -159,33 +206,41 @@ public class WayPointMapperTest extends RouteAwarePersistenceBaseTest {
     }
 
     @Test
-    public void deleteNotIn() throws Exception {
-        Route otherRoute = insertNewRoute();
-        insertPointsFor(route);
-        Set<Long> notDeletedIdsExp = new HashSet<>();
-        int i = 1;
-        for (WayPoint wp : route.getWayPoints()) {
-            if (1 == i || 3 == i || 6 == i) {
-                notDeletedIdsExp.add(wp.getId());
-            }
-            i++;
-        }
-        int deleted = wayPointMapper.deleteNotIn(route.getId(), notDeletedIdsExp);
-        assertThat(deleted, is(route.getWayPoints().size() - notDeletedIdsExp.size()));
-
-        Deque<WayPoint> points = wayPointMapper.selectFullWayPoints(route.getId(), Direction.F);
-        assertThat(points, hasSizeOf(notDeletedIdsExp));
-        Set<Long> notDeletedIdsAct = points.stream().map(WayPoint::getId).collect(Collectors.toSet());
-        assertThat(notDeletedIdsAct, containsInAnyOrder(notDeletedIdsExp));
-
-        points = wayPointMapper.selectFullWayPoints(otherRoute.getId(), Direction.F);
-        assertThat(points, hasSizeOf(otherRoute.getWayPoints()));
+    public void existInconsistentStops() throws Exception {
+        WayPoint stop = route.getFirstStop();
+        wayPointMapper.upsert(stop);
+        wayPointMapper.upsertLength(stop, F);
+        assertThat(wayPointMapper.existInconsistentRoutePoints(route.getId()), is(true));
     }
 
-    private Route insertNewRoute() {
-        Route otherRoute = newRoute();
-        routeMapper.insertLocked(transporterAreaId, otherRoute, user.getUsername());
-        insertPointsFor(otherRoute);
-        return otherRoute;
+    @Test
+    public void existInconsistentStopsNegative() throws Exception {
+        WayPoint stop = route.getFirstStop();
+        wayPointMapper.upsert(stop);
+        wayPointMapper.upsertLength(stop, F);
+        wayPointMapper.upsertLength(stop, R);
+        assertThat(wayPointMapper.existInconsistentRoutePoints(route.getId()), is(false));
+    }
+
+    @Test
+    public void negateSequence() throws Exception {
+        insertStopsFor(route);
+        wayPointMapper.negateSequence(route.getId());
+        List<WayPoint> actual = routeMapper.selectById(routeId()).getWayPoints();
+        assertThat(actual.stream().anyMatch(s -> s.getSequence() < 0), is(true));
+    }
+
+    @Test
+    public void deleteOutOfRange() throws Exception {
+        route.setDirection(F);
+        insertStopsFor(route);
+        wayPointMapper.deleteOutOfRange(route.getId(), 4);
+        List<WayPoint> actual = routeMapper.selectById(routeId()).getWayPoints();
+        assertThat(actual, hasSize(4));
+        new DoubleFor<>(actual, route.getWayPoints().subList(0, 4)).iterate(this::assertThatStopsAreEqual);
+    }
+
+    private RoutePartId routeId() {
+        return new RoutePartId(route.getId(), route.getDirection());
     }
 }

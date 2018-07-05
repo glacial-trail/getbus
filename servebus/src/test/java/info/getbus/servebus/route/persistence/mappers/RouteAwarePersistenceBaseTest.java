@@ -1,13 +1,17 @@
 package info.getbus.servebus.route.persistence.mappers;
 
 import info.getbus.servebus.dao.security.UserMapper;
-import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.geo.address.Address;
+import info.getbus.servebus.geo.address.persistence.mappers.AddressMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
+import info.getbus.servebus.route.model.Route;
+import info.getbus.servebus.route.model.WayPoint;
 import info.getbus.servebus.route.persistence.RouteAwareBaseTest;
 import info.getbus.servebus.service.transporter.TransporterService;
 import info.getbus.servebus.service.transporter.TransporterServiceImpl;
+import info.getbus.servebus.topology.StopPlace;
+import info.getbus.servebus.topology.persistence.mappers.StopPlaceMapper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
@@ -43,12 +47,41 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
     @Autowired
     protected UserMapper userMapper;
     @Autowired
+    protected AddressMapper addressMapper;
+    @Autowired
+    protected StopPlaceMapper stopPlaceMapper;
+    @Autowired
     protected RouteMapper routeMapper;
     @Autowired
     protected WayPointMapper wayPointMapper;
 
     protected long transporterAreaId;
 
+    StopPlace newPlace(Address address) {
+        StopPlace place = new StopPlace();
+        place.setName("name"+address.getId());
+        place.setAddress(address.getId());
+        return place;
+    }
+
+    protected Route newRouteWithPersistedTopology() {
+        Route route = newRoute();
+        //workaround. seems to be random beans do not uses setter
+        route.setWayPoints(route.getWayPoints());
+        persistTopology(route);
+        return route;
+    }
+
+    private void persistTopology(Route route) {
+        for (WayPoint stop : route.getWayPoints()) {
+            Address address = stop.getAddress();
+            addressMapper.insert(address);
+            addressMapper.insertL10n(address);
+            StopPlace stopPlace = newPlace(address);
+            stopPlaceMapper.insert(stopPlace);
+            stop.setStopId(stopPlace.getId());
+        }
+    }
 
     @Before
     public final void setUpUserAndTransporterArea() {
@@ -57,31 +90,24 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
         transporterService.linkUserToArea(transporterAreaId, user, "ROLE");
     }
 
-    protected void insertPointsFor(Route route) {
-        insertPointsFor(route, false);
+    protected void insertStopsFor(Route route) {
+        insertStopsFor(route, false);
     }
-    protected void insertPointsFor(Route route, boolean insertPointData) {
-        class InsertHelper {
-            private int sequence = 1;
-            private Long routeId;
-            private InsertHelper(Long routeId) {
-                this.routeId = routeId;
-            }
-            private void insertPoint(WayPoint point) {
-                wayPointMapper.insert(routeId, point, sequence++);
-                if (insertPointData) {
-                    wayPointMapper.insertDataIfNonExist(point, route.getDirection());
-                }
+    protected void insertStopsFor(Route route, boolean insertPointData) {
+        for (WayPoint stop : route.getRoutePointsInNaturalOrder()) {
+            wayPointMapper.upsert(stop);
+            if (insertPointData) {
+                wayPointMapper.upsertLength(stop, route.getDirection());
+                wayPointMapper.upsertTimetable(stop, route.getDirection());
             }
         }
-        route.getWayPoints().forEach(new InsertHelper(route.getId())::insertPoint);
     }
 
-    protected void assertThatPointsAreEqual(WayPoint actual, WayPoint expected) {
-        assertThatObjectsAreEqualUsingFields(actual, expected, "id", "name", "countryCode", "address");
+    protected void assertThatStopsAreEqual(WayPoint actual, WayPoint expected) {
+        assertThatObjectsAreEqualUsingFields(actual, expected, "routeId", "stopId", "sequence", "name");
     }
 
-    protected void assertThatPointsDataAreEqual(WayPoint actual, WayPoint expected) {
+    protected void assertThatStopsDataAreEqual(WayPoint actual, WayPoint expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "arrival", "departure", "distance", "tripTime");
     }
 }

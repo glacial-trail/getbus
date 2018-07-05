@@ -34,6 +34,8 @@
         <glassfish-el.version>3.0.0</glassfish-el.version>
         <jackson.version>2.9.5</jackson.version>
         <liqpay.version>0.6</liqpay.version>
+        <unitils.version>3.4.6</unitils.version>
+        <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
     </properties>
 
     <repositories>
@@ -240,7 +242,24 @@
             <version>${glassfish-el.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>${unitils.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.liqpay</groupId>
             <artifactId>liqpay-sdk</artifactId>

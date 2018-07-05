@@ -10,6 +10,7 @@ import java.util.List;
 public interface RouteMapper {
     List<CompactRoute> selectCompactRoutesByUsername(@Param("username") String username);
     Route selectById(@Param("cid") RoutePartId id);
+    Route selectShallowById(@Param("cid") RoutePartId id);
 
     String selectLockOwner(@Param("id") Long id);
     String selectLockOwnerForUpdate(@Param("id") Long id);

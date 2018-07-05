@@ -5,138 +5,142 @@
 
 <mapper namespace="info.getbus.servebus.route.persistence.mappers.WayPointMapper">
 
-  <resultMap id="wayPoint" type="WayPoint">
-       <id column="id" property="id" />
-       <result column="name" property="name" />
-       <result column="country_code" property="countryCode" />
-       <result column="address" property="address" />
-       <result column="departure" property="departure" />
-       <result column="arrival" property="arrival" />
-       <result column="trip_time" property="tripTime" />
-       <result column="distance" property="distance" />
-  </resultMap>
+    <resultMap id="wayPoint" type="WayPoint">
+        <id column="route_id" property="routeId"/>
+        <id column="stop_id" property="stopId"/>
+        <id column="sequence" property="sequence"/>
+        <result column="stop_name" property="name"/>
+        <result column="distance" property="distance"/>
+        <result column="departure" property="departure"/>
+        <result column="arrival" property="arrival"/>
+        <result column="trip_time" property="tripTime"/>
+        <association property="address" javaType="Address">
+            <id column="address_id" property="id"/>
+            <result column="country" property="countryCode"/>
+            <result column="admin_area1" property="adminArea1"/>
+            <result column="city" property="city"/>
+            <result column="street_building" property="streetBuilding"/>
+            <result column="street" property="street"/>
+            <result column="building" property="building"/>
+            <result column="zip" property="zip"/>
+            <result column="utc_offset" property="utcOffset"/>
+        </association>
+    </resultMap>
 
-  <select id="selectFullWayPoints" resultMap="wayPoint">
-    SELECT
-      wp.id           as id,
-      wp.sequence     as sequence,
-      wp.name         as name,
-      wp.country_code as country_code,
-      wp.address      as address,
-      wpd.departure   as departure,
-      wpd.arrival     as arrival,
-      wpd.trip_time   as trip_time,
-      wpd.distance    as distance
-    FROM way_point wp /*TODO left join?*/
-    LEFT JOIN way_point_data wpd ON wpd.way_point_id = wp.id AND wpd.direction = #{direction}
-    WHERE wp.route_id = #{routeId}
-    ORDER BY sequence
-    <choose>
-      <when test='direction.name == "F"'>
-          ASC
-      </when>
-      <otherwise>
-        DESC
-      </otherwise>
-    </choose>
-  </select>
+    <select id="selectFullWayPoints" resultMap="wayPoint">
+        SELECT
+          rs.route_id,
+          rs.stop_id,
+          coalesce(rs.name, sp.name) as stop_name,
+          rs.sequence,
+          ai.id as address_id,
+          ai.country,
+          al.admin_area1,
+          al.city,
+          al.street_building,
+          al.street,
+          al.building,
+          ai.zip,
+          ai.utc_offset,
+          rl.distance,
+          rt.arrival,
+          rt.departure,
+          rt.trip_time
+        FROM route_stop rs
+        JOIN stop_place sp ON rs.stop_id = sp.id
+        JOIN address_i ai ON sp.address_id = ai.id
+        JOIN address_l10n al ON ai.id = al.id AND al.lang = '--' /*TODO remove left join after route split*/
+        LEFT JOIN route_length rl ON rs.route_id = rl.route_id AND rs.stop_id = rl.route_stop_id AND rl.direction = #{direction}
+        LEFT JOIN route_timetable rt ON rs.route_id = rt.route_id AND rs.stop_id = rt.route_stop_id AND rt.direction = #{direction}
+        WHERE rs.route_id = #{routeId}
+        ORDER BY sequence
+        <choose>
+            <when test='direction.name == "F"'>
+                ASC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
+    </select>
 
-  <insert id="insert" useGeneratedKeys="true" keyProperty="point.id" keyColumn="id">
-    INSERT INTO way_point (
-      route_id,
-      name,
-      country_code,
-      address,
-      sequence
-    ) VALUES (
-      #{routeId},
-      #{point.name},
-      #{point.countryCode},
-      #{point.address},
-      #{sequence}
-    )
-  </insert>
+    <insert id="upsert" useGeneratedKeys="false">
+        INSERT INTO route_stop (
+          route_id,
+          stop_id,
+          name,
+          sequence
+        ) VALUES (
+          #{stop.routeId},
+          #{stop.stopId},
+          #{stop.name},
+          #{stop.sequence}
+        ) ON CONFLICT(route_id, stop_id) DO
+        UPDATE SET
+          name = #{stop.name},
+          sequence = #{stop.sequence}
+    </insert>
 
-  <update id="update">
-    UPDATE way_point SET
-    name = #{point.name},
-    country_code = #{point.countryCode},
-    address = #{point.address}
-    WHERE id = #{point.id}
-  </update>
+    <insert id="upsertLength" useGeneratedKeys="false">
+        INSERT INTO route_length (
+          route_id,
+          route_stop_id,
+          direction,
+          distance
+        ) VALUES (
+          #{stop.routeId},
+          #{stop.stopId},
+          #{direction},
+          #{stop.distance}
+        ) ON CONFLICT(route_id, route_stop_id, direction) DO
+        UPDATE SET
+          distance = #{stop.distance}
+    </insert>
 
-  <insert id="insertData" useGeneratedKeys="false">
-    INSERT INTO way_point_data (
-      way_point_id,
-      direction,
-      departure,
-      arrival,
-      trip_time,
-      distance
-    ) VALUES (
-      #{point.id},
-      #{direction},
-      #{point.departure},
-      #{point.arrival},
-      #{point.tripTime},
-      #{point.distance}
-    )
-  </insert>
+    <insert id="upsertTimetable" useGeneratedKeys="false">
+        INSERT INTO route_timetable (
+          route_id,
+          route_stop_id,
+          direction,
+          arrival,
+          departure,
+          trip_time
+        ) VALUES (
+          #{stop.routeId},
+          #{stop.stopId},
+          #{direction},
+          #{stop.arrival},
+          #{stop.departure},
+          #{stop.tripTime}
+        ) ON CONFLICT(route_id, route_stop_id, direction) DO
+        UPDATE SET
+          arrival = #{stop.arrival},
+          departure = #{stop.departure},
+          trip_time = #{stop.tripTime}
+    </insert>
 
-  <insert id="insertDataIfNonExist" useGeneratedKeys="false">
-    INSERT INTO way_point_data (
-      way_point_id,
-      direction,
-      departure,
-      arrival,
-      trip_time,
-      distance
-    ) SELECT
-        #{point.id},
-        #{direction},
-        #{point.departure},
-        #{point.arrival},
-        #{point.tripTime},
-        #{point.distance}
-    WHERE NOT EXISTS (
-      SELECT wpd.way_point_id FROM way_point_data wpd WHERE wpd.way_point_id = #{point.id} AND wpd.direction = #{direction}
-    )
-  </insert>
+    <update id="negateSequence">
+        UPDATE route_stop SET
+          sequence = sequence * -1
+        WHERE route_id = #{routeId}
+    </update>
 
-  <update id="updateData">
-    UPDATE way_point_data SET
-    departure = #{point.departure},
-    arrival = #{point.arrival},
-    trip_time = #{point.tripTime},
-    distance = #{point.distance}
-    WHERE way_point_id = #{point.id} AND direction = #{direction}
-  </update>
+    <delete id="deleteOutOfRange">
+        DELETE FROM route_stop s
+        WHERE s.route_id = #{routeId}
+          AND (s.sequence &lt; 1 OR s.sequence &gt; #{last})
+    </delete>
 
-  <update id="updateSequence">
-    UPDATE way_point SET
-      sequence = #{sequence}
-    WHERE id = #{id}
-  </update>
-
-  <select id="existInconsistentRoutePoints" resultType="boolean">
-    SELECT exists (
-      SELECT wp.id, wpdf.way_point_id, wpdr.way_point_id, wpdf.direction, wpdr.direction
-      FROM way_point wp
-      LEFT JOIN way_point_data wpdf
-        ON wp.id = wpdf.way_point_id and wpdf.direction = 'F'
-      LEFT JOIN way_point_data wpdr
-        ON wp.id = wpdr.way_point_id and wpdr.direction = 'R'
-      --        and wpd.way_point_id is NULL
-      WHERE wp.route_id = #{routeId} AND (wpdf.way_point_id is NULL or wpdr.way_point_id is NULL)
-    )
-  </select>
-
-  <delete id="deleteNotIn">
-    DELETE FROM way_point wp
-    WHERE wp.route_id = #{routeId} AND wp.id NOT IN
-    <foreach item="id" collection="ids" open="(" separator="," close=")">
-      #{id}
-    </foreach>
-  </delete>
+    <select id="existInconsistentRoutePoints" resultType="boolean">
+        SELECT exists (
+          SELECT s.stop_id, rlf.route_stop_id, rlr.route_stop_id, rlf.direction, rlr.direction
+          FROM route_stop s
+          LEFT JOIN route_length rlf
+            ON s.stop_id = rlf.route_stop_id and rlf.direction = 'F'
+          LEFT JOIN route_length rlr
+            ON s.stop_id = rlr.route_stop_id and rlr.direction = 'R'
+          WHERE s.route_id = #{routeId} AND (rlf.route_stop_id is NULL or rlr.route_stop_id is NULL)
+        )
+    </select>
 
 </mapper>

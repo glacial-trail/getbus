@@ -1,83 +1,38 @@
 package info.getbus.servebus.route.persistence.managers;
 
-import info.getbus.servebus.route.model.Direction;
+import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.route.model.Route;
 import info.getbus.servebus.route.model.WayPoint;
-import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.route.persistence.LockedRouteException;
 import info.getbus.servebus.route.persistence.mappers.RouteMapper;
 import info.getbus.servebus.route.persistence.mappers.WayPointMapper;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     private final RouteMapper routeMapper;
     private final WayPointMapper wayPointMapper;
 
-
-    @Autowired
-    public RoutePersistenceManagerImpl(RouteMapper routeMapper, WayPointMapper wayPointMapper) {
-        this.routeMapper = routeMapper;
-        this.wayPointMapper = wayPointMapper;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class IdSequence {
-        private Long id;
-        private int sequence;
-    }
-
-    private class PointSequenceStack implements Iterable<IdSequence> {
-        Deque<IdSequence> stack = new LinkedList<>();
-        private int c;
-
-        public void push(WayPoint wp) {
-            stack.push(new IdSequence( wp.getId(), ++c));
-        }
-
-        @Override
-        public Iterator<IdSequence> iterator() {
-            return stack.iterator();
-        }
-    }
-
     public void savePoints(Route route) {
-        Collection<Long> ids = new LinkedList<>();
-        PointSequenceStack sequenceStack = new PointSequenceStack();
         log.debug("Saving points for route {} {}, points amount {}", route.getId(), route.getDirection(), route.getWayPoints().size());
-        int c = 1;
-        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
-            if (null == wp.getId()) {
-                wayPointMapper.insert(route.getId(), wp, -1 * c++);
-                wayPointMapper.insertData(wp, route.getDirection());
-            } else {
-                wayPointMapper.update(wp);
-                upsertData(route, c++, wp);
-            }
-            sequenceStack.push(wp);
-            ids.add(wp.getId());
+        if (route.isForward()) {
+            wayPointMapper.negateSequence(route.getId());
         }
-        wayPointMapper.deleteNotIn(route.getId(), ids);
-        sequenceStack.forEach(wp -> wayPointMapper.updateSequence(wp.getId(), wp.getSequence()));
-    }
-
-    private void upsertData(Route route, int c, WayPoint wayPoint) {
-        int rowsInserted = wayPointMapper.insertDataIfNonExist(wayPoint, route.getDirection());
-        if (0 == rowsInserted) {
-            wayPointMapper.updateData(wayPoint, route.getDirection());
+        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
+            if (route.isForward()) {
+                wayPointMapper.upsert(wp);
+            }
+            wayPointMapper.upsertLength(wp, route.getDirection());
+            wayPointMapper.upsertTimetable(wp, route.getDirection());
+        }
+        if (route.isForward()) {
+            wayPointMapper.deleteOutOfRange(route.getId(), route.getWayPoints().size()); // or .getLastStop().getSequence())
         }
     }
 
@@ -90,15 +45,6 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
             //TODO implement
             throw new RuntimeException("Not implemented");
         }
-    }
-
-    @Deprecated
-    @Override
-    public Route prepareReversed(Route route) {
-        route.setDirection(route.isForward() ? Direction.R : Direction.F);
-        Deque<WayPoint> wayPoints = wayPointMapper.selectFullWayPoints(route.getId(), route.getDirection());
-        route.setWayPoints(wayPoints);
-        return route;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

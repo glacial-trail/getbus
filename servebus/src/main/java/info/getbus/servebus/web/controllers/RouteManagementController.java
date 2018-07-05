@@ -1,17 +1,22 @@
 package info.getbus.servebus.web.controllers;
 
+import info.getbus.servebus.geo.GeoService;
+import info.getbus.servebus.geo.address.Address;
+import info.getbus.servebus.route.RouteService;
 import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.route.model.Direction;
 import info.getbus.servebus.route.model.PeriodicityPair;
 import info.getbus.servebus.route.model.Route;
 import info.getbus.servebus.route.model.RoutePartId;
-import info.getbus.servebus.route.RouteService;
+import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.topology.StopPlace;
+import info.getbus.servebus.topology.TopologyService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
 import info.getbus.servebus.web.mav.Redirect;
 import info.getbus.servebus.web.mav.RouteView;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
@@ -29,13 +34,13 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/t/routes/")
+@RequiredArgsConstructor
 public class RouteManagementController {
-    @Autowired
-    private RouteService routeService;
-    @Autowired
-    private ConversionService conversionService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ConversionService conversionService;
+    private final ModelMapper modelMapper;
+    private final GeoService geoService;
+    private final TopologyService topologyService;
+    private final RouteService routeService;
 
     @Lookup
     public RouteView view() { return null; }
@@ -92,6 +97,22 @@ public class RouteManagementController {
         }
 
         Route route = modelMapper.map(dto, Route.class);
+        //TODO move away following loop
+        for (WayPoint stop : route.getWayPoints()) {
+            Address address = geoService.ensureSaved(stop.getAddress());
+            stop.setAddress(address);
+            /* TODO
+                alternative:
+                accept stop id from client
+                if null - save new point
+                else pass to route service (or if noone use stop place - change name in case of different)
+                route service save name in local route stop
+                same with address?
+            * */
+            StopPlace stopPlace = topologyService.ensureSaved(new StopPlace(stop));
+            stop.setStopId(stopPlace.getId());
+        }
+
         boolean done = routeService.saveAndCheckConsistency(route, finish);
         if (finish && done) {
             return path("/list").redirect();
@@ -109,7 +130,7 @@ public class RouteManagementController {
 //        TODO for future: save partially filled route as tmp (dto not validated)
 //        TODO load forward part by id and return
         Route route;
-        if (!errors.hasErrors()) {
+        if (!errors.hasErrors() && false) { //disabled flow TODO do
             route = modelMapper.map(dto, Route.class);
             routeService.saveAndCheckConsistency(route, false); //TODO save later? no forget
         }
