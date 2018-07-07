@@ -8,7 +8,7 @@ import info.getbus.servebus.route.model.Direction;
 import info.getbus.servebus.route.model.PeriodicityPair;
 import info.getbus.servebus.route.model.Route;
 import info.getbus.servebus.route.model.RoutePartId;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.topology.StopPlace;
 import info.getbus.servebus.topology.TopologyService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
@@ -98,13 +98,13 @@ public class RouteManagementController {
 
         Route route = modelMapper.map(dto, Route.class);
         //TODO move away following loop
-        for (WayPoint stop : route.getWayPoints()) {
+        for (RouteStop stop : route.getStops()) {
             Address address = geoService.ensureSaved(stop.getAddress());//TODO accept address id from client?
             stop.setAddress(address);
             /* TODO
                 alternative:
                 accept stop id from client
-                if null - save new point
+                if null - save new stop
                 else pass to route service (or if noone use stop place - change name in case of different)
                 route service save name in local route stop
                 same with address?

@@ -7,7 +7,7 @@ import info.getbus.servebus.route.model.RoutePartId;
 import info.getbus.servebus.route.model.RoutePeriodicity;
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.route.persistence.mappers.RouteMapper;
-import info.getbus.servebus.route.persistence.mappers.WayPointMapper;
+import info.getbus.servebus.route.persistence.mappers.RouteStopMapper;
 import info.getbus.servebus.route.persistence.managers.RoutePeriodicityPersistenceManager;
 import info.getbus.servebus.route.persistence.managers.RoutePersistenceManager;
 import info.getbus.servebus.service.security.SecurityHelper;
@@ -27,7 +27,7 @@ public class RouteServiceImpl implements RouteService {
     @Autowired
     private RouteMapper routeMapper;
     @Autowired
-    private WayPointMapper wayPointMapper;
+    private RouteStopMapper routeStopMapper;
     @Autowired
     private SecurityHelper securityHelper;
     @Autowired
@@ -124,7 +124,7 @@ public class RouteServiceImpl implements RouteService {
         if (route.isForward()) {
             routeMapper.update(route);
         }
-        persistenceManager.savePoints(route);
+        persistenceManager.saveStops(route);
     }
 
     private void unlock(Route route) {
@@ -135,7 +135,7 @@ public class RouteServiceImpl implements RouteService {
         return isConsistent(route.getId());
     }
     private boolean isConsistent(Long routeId) {
-        return !wayPointMapper.existInconsistentRoutePoints(routeId);
+        return !routeStopMapper.existInconsistentRoutePoints(routeId);
     }
 
     private void tryLock(Route route) {

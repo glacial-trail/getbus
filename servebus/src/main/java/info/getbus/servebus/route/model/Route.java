@@ -22,24 +22,24 @@ public class Route {
     private ZonedDateTime startSales;
     private int salesDepth;
     private Direction direction = F;
-    private List<WayPoint> wayPoints = new LinkedList<>();
+    private List<RouteStop> stops = new LinkedList<>();
 
     public void setId(Long id) {
         this.id = id;
-        if (null != wayPoints) {
-            wayPoints.forEach(stop -> stop.setRouteId(id));
+        if (null != stops) {
+            stops.forEach(stop -> stop.setRouteId(id));
         }
     }
 
-    public void setWayPoints(List<WayPoint> wayPoints) {
-        int s=1;
-        List<WayPoint> stops = new LinkedList<>();
-        for (WayPoint stop : wayPoints) {
+    public void setStops(List<RouteStop> stops) {
+        int s = 1;
+        List<RouteStop> updated = new LinkedList<>();
+        for (RouteStop stop : stops) {
             stop.setRouteId(id);
             stop.setSequence(s++);
-            stops.add(stop);
+            updated.add(stop);
         }
-        this.wayPoints = stops;
+        this.stops = updated;
     }
 
 
@@ -51,32 +51,32 @@ public class Route {
         return isForward() ? R : F;
     }
 
-    public WayPoint getFirstStop() {
-        return wayPoints.iterator().next();
+    public RouteStop getFirstStop() {
+        return stops.iterator().next();
     }
 
-    public WayPoint getLastStop() {
-        return wayPoints.listIterator(wayPoints.size()).previous();
+    public RouteStop getLastStop() {
+        return stops.listIterator(stops.size()).previous();
     }
 
     /**
-     * @return new copy of way points collection in forward direction
+     * @return new copy of stops collection in forward direction
      */
-    public List<WayPoint> getRoutePointsInNaturalOrder() {
+    public List<RouteStop> getRoutePointsInNaturalOrder() {
         if (isForward()) {
-            return new LinkedList<>(wayPoints);
+            return new LinkedList<>(stops);
         } else {
-            return reverse(wayPoints);
+            return reverse(stops);
         }
     }
 
-    private List<WayPoint> reverse(Collection<WayPoint> wayPoints) {
-        LinkedList<WayPoint> reversed = new LinkedList<>();
-        wayPoints.forEach(reversed::addFirst);
+    private List<RouteStop> reverse(Collection<RouteStop> stops) {
+        LinkedList<RouteStop> reversed = new LinkedList<>();
+        stops.forEach(reversed::addFirst);
         return reversed;
     }
 
     public boolean isDistanceFulfilled() {
-        return wayPoints.stream().noneMatch(stop -> null == stop.getDistance());
+        return stops.stream().noneMatch(stop -> null == stop.getDistance());
     }
 }

@@ -32,8 +32,7 @@ public class DtoToRoute extends TypeMapConfigurer<RouteDTO, Route> {
                         .using(converter)
                         .map(RouteDTO::getStartSales, Route::setStartSales))
                 .addMappings(mapping -> mapping
-                        .with(request -> new LinkedList<>())
-                        .map(RouteDTO::getStops, Route::setWayPoints));
+                        .with(request -> new LinkedList<>()));
     }
 
     private ZoneId resolveCurrentUserTimezone() {

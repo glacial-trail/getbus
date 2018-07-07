@@ -5,7 +5,7 @@ import info.getbus.servebus.model.security.User;
 
 public interface RoutePersistenceManager {
     void createRoute(Route route, User forUser, boolean lock);
-    void savePoints(Route route);
+    void saveStops(Route route);
     void tryLockFor(Long routeId, String me);
     void checkLock(long routeId, String me);
 }

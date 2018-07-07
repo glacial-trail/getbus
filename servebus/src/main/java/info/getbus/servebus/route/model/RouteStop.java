@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.time.LocalTime;
 
 @Getter @Setter
-public class WayPoint {
+public class RouteStop {
     private Long routeId;
     private Long stopId;
     private int sequence;

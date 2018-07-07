@@ -18,7 +18,7 @@ class RouteTest {
         Route route = makeRoute();
         assertThat (
                 route
-                        .getWayPoints()
+                        .getStops()
                         .stream()
                         .allMatch(stop -> null == stop.getRouteId())
                 , is(true)
@@ -26,7 +26,7 @@ class RouteTest {
         route.setId(42L);
         assertThat(
                 route
-                        .getWayPoints()
+                        .getStops()
                         .stream()
                         .allMatch(stop -> 42 == stop.getRouteId())
                 , is(true)
@@ -34,18 +34,18 @@ class RouteTest {
     }
 
     @Test
-    void setWayPoints() {
-        List<WayPoint> stops = new LinkedList<>();
+    void setStops() {
+        List<RouteStop> stops = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
-            stops.add(new WayPoint());
+            stops.add(new RouteStop());
         }
         Route route = new Route();
         route.setId(42L);
-        route.setWayPoints(stops);
+        route.setStops(stops);
 
         assertThat(
                 route
-                        .getWayPoints()
+                        .getStops()
                         .stream()
                         .allMatch(stop -> 42 == stop.getRouteId())
                 , is(true)
@@ -76,7 +76,7 @@ class RouteTest {
     @Test
     void getFirstStop() {
         Route route = makeRoute();
-        WayPoint first = route.getFirstStop();
+        RouteStop first = route.getFirstStop();
         assertThat(first, notNullValue());
         assertThat(first.getSequence(), is(1));
     }
@@ -84,7 +84,7 @@ class RouteTest {
     @Test
     void getLastStop() {
         Route route = makeRoute(F, 5);
-        WayPoint last = route.getLastStop();
+        RouteStop last = route.getLastStop();
         assertThat(last, notNullValue());
         assertThat(last.getSequence(), is(5));
     }
@@ -93,8 +93,8 @@ class RouteTest {
     void getRoutePointsInNaturalOrderF() {
         Route route = makeRoute(F);
         int i = 1;
-        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
-            assertThat(wp.getSequence(), is(i++));
+        for (RouteStop stop : route.getRoutePointsInNaturalOrder()) {
+            assertThat(stop.getSequence(), is(i++));
         }
     }
 
@@ -102,7 +102,7 @@ class RouteTest {
     void getRoutePointsInNaturalOrderR() {
         Route route = makeRoute(R);
         int i = 4;
-        for (WayPoint stop : route.getRoutePointsInNaturalOrder()) {
+        for (RouteStop stop : route.getRoutePointsInNaturalOrder()) {
             assertThat(stop.getSequence(), is(i--));
         }
     }
@@ -116,15 +116,15 @@ class RouteTest {
     }
 
     private Route makeRoute(Direction direction, int length) {
-        List<WayPoint> stops = new LinkedList<>();
+        List<RouteStop> stops = new LinkedList<>();
         for (int i = 1; i <= length ; i++) {
-            WayPoint stop = new WayPoint();
+            RouteStop stop = new RouteStop();
             stop.setSequence(i);
             stops.add(stop);
         }
         Route route = new Route();
         route.setDirection(direction);
-        route.setWayPoints(stops);
+        route.setStops(stops);
         return route;
     }
 
@@ -132,7 +132,7 @@ class RouteTest {
     void isDistanceFulfilled() {
         Route route = new Route();
         for (int i = 0; i < 4; i++) {
-            route.getWayPoints().add(newStopWithDistance());
+            route.getStops().add(newStopWithDistance());
         }
         assertThat(route.isDistanceFulfilled(), is(true));
     }
@@ -141,7 +141,7 @@ class RouteTest {
     void isDistanceFulfilledNegativeFull() {
         Route route = new Route();
         for (int i = 0; i < 4; i++) {
-            route.getWayPoints().add(new WayPoint());
+            route.getStops().add(new RouteStop());
         }
         assertThat(route.isDistanceFulfilled(), is(false));
     }
@@ -149,15 +149,15 @@ class RouteTest {
     @Test
     void isDistanceFulfilledNegative() {
         Route route = new Route();
-        route.getWayPoints().add(newStopWithDistance());
-        route.getWayPoints().add(newStopWithDistance());
-        route.getWayPoints().add(new WayPoint());
-        route.getWayPoints().add(newStopWithDistance());
+        route.getStops().add(newStopWithDistance());
+        route.getStops().add(newStopWithDistance());
+        route.getStops().add(new RouteStop());
+        route.getStops().add(newStopWithDistance());
         assertThat(route.isDistanceFulfilled(), is(false));
     }
 
-    private WayPoint newStopWithDistance() {
-        WayPoint stop = new WayPoint();
+    private RouteStop newStopWithDistance() {
+        RouteStop stop = new RouteStop();
         stop.setDistance(4);
         return stop;
     }

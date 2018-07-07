@@ -13,8 +13,8 @@
       <result column="base_seats_qty" property="baseSeatsQty" />
       <result column="start_sales" property="startSales" />
       <result column="sales_depth" property="salesDepth" />
-      <collection property="wayPoints"
-                  resultMap="info.getbus.servebus.route.persistence.mappers.WayPointMapper.wayPoint">
+      <collection property="stops"
+                  resultMap="info.getbus.servebus.route.persistence.mappers.RouteStopMapper.routeStop">
       </collection>
   </resultMap>
 
@@ -22,8 +22,8 @@
         SELECT
             r.id,
             r.name,
-            start.name  AS start_point,
-            finish.name AS end_point,
+            start.name  AS start_stop,
+            finish.name AS end_stop,
             CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username}
                 THEN TRUE
             ELSE FALSE END

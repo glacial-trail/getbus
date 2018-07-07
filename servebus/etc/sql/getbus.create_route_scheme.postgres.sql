@@ -56,4 +56,4 @@ CREATE TABLE periodicity ( --rename to route_calendar
   strategy VARCHAR(16) NOT NULL,
   param INT NOT NULL
 );
-CREATE UNIQUE INDEX way_point_data_uniq_p ON periodicity (route_id, route_direction);
+CREATE UNIQUE INDEX periodicity_uniq_rd ON periodicity (route_id, route_direction);

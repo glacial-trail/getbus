@@ -1,6 +1,6 @@
 package info.getbus.servebus.topology;
 
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +14,7 @@ public class StopPlace {
 //    long address;
     Long address/*Id*/;
 
-    public StopPlace(WayPoint stop) {
+    public StopPlace(RouteStop stop) {
         this.name = stop.getName();
         this.address = stop.getAddress().getId();
     }

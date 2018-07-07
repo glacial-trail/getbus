@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="info.getbus.servebus.route.persistence.mappers.WayPointMapper">
+<mapper namespace="info.getbus.servebus.route.persistence.mappers.RouteStopMapper">
 
-    <resultMap id="wayPoint" type="WayPoint">
+    <resultMap id="routeStop" type="RouteStop">
         <id column="route_id" property="routeId"/>
         <id column="stop_id" property="stopId"/>
         <id column="sequence" property="sequence"/>
@@ -27,7 +27,7 @@
         </association>
     </resultMap>
 
-    <select id="selectFullWayPoints" resultMap="wayPoint">
+    <select id="selectFullWayPoints" resultMap="routeStop">
         SELECT
           rs.route_id,
           rs.stop_id,

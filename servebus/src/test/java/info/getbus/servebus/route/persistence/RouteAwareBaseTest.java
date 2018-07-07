@@ -3,7 +3,7 @@ package info.getbus.servebus.route.persistence;
 import info.getbus.servebus.geo.address.Address;
 import info.getbus.servebus.route.model.Periodicity;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
@@ -66,11 +66,11 @@ public class RouteAwareBaseTest {
             .randomize(field().named("startSales").ofType(ZonedDateTime.class).inClass(Route.class).get(),
                     (Supplier<ZonedDateTime>) () -> ZonedDateTime.of(random(LocalDateTime.class), ZoneId.of("UTC")))
 
-            .exclude(field().named("routeId").ofType(Long.class).inClass(WayPoint.class).get())
-            .exclude(field().named("stopId").ofType(Long.class).inClass(WayPoint.class).get())
-            .randomize(field().named("distance").ofType(Integer.class).inClass(WayPoint.class).get(),
+            .exclude(field().named("routeId").ofType(Long.class).inClass(RouteStop.class).get())
+            .exclude(field().named("stopId").ofType(Long.class).inClass(RouteStop.class).get())
+            .randomize(field().named("distance").ofType(Integer.class).inClass(RouteStop.class).get(),
                     (Supplier<Integer>) () -> abs(new Random().nextInt()))
-            .randomize(field().named("tripTime").ofType(Integer.class).inClass(WayPoint.class).get(),
+            .randomize(field().named("tripTime").ofType(Integer.class).inClass(RouteStop.class).get(),
                     (Supplier<Integer>) () -> abs(simpleRandom.nextInt()))
 
             .randomize(field().named("start").ofType(ZonedDateTime.class).inClass(Periodicity.class).get(),

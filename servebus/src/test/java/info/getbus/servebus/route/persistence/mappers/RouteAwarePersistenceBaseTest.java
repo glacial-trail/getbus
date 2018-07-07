@@ -6,7 +6,7 @@ import info.getbus.servebus.geo.address.persistence.mappers.AddressMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterAreaMapper;
 import info.getbus.servebus.persistence.datamappers.transporter.TransporterMapper;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.route.persistence.RouteAwareBaseTest;
 import info.getbus.servebus.service.transporter.TransporterService;
 import info.getbus.servebus.service.transporter.TransporterServiceImpl;
@@ -53,7 +53,7 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
     @Autowired
     protected RouteMapper routeMapper;
     @Autowired
-    protected WayPointMapper wayPointMapper;
+    protected RouteStopMapper routeStopMapper;
 
     protected long transporterAreaId;
 
@@ -67,13 +67,13 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
     protected Route newRouteWithPersistedTopology() {
         Route route = newRoute();
         //workaround. seems to be random beans do not uses setter
-        route.setWayPoints(route.getWayPoints());
+        route.setStops(route.getStops());
         persistTopology(route);
         return route;
     }
 
     private void persistTopology(Route route) {
-        for (WayPoint stop : route.getWayPoints()) {
+        for (RouteStop stop : route.getStops()) {
             Address address = stop.getAddress();
             addressMapper.insert(address);
             addressMapper.insertL10n(address);
@@ -93,21 +93,21 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
     protected void insertStopsFor(Route route) {
         insertStopsFor(route, false);
     }
-    protected void insertStopsFor(Route route, boolean insertPointData) {
-        for (WayPoint stop : route.getRoutePointsInNaturalOrder()) {
-            wayPointMapper.upsert(stop);
-            if (insertPointData) {
-                wayPointMapper.upsertLength(stop, route.getDirection());
-                wayPointMapper.upsertTimetable(stop, route.getDirection());
+    protected void insertStopsFor(Route route, boolean insertStopsData) {
+        for (RouteStop stop : route.getRoutePointsInNaturalOrder()) {
+            routeStopMapper.upsert(stop);
+            if (insertStopsData) {
+                routeStopMapper.upsertLength(stop, route.getDirection());
+                routeStopMapper.upsertTimetable(stop, route.getDirection());
             }
         }
     }
 
-    protected void assertThatStopsAreEqual(WayPoint actual, WayPoint expected) {
+    protected void assertThatStopsAreEqual(RouteStop actual, RouteStop expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "routeId", "stopId", "sequence", "name");
     }
 
-    protected void assertThatStopsDataAreEqual(WayPoint actual, WayPoint expected) {
+    protected void assertThatStopsDataAreEqual(RouteStop actual, RouteStop expected) {
         assertThatObjectsAreEqualUsingFields(actual, expected, "arrival", "departure", "distance", "tripTime");
     }
 }

@@ -3,7 +3,7 @@ package info.getbus.servebus.border.modelmapping;
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.model.user.Profile;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.route.persistence.RouteAwareBaseTest;
 import info.getbus.servebus.service.security.SecurityHelper;
 import info.getbus.servebus.web.dto.route.RouteDTO;
@@ -70,12 +70,12 @@ class RouteConversionTest extends RouteAwareBaseTest {
 
     @Test
     void dtoToStop() {
-        new ModelMapperValidationTemplate<>(StopDTO.class, WayPoint.class).validate();
+        new ModelMapperValidationTemplate<>(StopDTO.class, RouteStop.class).validate();
     }
 
     @Test
     void stopToDto() {
-        new ModelMapperValidationTemplate<>(WayPoint.class, StopDTO.class).validate();
+        new ModelMapperValidationTemplate<>(RouteStop.class, StopDTO.class).validate();
     }
 
 

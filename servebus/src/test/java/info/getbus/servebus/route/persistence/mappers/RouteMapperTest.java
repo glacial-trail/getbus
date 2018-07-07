@@ -45,11 +45,11 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         routeMapper.insertLocked(transporterAreaId, route, user.getUsername());
         Route actualRoute = routeMapper.selectShallowById(new RoutePartId(route.getId(), route.getDirection()));
         assertThatRoutesAreEqual(actualRoute, route);
-        assertThat(actualRoute.getWayPoints(), is(empty()));
+        assertThat(actualRoute.getStops(), is(empty()));
     }
 
     @Test
-    public void insertAndSelectWithPoints() throws Exception {
+    public void insertAndSelectWithStops() throws Exception {
         //to use direction R insertStopsFor must act as PersistenceManager (probably out of score mapper test?)
         route = newRouteWithPersistedTopology();
         route.setDirection(Direction.F);
@@ -102,8 +102,8 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         for (CompactRoute actual : compactRoutes) {
             Route expected = expContainer.getFor(actual);
             assertThat(actual.getName(), is(expected.getName()));
-            assertThat(actual.getStartPoint(), is(nameOfFirstPoint(expected)));
-            assertThat(actual.getEndPoint(), is(nameOfLastPoint(expected)));
+            assertThat(actual.getStartStop(), is(nameOfFirstStop(expected)));
+            assertThat(actual.getEndStop(), is(nameOfLastStop(expected)));
             assertThat(actual.isEditable(), is(expContainer.isEditable(actual)));
         }
     }
@@ -115,11 +115,11 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
         return route;
     }
 
-    private String nameOfLastPoint(Route expected) {
+    private String nameOfLastStop(Route expected) {
         return expected.getLastStop().getName();
     }
 
-    private String nameOfFirstPoint(Route expected) {
+    private String nameOfFirstStop(Route expected) {
         return expected.getFirstStop().getName();
     }
 
@@ -172,7 +172,7 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
     private void assertThatRoutesAreFullyEqual(Route actual, Route expected) {
         assertThatRoutesAreEqual(actual, expected);
         assertThatObjectsAreEqualUsingFields(actual, expected,"direction");
-        new DoubleFor<>(actual.getWayPoints(), expected.getWayPoints()).iterate(
+        new DoubleFor<>(actual.getStops(), expected.getStops()).iterate(
                 (act, exp) -> {
                     assertThatStopsAreEqual(act, exp);
 //       TODO?             assertReflectionEquals(addr, actAddress);

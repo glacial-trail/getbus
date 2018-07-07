@@ -8,8 +8,8 @@
         <tr>
             <th>tickets sold</th>
             <th>name</th>
-            <th>start point</th>
-            <th>end point</th>
+            <th>start stop</th>
+            <th>end stop</th>
             <th>buttons</th>
         </tr>
         <tbody>
@@ -17,8 +17,8 @@
             <tr>
                 <td><#--${route.forwardSold}--></td>
                 <td>${route.name}</td>
-                <td>${route.startPoint}</td>
-                <td>${route.endPoint}</td>
+                <td>${route.startStop}</td>
+                <td>${route.endStop}</td>
                 <td rowspan="2">
                     <a href="view/${route.id}">view</a> <br/>
                     <#if route.editable>
@@ -30,8 +30,8 @@
             <tr>
                 <td><#--${route.reverseSold}--></td>
                 <td>${route.name}</td>
-                <td>${route.endPoint}</td>
-                <td>${route.startPoint}</td>
+                <td>${route.endStop}</td>
+                <td>${route.startStop}</td>
             </tr>
             </#items>
         </tbody>

@@ -2,10 +2,10 @@ package info.getbus.servebus.route.persistence.managers;
 
 import info.getbus.servebus.model.security.User;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.WayPoint;
+import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.route.persistence.LockedRouteException;
 import info.getbus.servebus.route.persistence.mappers.RouteMapper;
-import info.getbus.servebus.route.persistence.mappers.WayPointMapper;
+import info.getbus.servebus.route.persistence.mappers.RouteStopMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     private final RouteMapper routeMapper;
-    private final WayPointMapper wayPointMapper;
+    private final RouteStopMapper routeStopMapper;
 
-    public void savePoints(Route route) {
-        log.debug("Saving points for route {} {}, points amount {}", route.getId(), route.getDirection(), route.getWayPoints().size());
+    public void saveStops(Route route) {
+        log.debug("Saving stops for route {} {}, stops amount {}", route.getId(), route.getDirection(), route.getStops().size());
         if (route.isForward()) {
-            wayPointMapper.negateSequence(route.getId());
+            routeStopMapper.negateSequence(route.getId());
         }
-        for (WayPoint wp : route.getRoutePointsInNaturalOrder()) {
+        for (RouteStop stop : route.getRoutePointsInNaturalOrder()) {
             if (route.isForward()) {
-                wayPointMapper.upsert(wp);
+                routeStopMapper.upsert(stop);
             }
-            wayPointMapper.upsertLength(wp, route.getDirection());
-            wayPointMapper.upsertTimetable(wp, route.getDirection());
+            routeStopMapper.upsertLength(stop, route.getDirection());
+            routeStopMapper.upsertTimetable(stop, route.getDirection());
         }
         if (route.isForward()) {
-            wayPointMapper.deleteOutOfRange(route.getId(), route.getWayPoints().size()); // or .getLastStop().getSequence())
+            routeStopMapper.deleteOutOfRange(route.getId(), route.getStops().size()); // or .getLastStop().getSequence())
         }
     }
 
@@ -40,7 +40,7 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     public void createRoute(Route route, User forUser, boolean lock) {
         if (lock) {
             routeMapper.insertLocked(forUser.getTransporterAreaId(), route, forUser.getUsername());
-            savePoints(route);
+            saveStops(route);
         } else {
             //TODO implement
             throw new RuntimeException("Not implemented");

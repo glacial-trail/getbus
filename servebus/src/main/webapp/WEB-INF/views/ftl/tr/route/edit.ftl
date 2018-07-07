@@ -32,35 +32,35 @@
     }
 
     $(function() {
-        $('.time:not(#route-point-template .time)').combodate(combodateConf);
+        $('.time:not(#route-stop-template .time)').combodate(combodateConf);
     });
 
 <#if !isReverseRoute && !viewMode>
-    function addRoutePoint(button) {
+    function addRouteStop(button) {
         let rowWithButton = $(button).parent().parent();
-        let routePointTemplate = $("#route-point-template");
-        rowWithButton.after(routePointTemplate.find("tr:nth-child(2)").clone());
-        let inputsRow = routePointTemplate.find("tr:first-child").clone();
+        let routeStopTemplate = $("#route-stop-template");
+        rowWithButton.after(routeStopTemplate.find("tr:nth-child(2)").clone());
+        let inputsRow = routeStopTemplate.find("tr:first-child").clone();
         inputsRow.attr("data-new-row-marker","this-is-new");
         rowWithButton.after(inputsRow);
-        reindexRoutePoints();
+        reindexRouteStops();
         inputsRow.find('.time').combodate(combodateConf);
-        inputsRow = $("tr.route-point[data-new-row-marker='this-is-new']");
+        inputsRow = $("tr.route-stop[data-new-row-marker='this-is-new']");
         inputsRow.removeAttr("data-new-row-marker");
         let addressInput = inputsRow.find('input.address-autocomplete')[0];
         attachAutocomplete(addressInput/*, inputsRow.attr('data-stop-idx')*/);
         return false;
     }
 
-    function removeRoutePoint(button) {
+    function removeRouteStop(button) {
         $(button).parent().parent().prev().remove();
         $(button).parent().parent().remove();
-        reindexRoutePoints();
+        reindexRouteStops();
         return false;
     }
 
-    function reindexRoutePoints() {
-        $("form[name=route] tr.route-point").each(function (idx) {
+    function reindexRouteStops() {
+        $("form[name=route] tr.route-stop").each(function (idx) {
             let elem = $(this);
             if (elem.data("stop-idx") !== idx) {
                 elem.attr("data-stop-idx", idx);
@@ -87,7 +87,7 @@
     }
 
     function initAutocomplete() {
-        $('.address-autocomplete:not(#route-point-template .address-autocomplete)').each(function (i, elm) {
+        $('.address-autocomplete:not(#route-stop-template .address-autocomplete)').each(function (i, elm) {
             attachAutocomplete(elm);
         });
     }
@@ -148,8 +148,8 @@
 </#if>
 
 <#if !isReverseRoute && !viewMode>
-    <table style="display: none;" id="route-point-template">
-        <@routepoint idx=-1 />
+    <table style="display: none;" id="route-stop-template">
+        <@routestop idx=-1 />
     </table>
 </#if>
 
@@ -184,14 +184,14 @@
                 <th class="col-xs-1"><@spring.message "route.create.distance"/></th>
             </tr>
         </thead>
-    <#list route.stops as wayPoint>
-        <@routepoint idx=wayPoint?index rp=wayPoint
-            add=!wayPoint?is_last
-            remove=!(wayPoint?is_first||wayPoint?is_last)
+    <#list route.stops as stop>
+        <@routestop idx=stop?index stop=stop
+            add=!stop?is_last
+            remove=!(stop?is_first||stop?is_last)
         />
     <#else>
-        <@routepoint idx="0" remove=false />
-        <@routepoint idx="1" add=false remove=false />
+        <@routestop idx="0" remove=false />
+        <@routestop idx="1" add=false remove=false />
     </#list>
     <tr>
         <td colspan="7" class="col-xs-12">
@@ -220,58 +220,56 @@
     </table>
 </form>
 
-<#macro routepoint idx rp={} add=true remove=true >
-    <#--todo            ^^^^^^ rp -> stop-->
-
-    <#assign rpAddress = {} />
-    <#if rp.address??>
-        <#assign rpAddress = rp.address />
+<#macro routestop idx stop={} add=true remove=true >
+    <#assign stopAddress = {} />
+    <#if stop.address??>
+        <#assign stopAddress = stop.address />
     </#if>
 
 
-    <tr class="route-point" data-stop-idx="${idx}">
+    <tr class="route-stop" data-stop-idx="${idx}">
         <td class="col-xs-2">
             <#--TODO stop id? dont forget clear id when address edits-->
-            <@text name="stops[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
+            <@text name="stops[${idx}].name" value=stop.name!"" ro=isReverseRoute <#--id="station"-->/>
             <@form.showFieldErrors 'stops[${idx}].name' 'error'/>
         </td>
-        <#--<input name="stops[${idx}].addressId" value="${(rp.addressId?c)!''}" type="hidden" class="route-data"/> TODO clear address id when edit address -->
+        <#--<input name="stops[${idx}].addressId" value="${(stop.addressId?c)!''}" type="hidden" class="route-data"/> TODO clear address id when edit address -->
         <td class="col-xs-2">
                 <#if viewMode>
-                    <span><@spring.message 'country.'+rp.addressCountryCode /></span>
+                    <span><@spring.message 'country.'+stop.addressCountryCode /></span>
                 <#elseif isReverseRoute>
-                    <input name="stops[${idx}].addressCountryCode" value="${rp.addressCountryCode!''}" type="hidden" class="route-data"/>
-                    <input value="<@spring.message 'country.'+rp.addressCountryCode />" readonly type="text"/>
+                    <input name="stops[${idx}].addressCountryCode" value="${stop.addressCountryCode!''}" type="hidden" class="route-data"/>
+                    <input value="<@spring.message 'country.'+stop.addressCountryCode />" readonly type="text"/>
                 <#else>
                     <select name="stops[${idx}].addressCountryCode" class="route-data" id="country">
                         <#list countries as code>
-                            <option ${(rp.addressCountryCode?? && code == rp.addressCountryCode)?then('selected','')} value="${code}"><@spring.message 'country.'+code /></option>
+                            <option ${(stop.addressCountryCode?? && code == stop.addressCountryCode)?then('selected','')} value="${code}"><@spring.message 'country.'+code /></option>
                         </#list>
                     </select>
                 </#if>
         <#--<@form.showFieldErrors 'stops[${idx}].countryCode' 'error'/>-->
         </td>
         <td class="col-xs-2 address">
-            <@hidden name="stops[${idx}].addressUtcOffset" value=rp.addressUtcOffset!"" />
-            <@hidden name="stops[${idx}].long" value=rp.lon!"" />
-            <@hidden name="stops[${idx}].lat" value=rp.lat!"" />
-            <@hidden name="stops[${idx}].addressZip" value=rp.addressZip!"" />
-            <@text name="stops[${idx}].addressAdminArea1" value=rp.addressAdminArea1!"" ro=true />
-            <@text name="stops[${idx}].addressCity" value=rp.addressCity!"" ro=true />
-            <@text id="stops[${idx}].addressStreet" name="stops[${idx}].addressStreet" value="${rp.addressStreet!''}" ro=isReverseRoute class="address-autocomplete" />
-            <#--<@text name="stops[${idx}].address.streetBuilding" value="${rp.address.streetBuilding!''}" ro=isReverseRoute class="address-autocomplete" />-->
-            <@hidden name="stops[${idx}].addressStreetName" value="${rp.addressStreetName!''}" />
-            <@hidden name="stops[${idx}].addressBuildingNumber" value="${rp.addressBuildingNumber!''}" />
+            <@hidden name="stops[${idx}].addressUtcOffset" value=stop.addressUtcOffset!"" />
+            <@hidden name="stops[${idx}].long" value=stop.lon!"" />
+            <@hidden name="stops[${idx}].lat" value=stop.lat!"" />
+            <@hidden name="stops[${idx}].addressZip" value=stop.addressZip!"" />
+            <@text name="stops[${idx}].addressAdminArea1" value=stop.addressAdminArea1!"" ro=true />
+            <@text name="stops[${idx}].addressCity" value=stop.addressCity!"" ro=true />
+            <@text id="stops[${idx}].addressStreet" name="stops[${idx}].addressStreet" value="${stop.addressStreet!''}" ro=isReverseRoute class="address-autocomplete" />
+            <#--<@text name="stops[${idx}].address.streetBuilding" value="${stop.address.streetBuilding!''}" ro=isReverseRoute class="address-autocomplete" />-->
+            <@hidden name="stops[${idx}].addressStreetName" value="${stop.addressStreetName!''}" />
+            <@hidden name="stops[${idx}].addressBuildingNumber" value="${stop.addressBuildingNumber!''}" />
             <@form.showFieldErrors 'stops[${idx}].address*' 'error'/>
         </td>
-        <td class="col-xs-2"><@time name="stops[${idx}].arrival" value="${rp.arrival!''}" /></td>
-        <td class="col-xs-2"><@time name="stops[${idx}].departure" value="${rp.departure!''}" /></td>
+        <td class="col-xs-2"><@time name="stops[${idx}].arrival" value="${stop.arrival!''}" /></td>
+        <td class="col-xs-2"><@time name="stops[${idx}].departure" value="${stop.departure!''}" /></td>
         <td class="col-xs-1">
-            <@text name="stops[${idx}].tripTime" value="${rp.tripTime!''}" />
+            <@text name="stops[${idx}].tripTime" value="${stop.tripTime!''}" />
             <@form.showFieldErrors 'stops[${idx}].tripTime' 'error'/>
         </td>
         <td class="col-xs-1">
-            <@text name="stops[${idx}].distance" value="${rp.distance!''}"/>
+            <@text name="stops[${idx}].distance" value="${stop.distance!''}"/>
             <@form.showFieldErrors 'stops[${idx}].distance' 'error'/>
         </td>
     </tr>
@@ -281,10 +279,10 @@
             <td colspan="7" class="col-xs-12">
             </#if>
             <#if add>
-                <a href="#" onclick="addRoutePoint(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
+                <a href="#" onclick="addRouteStop(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
             </#if>
             <#if remove>
-                <a href="#" onclick="removeRoutePoint(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
+                <a href="#" onclick="removeRouteStop(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
             </#if>
             <#if add || remove>
             </td>
