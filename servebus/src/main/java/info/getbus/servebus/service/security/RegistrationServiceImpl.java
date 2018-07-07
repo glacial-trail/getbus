@@ -43,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void registerTransporter(RegisterUserDTO transporterUser) {
         log.info("registering new transporter: " + transporterUser);
-        Long transporterAreaId =  transporterService.createBaseTransporterInfrastructure();
+        Long transporterAreaId =  transporterService.createInitialTransporterInfrastructure();
         User registeredUser = register(transporterUser, "ROLE_USER_BUS");
         userProfileMapper.insert(registeredUser.getUsername(), "Europe/Kiev");
         transporterService.linkUserToArea(transporterAreaId, registeredUser, "ROLE_USER_BUS");

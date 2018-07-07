@@ -25,7 +25,7 @@
 
 
         <session-management invalid-session-url="/logon?invalid_session">
-            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true"/>
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/logon?expired"/>
         </session-management>
 
         <!--TODO switch to persistent token -->

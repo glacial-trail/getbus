@@ -85,7 +85,7 @@ public class RouteAwarePersistenceBaseTest extends RouteAwareBaseTest {
 
     @Before
     public final void setUpUserAndTransporterArea() {
-        transporterAreaId = transporterService.createBaseTransporterInfrastructure();
+        transporterAreaId = transporterService.createInitialTransporterInfrastructure();
         userMapper.insert(user);
         transporterService.linkUserToArea(transporterAreaId, user, "ROLE");
     }

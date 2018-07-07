@@ -74,11 +74,15 @@
     }
 
     function attachAutocomplete(elm) {
+        $(elm).change(function () {
+            fillInAddressFields(stopIdx(elm), {}); //clear
+        });
+
         let autocomplete = new google.maps.places.Autocomplete(elm, autocompleteOpts);
         autocomplete.addListener('place_changed', function () {
             let place = autocomplete.getPlace();
-            let handler = new AddressComponentHandler(place);
-            fillInAddressFields(stopIdx(elm), handler);
+            let address = new AddressAdapter(place);
+            fillInAddressFields(stopIdx(elm), address);
         });
     }
 
@@ -92,7 +96,7 @@
         return $(someStopElem).closest('tr').attr("data-stop-idx");
     }
 
-    class AddressComponentHandler { //adapter
+    class AddressAdapter {
         constructor(place) {
             let components = place.address_components;
             if (components) {
@@ -117,21 +121,21 @@
     }
 
     function fillInAddressFields(idx, address) {
-        addressComponent("Street").val(address.street);
-        addressComponent("StreetName").val(address.streetName);
-        addressComponent("BuildingNumber").val(address.buildingNumber);
-        addressComponent("City").val(address.city);
-        addressComponent("Zip").val(address.zip);
-        addressComponent("AdminArea1").val(address.adminArea1);
-        addressComponent("CountryCode").val(address.countryCode);
-        addressComponent("UtcOffset").val(address.utcOffset);
-        component("lon").val(address.longitude);
-        component("lat").val(address.latitude);
+        qAddressField("Street").val(address.street);
+        qAddressField("StreetName").val(address.streetName);
+        qAddressField("BuildingNumber").val(address.buildingNumber);
+        qAddressField("City").val(address.city);
+        qAddressField("Zip").val(address.zip);
+        qAddressField("AdminArea1").val(address.adminArea1);
+        qAddressField("CountryCode").val(address.countryCode);
+        qAddressField("UtcOffset").val(address.utcOffset);
+        qStopFiald("lon").val(address.longitude);
+        qStopFiald("lat").val(address.latitude);
 
-        function component(name) {//qStopFiald
+        function qStopFiald(name) {
             return $(`:input[name='stops[${r"${idx}"}].${r"${name}"}']`);
         }
-        function addressComponent(name) {//qAddressField
+        function qAddressField(name) {
             return $(`:input[name='stops[${r"${idx}"}].address${r"${name}"}']`);
         }
     }
@@ -157,7 +161,7 @@
     <@form.showFieldErrors 'name' 'error' />
     <br/>
     <label for="base-price">base price</label>
-    <@text name="basePrice" value="${(route.basePrice)!''}" id="base-price"/>
+    <@text name="basePrice" value="${(route.basePrice?c)!''}" id="base-price"/>
     <label for="base-seats-qty">base seats qty</label>
     <@number name="baseSeatsQty" value="${route.baseSeatsQty!''}" id="base-seats-qty"/>
     <label for="start-sales">start sales(voyage generation)</label>
@@ -171,8 +175,8 @@
     <table class="table table-bordered table-fixed">
         <thead>
             <tr>
-                <th class="col-xs-2"><@spring.message "route.create.Country"/></th>
-                <th class="col-xs-2"><@spring.message "route.create.addstation"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.stop_name"/></th>
+                <th class="col-xs-2"><@spring.message "route.create.country"/></th>
                 <th class="col-xs-2"><@spring.message "route.create.address"/></th>
                 <th class="col-xs-2"><@spring.message "route.create.depttime"/></th>
                 <th class="col-xs-2"><@spring.message "route.create.arrtime"/></th>
@@ -231,10 +235,7 @@
             <@text name="stops[${idx}].name" value=rp.name!"" ro=isReverseRoute <#--id="station"-->/>
             <@form.showFieldErrors 'stops[${idx}].name' 'error'/>
         </td>
-<#--
-        TODO clear address id when edit address
--->
-        <input name="stops[${idx}].addressId" value="${(rp.addressId?c)!''}" type="hidden" class="route-data"/>
+        <#--<input name="stops[${idx}].addressId" value="${(rp.addressId?c)!''}" type="hidden" class="route-data"/> TODO clear address id when edit address -->
         <td class="col-xs-2">
                 <#if viewMode>
                     <span><@spring.message 'country.'+rp.addressCountryCode /></span>

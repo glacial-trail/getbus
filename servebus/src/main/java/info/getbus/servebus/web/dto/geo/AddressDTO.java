@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class AddressDTO {
-    private Long id;
+//    private Long id;
 //    private Lang lang;
     @NotEmpty
     private String countryCode;

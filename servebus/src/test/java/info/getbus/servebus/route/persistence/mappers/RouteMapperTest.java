@@ -27,7 +27,7 @@ public class RouteMapperTest extends RouteAwarePersistenceBaseTest {
 
     @Before
     public final void setUpAdditionalTransporterArea() {
-        transporterAreaId2 = transporterService.createBaseTransporterInfrastructure();
+        transporterAreaId2 = transporterService.createInitialTransporterInfrastructure();
         insertUser(transporterAreaId, "username11");
         insertUser(transporterAreaId, "username14");
         insertUser(transporterAreaId2, "username24");

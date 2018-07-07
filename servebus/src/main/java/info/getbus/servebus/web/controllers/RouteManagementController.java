@@ -99,7 +99,7 @@ public class RouteManagementController {
         Route route = modelMapper.map(dto, Route.class);
         //TODO move away following loop
         for (WayPoint stop : route.getWayPoints()) {
-            Address address = geoService.ensureSaved(stop.getAddress());
+            Address address = geoService.ensureSaved(stop.getAddress());//TODO accept address id from client?
             stop.setAddress(address);
             /* TODO
                 alternative:

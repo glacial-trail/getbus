@@ -21,7 +21,7 @@ public class TransporterServiceImpl implements TransporterService {
     }
 
     @Override
-    public Long createBaseTransporterInfrastructure() {
+    public Long createInitialTransporterInfrastructure() {
         TransporterArea ta = new TransporterArea();
         transporterAreaMapper.insertEmpty(ta);
         transporterMapper.insertEmpty(ta.getId());
