@@ -143,7 +143,7 @@
 </script>
 <#if !isReverseRoute && !viewMode>
 <script
-        src="https://maps.googleapis.com/maps/api/js?language=${.lang}&key=AIzaSyBONWRRnzYQe0Zk19ChzzOWfJTEPGDehyg&libraries=places&callback=initAutocomplete"
+        src="https://maps.googleapis.com/maps/api/js?language=${.lang}&key=${googlePlacesAPIKey}&libraries=places&callback=initAutocomplete"
         async defer></script>
 </#if>
 
