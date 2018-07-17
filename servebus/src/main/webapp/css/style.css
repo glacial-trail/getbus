@@ -5,6 +5,7 @@ tr input{
     width: 100%;
 }
 .navbar-default {
+    margin-bottom: 0px;
     background-color: rgba(240, 240, 240, 0.9);
     /*height: 60px;*/
 }
@@ -169,6 +170,11 @@ tr input{
     padding-bottom: 100px;
 }
 
+.register{
+    max-width: 700px;
+    margin: auto;
+}
+
 .register form {
     padding: 10px 20px 20px 20px;
     background: #f8f8f8 url(/img/backgroung-reg-form.jpg)center;
@@ -192,6 +198,7 @@ tr input{
 .register form input {
     width:95%;
     height: 30px;
+    padding-left: 15px;
     background: #fcfcfc;
     border: 1px solid #ddd;
     -moz-border-radius: 2px;
@@ -228,7 +235,7 @@ tr input{
 
 .register form button {
     cursor: pointer;
-    width: 60%;
+    width: 200px;
     height: 42px;
     margin-top: 25px;
     padding: 0;
@@ -445,6 +452,11 @@ tr input{
     color: #5C5670;
 }
 /*table*/
+
+.table-bordered{
+    border: none;
+}
+
 .table-fixed {
     width: 100%;
     background-color: #f3f3f3;
@@ -467,10 +479,13 @@ tr input{
 }
 */
 .table-fixed thead tr th {
-    /*float: left;*/
+    float: none;
     font-size: 12px;
     background-color: #f39c12;
     border-color: #e67e22;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /*table*/
 

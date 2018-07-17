@@ -175,13 +175,13 @@
     <table class="table table-bordered table-fixed">
         <thead>
             <tr>
-                <th class="col-xs-2"><@spring.message "route.create.stop_name"/></th>
-                <th class="col-xs-2"><@spring.message "route.create.country"/></th>
-                <th class="col-xs-2"><@spring.message "route.create.address"/></th>
-                <th class="col-xs-2"><@spring.message "route.create.depttime"/></th>
-                <th class="col-xs-2"><@spring.message "route.create.arrtime"/></th>
-                <th class="col-xs-1"><@spring.message "route.create.triptime"/></th>
-                <th class="col-xs-1"><@spring.message "route.create.distance"/></th>
+                <th class="col-xs-2" title="<@spring.message "route.create.stop_name"/>"><@spring.message "route.create.stop_name"/></th>
+                <th class="col-xs-2" title="<@spring.message "route.create.country"/>"><@spring.message "route.create.country"/></th>
+                <th class="col-xs-2" title="<@spring.message "route.create.address"/>"><@spring.message "route.create.address"/></th>
+                <th class="col-xs-2" title="<@spring.message "route.create.depttime"/>"><@spring.message "route.create.depttime"/></th>
+                <th class="col-xs-2" title="<@spring.message "route.create.arrtime"/>"><@spring.message "route.create.arrtime"/></th>
+                <th class="col-xs-1" title="<@spring.message "route.create.triptime"/>"><@spring.message "route.create.triptime"/></th>
+                <th class="col-xs-1" title="<@spring.message "route.create.distance"/>"><@spring.message "route.create.distance"/></th>
             </tr>
         </thead>
     <#list route.stops as stop>
