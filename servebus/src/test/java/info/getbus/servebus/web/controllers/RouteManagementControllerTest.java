@@ -65,7 +65,7 @@ class RouteManagementControllerTest {
     void registerPartner() throws Exception {
         mockMvc.perform(get("/t/routes/list"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("tr/cab"))
+                .andExpect(view().name("carrier/dashboard"))
         ;
     }
 

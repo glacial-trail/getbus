@@ -7,7 +7,7 @@
     </@gbc.nav_logged>
     <section class="content">
         <div class="inner-wrap">
-            <#include cabPageName />
+            <#include dashboardPageName />
         </div>
     </section>
 </@gbc.common_page>

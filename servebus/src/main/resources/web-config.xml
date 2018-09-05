@@ -51,16 +51,16 @@
             <property name="contentType" value="text/html;charset=UTF-8"/>
         </bean>
 
-        <bean id="transporterCabView" class="info.getbus.servebus.web.views.TransporterCabView" scope="prototype">
-            <property name="viewName" value="tr/cab"/>
+        <bean id="carrierDashboardView" class="info.getbus.servebus.web.views.CarrierDashboardView" scope="prototype">
+            <property name="viewName" value="carrier/dashboard"/>
             <property name="innerViewSuffix" value=".ftl"/>
-            <property name="innerViewModelParamName" value="cabPageName"/>
+            <property name="innerViewModelParamName" value="dashboardPageName"/>
         </bean>
         <bean id="routeView" class="info.getbus.servebus.web.mav.RouteView" scope="prototype">
-            <property name="viewName" value="tr/cab"/>
+            <property name="viewName" value="carrier/dashboard"/>
             <property name="innerViewPrefix" value="route/"/>
             <property name="innerViewSuffix" value=".ftl"/>
-            <property name="innerViewModelParamName" value="cabPageName"/>
+            <property name="innerViewModelParamName" value="dashboardPageName"/>
         </bean>
 
         <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

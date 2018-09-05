@@ -3,7 +3,7 @@ package info.getbus.servebus.web.views;
 import com.google.common.base.Joiner;
 import org.springframework.web.servlet.ModelAndView;
 
-public class TransporterCabView extends ModelAndView {
+public class CarrierDashboardView extends ModelAndView {
 
     private static final Joiner joiner = Joiner.on("").skipNulls();
 

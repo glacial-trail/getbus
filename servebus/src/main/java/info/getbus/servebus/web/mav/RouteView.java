@@ -4,13 +4,13 @@ import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.geo.address.persistence.CountriesRepository;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
-import info.getbus.servebus.web.views.TransporterCabView;
+import info.getbus.servebus.web.views.CarrierDashboardView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-public class RouteView extends TransporterCabView {
+public class RouteView extends CarrierDashboardView {
     private final CountriesRepository countriesRepository;
 
     @Autowired
