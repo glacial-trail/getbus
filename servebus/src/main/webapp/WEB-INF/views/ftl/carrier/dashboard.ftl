@@ -1,7 +1,7 @@
-<#assign pageTitle><@spring.message "transporter.cabinet.page_title"/></#assign>
+<#assign pageTitle><@spring.message "transporter.dashboard.page_title"/></#assign>
 
 <@gbc.common_page pageTitle >
-    <#--<div class="background-img backgroung-img-cabinet"></div>-->
+    <#--<div class="background-img backgroung-img-dashboard"></div>-->
     <@gbc.nav_logged>
         <#include "left_menu.ftl" />
     </@gbc.nav_logged>

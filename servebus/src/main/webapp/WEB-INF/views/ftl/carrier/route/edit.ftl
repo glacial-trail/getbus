@@ -279,10 +279,10 @@
             <td colspan="7" class="col-xs-12">
             </#if>
             <#if add>
-                <a href="#" onclick="addRouteStop(this)"><@spring.message "cabinet.partner.route.addStation"/></a>
+                <a href="#" onclick="addRouteStop(this)"><@spring.message "dashboard.partner.route.addStation"/></a>
             </#if>
             <#if remove>
-                <a href="#" onclick="removeRouteStop(this)"><@spring.message "cabinet.partner.route.removeStation"/></a>
+                <a href="#" onclick="removeRouteStop(this)"><@spring.message "dashboard.partner.route.removeStation"/></a>
             </#if>
             <#if add || remove>
             </td>
