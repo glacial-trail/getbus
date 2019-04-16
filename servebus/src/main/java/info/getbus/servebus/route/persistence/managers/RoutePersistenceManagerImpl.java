@@ -6,8 +6,10 @@ import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.route.persistence.LockedRouteException;
 import info.getbus.servebus.route.persistence.mappers.RouteMapper;
 import info.getbus.servebus.route.persistence.mappers.RouteStopMapper;
+import info.getbus.servebus.route.annotation.SelectUpdateInsert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
     private final RouteMapper routeMapper;
     private final RouteStopMapper routeStopMapper;
 
+    @SelectUpdateInsert
+    @Autowired
+    private RouteStopUpsertStrategy routeStopUpsertStrategy;
+
     public void saveStops(Route route) {
         log.debug("Saving stops for route {} {}, stops amount {}", route.getId(), route.getDirection(), route.getStops().size());
         if (route.isForward()) {
@@ -26,10 +32,10 @@ public class RoutePersistenceManagerImpl implements RoutePersistenceManager {
         }
         for (RouteStop stop : route.getRoutePointsInNaturalOrder()) {
             if (route.isForward()) {
-                routeStopMapper.upsert(stop);
+                routeStopUpsertStrategy.upsert(stop);
             }
-            routeStopMapper.upsertLength(stop, route.getDirection());
-            routeStopMapper.upsertTimetable(stop, route.getDirection());
+            routeStopUpsertStrategy.upsertLength(stop, route.getDirection());
+            routeStopUpsertStrategy.upsertTimetable(stop, route.getDirection());
         }
         if (route.isForward()) {
             routeStopMapper.deleteOutOfRange(route.getId(), route.getStops().size()); // or .getLastStop().getSequence())

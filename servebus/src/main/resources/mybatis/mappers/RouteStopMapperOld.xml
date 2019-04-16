@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.route.persistence.mappers.RouteStopMapperOld">
+
+    <insert id="existsStop">
+        SELECT exists(
+        SELECT route_id
+        FROM route_stop
+        WHERE
+        route_id = #{stop.routeId} and stop_id = #{stop.stopId}
+        )
+    </insert>
+
+    <insert id="insertStop"  useGeneratedKeys="false">
+        INSERT INTO route_stop (
+        route_id,
+        stop_id,
+        name,
+        sequence
+        ) VALUES (
+        #{stop.routeId},
+        #{stop.stopId},
+        #{stop.name},
+        #{stop.sequence}
+        )
+    </insert>
+
+    <insert id="updateStop">
+        UPDATE route_stop  SET
+        name = #{stop.name},
+        sequence = #{stop.sequence}
+        where
+        route_id = #{stop.routeId} and stop_id = #{stop.stopId}
+    </insert>
+
+    <insert id="existsLength">
+        SELECT exists(
+        SELECT route_id
+        FROM route_length
+        WHERE
+        route_id = #{stop.routeId} and route_stop_id = #{stop.stopId} and direction = #{direction}
+
+        )
+    </insert>
+
+    <insert id="insertLength" useGeneratedKeys="false">
+        INSERT INTO route_length (
+        route_id,
+        route_stop_id,
+        direction,
+        distance
+        ) VALUES (
+        #{stop.routeId},
+        #{stop.stopId},
+        #{direction},
+        #{stop.distance}
+        )
+    </insert>
+
+    <insert id="updateLength">
+        UPDATE route_length SET
+        distance = #{stop.distance}
+        WHERE
+        route_id = #{stop.routeId} and route_stop_id = #{stop.stopId} and direction = #{direction}
+    </insert>
+
+    <insert id="existsTimetable">
+        SELECT exists(
+        SELECT route_id
+        FROM route_timetable
+        WHERE
+        route_id = #{stop.routeId} and route_stop_id = #{stop.stopId} and direction = #{direction}
+
+        )
+    </insert>
+
+    <insert id="insertTimetable" useGeneratedKeys="false">
+        INSERT INTO route_timetable (
+        route_id,
+        route_stop_id,
+        direction,
+        arrival,
+        departure,
+        trip_time
+        ) VALUES (
+        #{stop.routeId},
+        #{stop.stopId},
+        #{direction},
+        #{stop.arrival},
+        #{stop.departure},
+        #{stop.tripTime}
+        )
+    </insert>
+
+    <insert id="updateTimetable">
+        UPDATE route_timetable SET
+        arrival = #{stop.arrival},
+        departure = #{stop.departure},
+        trip_time = #{stop.tripTime}
+        WHERE
+        route_id = #{stop.routeId} and route_stop_id = #{stop.stopId} and direction = #{direction}
+    </insert>
+
+</mapper>
