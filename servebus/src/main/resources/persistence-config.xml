@@ -2,8 +2,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://mybatis.org/schema/mybatis-spring
+           http://mybatis.org/schema/mybatis-spring.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/data/jpa
+           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 
     <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
@@ -16,10 +27,31 @@
         <property name="maxConnections" value="${jdbc.maxcon}"/>
     </bean>
 
-    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+
+    <bean id="emf"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="info.getbus.servebus.store" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</prop>
+                <!--<prop key="hibernate.default_schema">${hibernate.default_schema}</prop>-->
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+
+            </props>
+        </property>
     </bean>
-    <tx:annotation-driven transaction-manager="txManager"/>
+
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+
+        <property name="entityManagerFactory" ref="emf" />
+    </bean>
+    <tx:annotation-driven />
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
@@ -33,4 +65,5 @@
     <mybatis:scan base-package="info.getbus.servebus.route.persistence.mappers"/>
     <mybatis:scan base-package="info.getbus.servebus.topology.persistence.mappers"/>
 
+    <jpa:repositories base-package="info.getbus.servebus.store.persistence" entity-manager-factory-ref="emf"/>
 </beans>

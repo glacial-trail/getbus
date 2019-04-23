@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>5.0.4.RELEASE</spring.version>
+        <spring.version>5.1.6.RELEASE</spring.version>
         <spring-security.version>5.0.3.RELEASE</spring-security.version>
         <freemarker.version>2.3.25-incubating</freemarker.version>
         <mybatis.version>3.4.2</mybatis.version>
@@ -24,7 +24,7 @@
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <commons-lang.version>3.7</commons-lang.version>
         <lombok.version>1.16.18</lombok.version>
-        <modelmapper.version>1.1.0</modelmapper.version>
+        <modelmapper.version>2.3.3</modelmapper.version>
         <modelmapper-spring-boot-starter.version>1.0.0</modelmapper-spring-boot-starter.version>
         <log4j.version>2.10.0</log4j.version>
         <random-beans.version>3.7.0</random-beans.version>
@@ -36,6 +36,8 @@
         <liqpay.version>0.6</liqpay.version>
         <unitils.version>3.4.6</unitils.version>
         <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
+        <jpa.version>2.2</jpa.version>
+        <hibernate.version>5.4.2.Final</hibernate.version>
     </properties>
 
     <repositories>
@@ -46,6 +48,18 @@
         </repository>
     </repositories>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-releasetrain</artifactId>
+                <version>Lovelace-RELEASE</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!--TODO switch to spring bom-->
     <dependencies>
@@ -138,6 +152,23 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>${mybatis.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>${jpa.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <dependency>
@@ -254,7 +285,7 @@
             <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <dependency><!--todo remove-->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
             <version>${spring-boot.version}</version>
