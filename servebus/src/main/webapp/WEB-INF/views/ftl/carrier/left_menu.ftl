@@ -12,11 +12,16 @@
                 <#--<a href="/tr/about">About</a>-->
             <#--</li>-->
             <#--<li>-->
-                <#--<a href="/logout"><@spring.message "exit"/></a>-->
+                  <#--<a href="/logout"><@spring.message "exit"/></a>-->
             <#--</li>-->
         <#--</ul>-->
         <li class="header-list-item item-menu">
             <a href="/"><@spring.message "dashboard.partner.sidebar.menu"/></a>
+            <#if store??>
+                <a href="/t/store/${store.id}">Store ${store.domain!"!no domain!"}</a>
+            <#else>
+                <a href="/t/store/">Create Store</a>
+            </#if>
             <a href="/t/routes/list"><@spring.message "dashboard.partner.sidebar.routes"/></a>
             <a href="/t/voyages"><@spring.message "dashboard.partner.sidebar.voyages"/></a>
             <a href="/t/about">About</a>
