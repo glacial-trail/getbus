@@ -1,3 +1,7 @@
+input, textarea, select, button {
+    background-color: #fff;
+}
+
 body {
     font-family: "Tenor Sans", sans-serif;
 }

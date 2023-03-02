@@ -1,6 +1,5 @@
 package info.getbus.servebus.web.mav;
 
-import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.geo.address.persistence.CountriesRepository;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
@@ -26,7 +25,7 @@ public class RouteView extends CarrierDashboardView {
         return page("periodicity");
     }
 
-    public ModelAndView list(List<CompactRoute> routes) {
+    public ModelAndView list(List<RoundRouteSummaryDTO> routes) {
         addObject("routes", routes);
         return list();
     }
@@ -40,12 +39,12 @@ public class RouteView extends CarrierDashboardView {
 
     }
 
-    public ModelAndView view(RouteDTO route) {
+    public ModelAndView view(RouteViewDTO route) {
         addObject("viewMode", true);
         return route(route);
     }
 
-    private ModelAndView route(RouteDTO route) {
+    private ModelAndView route(RouteViewDTO route) {
         addObject("countries", countriesRepository.getCodes());
         addObject("route", route);
         return page("edit");

@@ -9,14 +9,15 @@ public class Redirect {
 
     private String basePath;
     private String path;
-    private Consumer<UriComponentsBuilder> uriAdjuster;
+//    private Consumer<? extends UriComponentsBuilder> uriAdjuster;
+    private Consumer<CustomUriComponentsBuilder> uriAdjuster;
 
     public Redirect(String basePath, String path) {
         this.basePath = basePath;
         this.path = path;
     }
 
-    public Redirect with(Consumer<UriComponentsBuilder> uriAdjuster) {
+    public Redirect with(Consumer<CustomUriComponentsBuilder> uriAdjuster) {
         this.uriAdjuster = uriAdjuster;
         return this;
     }
@@ -28,6 +29,11 @@ public class Redirect {
         if (null != uriAdjuster) {
             uriAdjuster.accept(uriComponentsBuilder);
         }
-        return new ModelAndView("redirect:" + uriComponentsBuilder.toUriString());
+        return new ModelAndView(actionPrefix() + uriComponentsBuilder.toUriString());
     }
+
+    protected String actionPrefix() {
+        return "redirect:";
+    }
+
 }

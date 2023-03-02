@@ -7,7 +7,6 @@
 
   <resultMap id="route" type="Route">
       <id column="id" property="id" />
-      <result column="direction" property="direction" />
       <result column="name" property="name" />
       <result column="base_price" property="basePrice" />
       <result column="base_seats_qty" property="baseSeatsQty" />
@@ -50,7 +49,6 @@
           r.base_seats_qty,
           r.start_sales,
           r.sales_depth,
-          #{cid.direction} as direction,
           rs.route_id,
           rs.stop_id,
           coalesce(rs.name, sp.name) as stop_name,
@@ -73,18 +71,13 @@
         JOIN stop_place sp ON rs.stop_id = sp.id
         JOIN address_i ai ON sp.address_id = ai.id
         JOIN address_l10n al ON ai.id = al.id AND al.lang = '--' /*TODO remove left join after route split*/
-        LEFT JOIN route_length rl ON rs.route_id = rl.route_id AND rs.stop_id = rl.route_stop_id AND rl.direction = #{cid.direction}
-        LEFT JOIN route_timetable rt ON rs.route_id = rt.route_id AND rs.stop_id = rt.route_stop_id AND rt.direction = #{cid.direction}
-        WHERE r.id = #{cid.id}
+        LEFT JOIN route_length rl ON rs.route_id = rl.route_id AND rs.stop_id = rl.route_stop_id
+        LEFT JOIN route_timetable rt ON rs.route_id = rt.route_id AND rs.stop_id = rt.route_stop_id
+
+--         LEFT JOIN round_route
+
+        WHERE r.id = #{id}
         ORDER BY sequence
-        <choose>
-            <when test='cid.direction.name == "F"'>
-                ASC
-            </when>
-            <otherwise>
-                DESC
-            </otherwise>
-        </choose>
     </select>
 
     <select id="selectShallowById" resultMap="route">
@@ -96,7 +89,7 @@
             r.start_sales,
             r.sales_depth
         FROM route r
-        WHERE r.id = #{cid.id}
+        WHERE r.id = #{id}
     </select>
 
   <select id="selectLockOwner" resultType="string">

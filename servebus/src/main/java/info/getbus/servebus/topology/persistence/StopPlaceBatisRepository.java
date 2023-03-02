@@ -12,6 +12,7 @@ public class StopPlaceBatisRepository implements StopPlaceRepository {
 
     @Override
     public StopPlace ensureSaved(StopPlace stop) {
+
         StopPlace saved = mapper.selectByAddress(stop.getAddress());
         if (null == saved) {
             mapper.insert(stop);
@@ -19,4 +20,35 @@ public class StopPlaceBatisRepository implements StopPlaceRepository {
         }
         return saved;
     }
+/*
+    public StopPlace ensureSaved2(StopPlace stop) {
+        if (stop.getId() == null) {
+            StopPlace saved = mapper.selectByAddress(stop.getAddress());
+            if (null == saved) {
+                mapper.insert(stop);
+                saved = stop;
+            }
+            return saved;
+        }
+
+        StopPlace saved = mapper.selectById(stop.getId());
+        if (saved == null) {
+            stop.setId(null);
+            saved = mapper.selectByAddress(stop.getAddress());
+            if (null == saved) {
+                mapper.insert(stop);
+                saved = stop;
+            }
+            return saved;
+        }
+
+        if (saved.getAddress().equals(stop.getAddress())) {
+            return saved;
+        } else {
+            stop.setId(null);
+            mapper.insert(stop);
+            return stop;
+        }
+    }
+*/
 }

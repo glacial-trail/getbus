@@ -20,6 +20,12 @@ import static info.getbus.servebus.route.model.Direction.F;
 @Getter
 @Setter
 public class RouteDTO {
+//    private Long roundRouteId;
+//    @NotEmpty(message = "common.notempty.error")
+//    private String roundRouteName;
+    @Valid
+    private RoundRouteSummaryDTO roundRouteSummary;
+
     private Long id;
 
     @NotEmpty(message = "common.notempty.error")

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="info.getbus.servebus.route.persistence.mappers.RoundRouteMapper">
+
+    <select id="selectCompactRoutesByUsername" resultType="info.getbus.servebus.route.model.CompactRoute">
+        SELECT
+          rr.id
+--           COALESCE ()
+            r.id,
+            r.name,
+            start.name  AS start_stop,
+            finish.name AS end_stop,
+            CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username}
+                THEN TRUE
+            ELSE FALSE END
+                        AS editable
+        FROM round_route rr
+        INNER JOIN round_route_node node ON rr.id = node.round_route_id
+        INNER JOIN route r ON r.id = node.route_id
+
+            INNER JOIN route_stop start ON r.id = start.route_id AND start.sequence = 1
+            INNER JOIN route_stop finish ON r.id = finish.route_id
+            INNER JOIN (SELECT
+                            max(sequence) AS last,
+                            route_id
+                        FROM route_stop
+                        GROUP BY route_id) AS last_stops
+                ON finish.route_id = last_stops.route_id AND finish.sequence = last_stops.last
+
+
+
+            INNER JOIN user2transporter u2t ON rr.carrier_area_id = u2t.transporter_id /*add transporter id constraint?*/
+            INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
+
+
+        ORDER BY node.sequence
+
+        union all
+
+        SELECT
+        -1,
+            r.id,
+            r.name,
+            start.name  AS start_stop,
+            finish.name AS end_stop,
+            CASE WHEN r.lock_owner IS NULL OR r.lock_owner = #{username}
+                THEN TRUE
+            ELSE FALSE END
+                        AS editable
+        /*TODO AS in_edit_mode*/
+        FROM route r
+            INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
+            INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
+            INNER JOIN route_stop start ON r.id = start.route_id AND start.sequence = 1
+            INNER JOIN route_stop finish ON r.id = finish.route_id
+            INNER JOIN (SELECT
+                            max(sequence) AS last,
+                            route_id
+                        FROM route_stop
+                        GROUP BY route_id) AS last_stops
+                ON finish.route_id = last_stops.route_id AND finish.sequence = last_stops.last
+
+          where r.id not in (
+            select distinct node.route_id
+            from round_route rr
+            inner join round_route_node node on rr.id = node.round_route_id
+            INNER JOIN user2transporter u2t ON r.transporter_area_id = u2t.transporter_id
+            INNER JOIN users u ON u2t.username = u.username AND u.username = #{username}
+
+          )
+    </select>
+</mapper>

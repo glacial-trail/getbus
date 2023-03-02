@@ -21,6 +21,7 @@ public class Route {
     private int baseSeatsQty;
     private ZonedDateTime startSales;
     private int salesDepth;
+    @Deprecated
     private Direction direction = F;
     private List<RouteStop> stops = new LinkedList<>();
 
@@ -42,11 +43,12 @@ public class Route {
         this.stops = updated;
     }
 
-
+    @Deprecated
     public boolean isForward() {
         return F == direction;
     }
 
+    @Deprecated
     public Direction oppositeDirection() {
         return isForward() ? R : F;
     }
@@ -62,6 +64,7 @@ public class Route {
     /**
      * @return new copy of stops collection in forward direction
      */
+    @Deprecated
     public List<RouteStop> getRoutePointsInNaturalOrder() {
         if (isForward()) {
             return new LinkedList<>(stops);
@@ -79,4 +82,41 @@ public class Route {
     public boolean isDistanceFulfilled() {
         return stops.stream().noneMatch(stop -> null == stop.getDistance());
     }
+
+    protected Route newRoute() {
+        return new Route();
+    }
+
+    public Route newReverted() {
+        Route route = newRoute();
+        return copy(route);
+
+    }
+
+    protected Route copy(Route route) {
+        route.setName(reverseName());
+        route.setBasePrice(basePrice);
+        route.setBaseSeatsQty(baseSeatsQty);
+        route.setStartSales(startSales);
+        route.setSalesDepth(salesDepth);
+        route.setStops(reverse(stops));
+        return route;
+    }
+
+    private String reverseName() {
+        StringBuilder r = new StringBuilder();
+
+        String[] words = name.split("\\s");
+        for (int i = words.length-1; i >= 0; i--) {
+            r.append(words[i]);
+            if (i != 0) {
+                r.append(" ");
+            }
+        }
+        return r.toString();
+    }
+
+
 }
+
+

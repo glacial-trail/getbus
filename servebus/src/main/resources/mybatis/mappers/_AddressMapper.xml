@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="info.getbus.servebus.geo.address.persistence.mappers.AddressMapper">
+
+<!--
+    INSERT INTO address_l10n (
+    lang,
+    id,
+    admin_area1,
+    city,
+    street_building,
+    street,
+    building
+    )
+    VALUES (
+    '&#45;&#45;',
+    &#45;&#45;             lastval(),
+    currval('address_ll_id_seq'),
+    #{address.adminArea1},
+    #{address.city},
+    #{address.streetBuilding},
+    #{address.street},
+    #{address.building}
+    )
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <insert id="insertGK" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO address_ll (
+        country,
+        utc_offset,
+        zip
+        ) SELECT
+        #{address.countryCode},
+        #{address.utcOffset},
+        #{address.zip}
+        WHERE NOT EXISTS(
+        SELECT a.id
+        FROM address_ll a
+        JOIN address_l10n al ON a.id = al.id
+        WHERE
+        a.country = #{address.countryCode}
+        AND al.admin_area1 = #{address.adminArea1}
+        AND al.city = #{address.city}
+        AND al.street_building = #{address.streetBuilding}
+        AND lang = '--'
+        )
+    </insert>
+    <insert id="insertSK" useGeneratedKeys="true" keyProperty="address.id" keyColumn="id">
+        <selectKey keyProperty="address.id" keyColumn="id" resultType="long" order="BEFORE">
+            SELECT a.id
+            FROM address_ll a
+            JOIN address_l10n al ON a.id = al.id
+            WHERE
+            a.country = #{address.countryCode}
+            AND al.admin_area1 = #{address.adminArea1}
+            AND al.city = #{address.city}
+            AND al.street_building = #{address.streetBuilding}
+            AND lang = '--'
+        </selectKey>
+        INSERT INTO address_ll (
+        country,
+        utc_offset,
+        zip
+        ) SELECT
+        #{address.countryCode},
+        #{address.utcOffset},
+        #{address.zip}
+        WHERE NOT EXISTS(
+        select id from address_ll where id = #{address.id}
+        )
+    </insert>
+
+</mapper>

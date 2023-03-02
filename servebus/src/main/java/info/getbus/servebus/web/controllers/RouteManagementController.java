@@ -6,13 +6,17 @@ import info.getbus.servebus.route.RouteService;
 import info.getbus.servebus.route.model.CompactRoute;
 import info.getbus.servebus.route.model.Direction;
 import info.getbus.servebus.route.model.PeriodicityPair;
+import info.getbus.servebus.route.model.RoundRouteSummary;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.RoutePartId;
+import info.getbus.servebus.route.model.RouteCompositeId;
+import info.getbus.servebus.route.model.RouteRound;
 import info.getbus.servebus.route.model.RouteStop;
 import info.getbus.servebus.topology.StopPlace;
 import info.getbus.servebus.topology.TopologyService;
 import info.getbus.servebus.web.dto.route.PeriodicityPairDTO;
 import info.getbus.servebus.web.dto.route.RouteDTO;
+import info.getbus.servebus.web.dto.route.RouteViewDTO;
+import info.getbus.servebus.web.mav.Forward;
 import info.getbus.servebus.web.mav.Redirect;
 import info.getbus.servebus.web.mav.RouteView;
 import lombok.RequiredArgsConstructor;
@@ -48,28 +52,57 @@ public class RouteManagementController {
     private Redirect path(String path) {
         return new Redirect("/t/routes/", path);
     }
-    
+    private Forward fpath(String path) {
+        return new Forward("/t/routes/", path);
+    }
+
     @GetMapping("/list")
     public ModelAndView listRoutes() {
         List<CompactRoute> routes = routeService.list();
         return view().list(routes);
     }
 
-    @GetMapping("/view/{id}")
-    public ModelAndView view(@PathVariable("id") long id,
-                             @RequestParam(name = "direction", required = false) Direction direction)  {
+    @GetMapping("/view/{roundRouteId}/{routeId}")
+    public ModelAndView view(@PathVariable("roundRouteId") long roundRouteId, @PathVariable("id") long routeId)  {
         //TODO handle lock exception
-        if (null == direction) {
-            direction = Direction.F;
+        RouteDTO dto;
+        if ( 0 == roundRouteId) {
+            Route route = routeService.get(routeId);
+            dto = modelMapper.map(route, RouteDTO.class);
+
+        } else {
+            RouteRound roundRoute = routeService.get(new RouteCompositeId(routeId, roundRouteId));
+            //TODO create modelmaperconfig
+            dto = modelMapper.map(roundRoute, RouteDTO.class);
         }
-        Route route = routeService.get(new RoutePartId(id, direction));
-        RouteDTO dto = modelMapper.map(route, RouteDTO.class);
+
+//        Route route = routeService.get2(new RouteCompositeId(routeId,roundRouteId)); TODO try this
+//        dto = modelMapper.map(route, RouteDTO.class);
+
+
         return view().view(dto);
     }
 
     @GetMapping("/create")
-    public ModelAndView getCreate() {
-        return view().edit(new RouteDTO());
+    public ModelAndView getCreate(@RequestParam(name = "from", required = false) Long routeId,
+                                  @RequestParam(name = "ofRoundRoute", required = false) Long roundRouteId
+    ) {
+        if (null == roundRouteId && null == routeId) {
+            return view().edit(new RouteViewDTO());
+        }
+
+        if (null != routeId) {
+            Route origRoute = routeService.get2(new RouteCompositeId(routeId, null == roundRouteId ? 0 : roundRouteId));
+            Route r = origRoute.newReverted();
+            return view().edit(modelMapper.map(r, RouteViewDTO.class));
+
+        }
+
+        RouteRound retVal = new RouteRound();
+            RoundRouteSummary roundRouteSummary = routeService.getRoundRouteSummary(roundRouteId);
+            retVal.setRoundRouteSummary(roundRouteSummary);
+
+        return view().edit(modelMapper.map(retVal, RouteViewDTO.class));
     }
 
     @PostMapping({"/cancel", "/edit/cancel"})
@@ -80,23 +113,36 @@ public class RouteManagementController {
         return path("/list").redirect();
     }
 
-    @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable("id") long id,
-                             @RequestParam(name = "direction", defaultValue = "F") Direction direction) {
+    @GetMapping("/edit/{roundRouteId}/{routeId}")
+    public ModelAndView edit(@PathVariable("roundRouteId") long roundRouteId, @PathVariable("id") long routeId) {
         //TODO handle lock exception
-        RouteDTO route = modelMapper.map(routeService.acquireForEdit(new RoutePartId(id, direction)), RouteDTO.class);
+        RouteDTO route = modelMapper.map(routeService.acquireForEdit(new RouteCompositeId(routeId, roundRouteId)), RouteDTO.class);
         return view().edit(route);
     }
 
+    @PostMapping("/createRoundRoute")
+    public ModelAndView createRoundRoute(@RequestParam(name = "firstRoute") long id,
+                                         @RequestParam(name = "reverse", defaultValue = "false") boolean reverse) {
+        long rrid = routeService.createRoundRouteFor(id);
+        return path("/create").with(builder -> {
+            builder.queryParam("ofRoundRoute", rrid);
+            if (reverse) builder.queryParam("from", id);
+        }).redirect();
+    }
+
     @PostMapping({"/save", "/edit/save"})
-    public ModelAndView save(@RequestParam(name = "finish", defaultValue = "false") boolean finish,
+    public ModelAndView save(@RequestParam(required = false) Long next,
+                             @RequestParam(name = "new", defaultValue = "false")  boolean createnew,
+                             @RequestParam(name = "rev", defaultValue = "false")  boolean rev,
                              @ModelAttribute("route") @Validated RouteDTO dto,
                              BindingResult errors) {
         if (errors.hasErrors()) {
+            RoundRouteSummary roundRouteSummary = routeService.getRoundRouteSummary(roundRouteId);
+
             return view().edit(dto);
         }
 
-        Route route = modelMapper.map(dto, Route.class);
+        RouteRound route = modelMapper.map(dto, RouteRound.class);//todo model mapper
         //TODO move away following loop
         for (RouteStop stop : route.getStops()) {
             Address address = geoService.ensureSaved(stop.getAddress());//TODO accept address id from client?
@@ -114,12 +160,24 @@ public class RouteManagementController {
         }
 
         boolean done = routeService.saveAndCheckConsistency(route, finish);
-        if (finish && done) {
+
+        if (null != next) {
+
+        }
+
+
+
+
+
+        if (!createnew) {
             return path("/list").redirect();
         } else {
-            return path("/edit/").with(builder -> builder
-                    .path(route.getId().toString())
-                    .queryParam("direction", route.oppositeDirection())
+            return fpath("/edit/").with(builder -> { builder
+                    .path(route.getId())
+                    .queryParam("direction", route.oppositeDirection());
+                    if (rev) builder.queryParam("")
+                    if (rev) builder.queryParam("")
+            }
             ).redirect();
         }
     }

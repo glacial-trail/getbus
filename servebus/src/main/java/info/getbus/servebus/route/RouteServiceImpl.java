@@ -1,17 +1,22 @@
 package info.getbus.servebus.route;
 
 import info.getbus.servebus.route.model.CompactRoute;
+import info.getbus.servebus.route.model.OneOfRoundRoute;
 import info.getbus.servebus.route.model.PeriodicityPair;
+import info.getbus.servebus.route.model.RouteCompositeId;
+import info.getbus.servebus.route.model.RoundRoute;
 import info.getbus.servebus.route.model.Route;
-import info.getbus.servebus.route.model.RoutePartId;
 import info.getbus.servebus.route.model.RoutePeriodicity;
 import info.getbus.servebus.model.security.User;
+import info.getbus.servebus.route.model.RouteRound;
 import info.getbus.servebus.route.persistence.mappers.RouteMapper;
 import info.getbus.servebus.route.persistence.mappers.RouteStopMapper;
 import info.getbus.servebus.route.persistence.managers.RoutePeriodicityPersistenceManager;
 import info.getbus.servebus.route.persistence.managers.RoutePersistenceManager;
 import info.getbus.servebus.service.security.SecurityHelper;
+import org.apache.ibatis.annotations.One;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,15 +54,41 @@ public class RouteServiceImpl implements RouteService {
         return routeMapper.selectCompactRoutesByUsername(resolveCurrentUserName());
     }
 
+    @Override
+    public RouteRound get(RouteCompositeId routeCompositeId) {
+        return routeMapper.selectByIdWithRoundRoute(routeCompositeId.getRid(), routeCompositeId.getRrId());
+    }
+
+//    public getRoundRouteSumma
+
     @Override //TODO decorate by calculator reversed distances or route calculate itself?
-    public Route get(RoutePartId id) {
+    public Route get(long id) {
         return routeMapper.selectById(id);
     }
 
     @Override
-    public Route acquireForEdit(RoutePartId partId) {
-        tryLock(partId.getId());
-        Route route = get(partId);
+    public RoundRoute getRR(long rrId) {
+        return routeMapper.selectRoundRouteById(rrId); //TODO &
+    }
+
+    public Route get2(RouteCompositeId routeCompositeId) {
+        if (0 == routeCompositeId.getRrId()) {
+            return routeMapper.selectById(routeCompositeId.getRid());
+        } else {
+            return routeMapper.selectByIdWithRoundRoute(routeCompositeId.getRid(), routeCompositeId.getRrId());
+        }
+    }
+
+    @Override
+    public Route acquireForEdit(long id) {
+        return acquireForEdit(new RouteCompositeId(id, 0));
+    }
+
+    @Override
+    public Route acquireForEdit(RouteCompositeId cid) {
+        long id = cid.getRid();
+        tryLock(id);
+        Route route = get2(cid);
         return adjustTimezone(route);//TODO decorator fom mapper interface?
     }//or adjust tz only for display on web
 
@@ -87,6 +118,12 @@ public class RouteServiceImpl implements RouteService {
     private void unlockConsistent(long routeId) {
         if (isConsistent(routeId)) {
             routeMapper.unlockRoute(routeId);
+        }
+    }
+
+    public void save(OneOfRoundRoute route) {
+        if (null == route.getRoundRouteId()) {
+            routeMapper
         }
     }
 
